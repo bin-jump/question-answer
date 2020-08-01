@@ -19,7 +19,7 @@ public class UserServiceFacade {
 
     public UserDto create(UserDto userDto) {
 
-        User user = userApplicationService.create(userDto.getName(), userDto.getPassword());
+        User user = userApplicationService.create(userDto.getName(), userDto.getPassword(), userDto.getEmail());
         return UserAssembler.toDTO(user);
     }
 

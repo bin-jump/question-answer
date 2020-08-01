@@ -13,8 +13,8 @@ public class UserApplicationService {
     UserDomainService userDomainService;
 
     @Transactional
-    public User create(String name, String password) {
-        return userDomainService.create(name, password);
+    public User create(String name, String password, String email) {
+        return userDomainService.create(name, password, email);
     }
 
 }

@@ -32,7 +32,7 @@ public class UserServiceTest {
         String name = "user1";
         User user = userRepository.findByName(name);
         if (user == null) {
-            user = userApplicationService.create(name, "123456");
+            user = userApplicationService.create(name, "123456", "test@example.com");
         }
 
         Assert.assertNotNull(user);

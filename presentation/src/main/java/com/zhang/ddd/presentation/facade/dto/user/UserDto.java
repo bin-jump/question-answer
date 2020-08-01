@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
@@ -15,8 +16,10 @@ public class UserDto {
 
     private String id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String password;
 
     private int age;

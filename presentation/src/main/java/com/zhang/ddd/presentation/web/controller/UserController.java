@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class UserController {
     UserServiceFacade userServiceFacade;
 
     @PostMapping
-    public Response create(UserDto userDto) {
+    public Response create(@Valid UserDto userDto) {
 
         userDto = userServiceFacade.create(userDto);
         return Response.ok(userDto);

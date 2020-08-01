@@ -57,5 +57,10 @@ public class User extends Entity<User> {
 
     private int followeeCount;
 
+    // TODO: add check rule
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
 }

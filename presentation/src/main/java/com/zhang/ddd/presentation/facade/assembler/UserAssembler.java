@@ -13,6 +13,7 @@ public class UserAssembler {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
+                //.password(user.getPassword())
                 .avatarUrl(user.getAvatarUrl())
                 .description(user.getDescription())
                 .created(user.getCreated().getTime())

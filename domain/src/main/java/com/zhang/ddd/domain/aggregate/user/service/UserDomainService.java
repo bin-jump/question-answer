@@ -16,7 +16,7 @@ public class UserDomainService {
     @Autowired
     UserRepository userRepository;
 
-    public User create(String name, String password) {
+    public User create(String name, String password, String email) {
 
         User sameNameUser = userRepository.findByName(name);
         if (sameNameUser != null) {
@@ -26,6 +26,7 @@ public class UserDomainService {
         String id = userRepository.nextId();
         User user = new User(id, name, password);
         user.setAvatarUrl(avatarImageRepository.nameHashImage(name));
+        user.setEmail(email);
         userRepository.save(user);
         return user;
     }
