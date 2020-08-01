@@ -28,5 +28,18 @@
                 #{created}, #{description}, #{questionCount}, #{answerCount}, #{followerCount}, #{followeeCount}
                )
     </insert>
+    <select id="findByName" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
+        select id, domain_id, version, name, password, email, avatar_url, age, gender,
+               created, description, question_count, answer_count, follower_count, followee_count
+        from user
+        where name = #{name}
+    </select>
+
+    <select id="findById" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
+        select id, domain_id, version, name, password, email, avatar_url, age, gender,
+               created, description, question_count, answer_count, follower_count, followee_count
+        from user
+        where domain_id = #{id}
+    </select>
 
 </mapper>

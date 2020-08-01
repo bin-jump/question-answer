@@ -6,6 +6,7 @@ import com.zhang.ddd.domain.shared.Entity;
 import com.zhang.ddd.domain.util.PasswordEncoder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class User extends Entity<User> {
 
 

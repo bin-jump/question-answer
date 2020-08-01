@@ -7,6 +7,9 @@ import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 public class UserAssembler {
 
     public static UserDto toDTO(User user) {
+        if (user == null) {
+            return null;
+        }
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())

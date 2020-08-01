@@ -7,11 +7,25 @@ import org.springframework.beans.BeanUtils;
 public class UserAssembler {
 
     public static UserPO toPO(User user) {
+        if (user == null) {
+            return null;
+        }
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(user, userPO);
         userPO.setVersion(user.getVersion());
         userPO.setDomainId(user.getId());
 
         return userPO;
+    }
+
+    public static User toDomainUser(UserPO userPO) {
+        if (userPO == null) {
+            return null;
+        }
+        User user = new User();
+        BeanUtils.copyProperties(userPO, user);
+        user.setId(userPO.getDomainId());
+
+        return user;
     }
 }
