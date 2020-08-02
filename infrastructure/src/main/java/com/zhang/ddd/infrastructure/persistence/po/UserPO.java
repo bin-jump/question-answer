@@ -14,9 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class UserPO {
 
-    private long id;
+    private Long id;
 
-    private String domainId;
+    private String userId;
 
     private long version;
 

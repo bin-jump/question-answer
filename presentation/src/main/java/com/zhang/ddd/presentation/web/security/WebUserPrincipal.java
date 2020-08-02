@@ -23,6 +23,10 @@ public class WebUserPrincipal implements UserDetails {
         authorities.add(new SimpleGrantedAuthority("USER"));
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

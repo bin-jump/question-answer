@@ -13,7 +13,7 @@ public class UserAssembler {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(user, userPO);
         userPO.setVersion(user.getVersion());
-        userPO.setDomainId(user.getId());
+        userPO.setUserId(user.getId());
 
         return userPO;
     }
@@ -24,7 +24,7 @@ public class UserAssembler {
         }
         User user = new User();
         BeanUtils.copyProperties(userPO, user);
-        user.setId(userPO.getDomainId());
+        user.setId(userPO.getUserId());
 
         return user;
     }

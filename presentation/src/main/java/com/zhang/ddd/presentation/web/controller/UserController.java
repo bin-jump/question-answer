@@ -10,12 +10,16 @@ import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
+import com.zhang.ddd.presentation.web.security.WebUserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +32,25 @@ public class UserController {
     UserServiceFacade userServiceFacade;
 
     @PostMapping
-    public Response create(@Valid UserDto userDto) {
+    public Response create(@RequestBody @Valid  UserDto userDto) {
 
         userDto = userServiceFacade.create(userDto);
         return Response.ok(userDto);
     }
 
-
     @GetMapping("me")
+    public Response me() {
+
+        UserDto userDto = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof WebUserPrincipal) {
+            userDto = UserAssembler.toDTO(((WebUserPrincipal)principal).getUser());
+        }
+        return Response.ok(userDto);
+    }
+
+
     public Response test(){
         UserDto userDto = UserDto.builder()
         .id("abc123")

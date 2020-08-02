@@ -1,5 +1,6 @@
 package com.zhang.ddd.presentation.web.security;
 
+import com.zhang.ddd.domain.util.UserPasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -18,57 +20,51 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-
+@EnableWebSecurity
 @Slf4j
 public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        log.error("WebSecurityConfig");
         http
+                .cors()
+                //.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
+                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/api/user").permitAll()
-                .antMatchers("/login", "/api/question", "/hi").permitAll()
+                .antMatchers("/signin", "/api/question", "/api/user/me").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                .loginPage("/signin")
                 .defaultSuccessUrl("/home")
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/signout")
                 .logoutSuccessUrl("/home")
                 .permitAll()
                 .and()
                 .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .disable()
+                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 ;
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        log.error("corsConfigurer");
-        return new  WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000");
-            }
-        };
-    }
-
-    @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        log.error("corsConfigurationSource");
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        //configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+
+        return UserPasswordEncoder.getPasswordEncoder();
+    }
 
 }

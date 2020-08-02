@@ -3,7 +3,7 @@ package com.zhang.ddd.domain.aggregate.user.entity;
 import com.zhang.ddd.domain.aggregate.user.entity.valueobject.UserGender;
 import com.zhang.ddd.domain.exception.InvalidValueException;
 import com.zhang.ddd.domain.shared.Entity;
-import com.zhang.ddd.domain.util.PasswordEncoder;
+import com.zhang.ddd.domain.util.UserPasswordEncoder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ public class User extends Entity<User> {
         }
 
         this.name = name;
-        this.password = PasswordEncoder.encode(password);
+        this.password = UserPasswordEncoder.encode(password);
         this.id = id;
         this.created = new Date();
     }
