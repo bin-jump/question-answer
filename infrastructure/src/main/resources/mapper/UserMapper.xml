@@ -21,13 +21,33 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
-        insert into user (id, user_id, version, name, password, email, avatar_url, age, gender,
+        insert into user (user_id, version, name, password, email, avatar_url, age, gender,
                           created, description, question_count, answer_count, follower_count, followee_count
         )
-        values (#{id}, #{userId}, #{version}, #{name}, #{password}, #{email}, #{avatarUrl}, #{age}, #{gender},
+        values (#{userId}, #{version}, #{name}, #{password}, #{email}, #{avatarUrl}, #{age}, #{gender},
                 #{created}, #{description}, #{questionCount}, #{answerCount}, #{followerCount}, #{followeeCount}
                )
     </insert>
+
+    <update id="update" parameterType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
+        update user
+        set version = version + 1,
+            name = #{name},
+            password = #{password},
+            email = #{email},
+            avatar_url = #{avatarUrl},
+            age = #{age},
+            gender = #{gender},
+            description = #{description},
+
+            question_count = #{questionCount},
+            answer_count = #{answerCount},
+            follower_count = #{followerCount},
+            followee_count = #{followeeCount}
+
+        where user_id = #{userId} and version = #{version}
+    </update>
+
     <select id="findByName" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         select id, user_id, version, name, password, email, avatar_url, age, gender,
                created, description, question_count, answer_count, follower_count, followee_count
@@ -39,7 +59,7 @@
         select id, user_id, version, name, password, email, avatar_url, age, gender,
                created, description, question_count, answer_count, follower_count, followee_count
         from user
-        where user_id = #{id}
+        where user_id = #{userId}
     </select>
 
 </mapper>

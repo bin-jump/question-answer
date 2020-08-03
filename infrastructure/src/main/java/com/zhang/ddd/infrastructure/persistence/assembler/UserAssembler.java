@@ -18,7 +18,7 @@ public class UserAssembler {
         return userPO;
     }
 
-    public static User toDomainUser(UserPO userPO) {
+    public static User toDO(UserPO userPO) {
         if (userPO == null) {
             return null;
         }

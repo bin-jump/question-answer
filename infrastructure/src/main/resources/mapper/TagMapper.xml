@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.TagPO">
+        <id column="id" property="id" />
+        <result column="tag_id" property="tagId" />
+        <result column="version" property="version" />
+        <result column="label" property="label" />
+
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
+        insert into tag (tag_id, version, label)
+        values (#{tagId}, #{version}, #{label})
+    </insert>
+
+
+    <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
+        select id, tag_id, version, label
+        from tag
+        <choose>
+            <when test="tagIds != null and tagIds.size() > 0">
+                where id in
+                <foreach item="id" collection="tagIds" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findByLabels" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
+        select id, tag_id, version, label
+        from tag
+        <choose>
+            <when test="labels != null and labels.size() > 0">
+                where label in
+                <foreach item="label" collection="labels" separator="," open="(" close=")">
+                    #{label}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findByQuestionIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
+        select tag.id as id, question_id, tag_id, tag.label as label, version
+        from question_tag
+        left join tag
+        on question_tag.tag_id = tag.tag_id
+        <choose>
+            <when test="questionIds != null and questionIds.size() > 0">
+                where question_id in
+                <foreach item="questionId" collection="questionIds" separator="," open="(" close=")">
+                    #{questionId}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

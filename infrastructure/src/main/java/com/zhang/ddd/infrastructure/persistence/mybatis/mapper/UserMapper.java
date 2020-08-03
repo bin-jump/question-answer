@@ -8,7 +8,9 @@ public interface UserMapper {
 
     int insert(UserPO userPO);
 
+    int update(UserPO userPO);
+
     UserPO findByName(String name);
 
-    UserPO findById(String id);
+    UserPO findById(String userId);
 }

@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
+// TODO: write correct setters
 @Getter
 @Setter
 @NoArgsConstructor

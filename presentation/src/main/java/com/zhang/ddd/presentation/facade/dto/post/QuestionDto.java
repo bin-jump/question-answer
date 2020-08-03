@@ -28,7 +28,7 @@ public class QuestionDto {
 
     private int answerCount;
 
-    private int voteupCount;
+    private int upvoteCount;
 
     private int followCount;
 

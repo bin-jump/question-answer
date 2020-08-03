@@ -1,7 +1,5 @@
 package com.zhang.ddd.presentation.web.controller;
 
-import com.zhang.ddd.application.service.UserApplicationService;
-import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.UserServiceFacade;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
@@ -13,13 +11,10 @@ import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
 import com.zhang.ddd.presentation.web.security.WebUserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 

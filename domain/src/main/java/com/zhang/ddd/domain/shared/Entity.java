@@ -8,7 +8,7 @@ import java.io.Serializable;
 // for simplicity, just use string as a common id type
 @Getter
 @Setter
-public class Entity<T> implements Serializable {
+public abstract class Entity<T> implements Serializable {
 
     protected String id;
 
