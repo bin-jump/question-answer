@@ -3,6 +3,14 @@ server:
   servlet:
     session:
       timeout: 48h
+
 spring:
   application:
     name: smartpost
+
+    session:
+      store-type: redis
+
+    redis:
+      host: localhost
+      port: 6379
