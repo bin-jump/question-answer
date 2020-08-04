@@ -1,7 +1,11 @@
 package com.zhang.ddd.application.service;
 
+import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
+import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
+import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
+import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.presentation.SmartpostApplication;
@@ -15,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @ComponentScan("com.zhang.ddd")
@@ -26,7 +31,13 @@ public class QuestionServiceTest {
     QuestionApplicationService questionApplicationService;
 
     @Autowired
+    QuestionRepository questionRepository;
+
+    @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AnswerRepository answerRepository;
 
     @Test
     public void testCreate() {
@@ -48,5 +59,25 @@ public class QuestionServiceTest {
         ,"answer body", user.getId());
 
         Assert.assertNotNull(answer);
+    }
+
+    @Test
+    public void testGetQuestion() {
+        List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
+        List<Answer> answers = answerRepository.findQuestionLatestAnswers(questions.stream()
+                .map(Question::getId).collect(Collectors.toList()));
+
+        Assert.assertTrue(questions.size() > 0);
+        Assert.assertTrue(answers.size() > 0);
+    }
+
+    @Test
+    public void testGetAnswer() {
+        Question question = questionRepository.findById("8f7e6ae5a6614af095763d7f17c12715");
+
+        List<Answer> answers = answerRepository.findByQuestionId("8f7e6ae5a6614af095763d7f17c12715",
+                new PostPaging(null, 10));
+
+        Assert.assertTrue(answers.size() > 0);
     }
 }

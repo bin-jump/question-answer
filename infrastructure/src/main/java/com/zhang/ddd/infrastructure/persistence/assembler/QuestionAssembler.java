@@ -1,5 +1,6 @@
 package com.zhang.ddd.infrastructure.persistence.assembler;
 
+import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionPO;
@@ -7,6 +8,7 @@ import com.zhang.ddd.infrastructure.persistence.po.TagPO;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class QuestionAssembler {
 
@@ -25,6 +27,12 @@ public class QuestionAssembler {
         }
 
         return questionPO;
+    }
+
+    public static List<Question> toDOs(List<QuestionPO> questionPOs) {
+
+        return questionPOs.stream()
+                .map(QuestionAssembler::toDO).collect(Collectors.toList());
     }
 
     public static Question toDO(QuestionPO questionPO) {

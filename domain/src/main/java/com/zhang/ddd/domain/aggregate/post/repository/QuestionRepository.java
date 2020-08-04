@@ -14,4 +14,6 @@ public interface QuestionRepository {
 
     Question findById(String id);
 
+    List<Question> findQuestions(PostPaging postPaging);
+
 }

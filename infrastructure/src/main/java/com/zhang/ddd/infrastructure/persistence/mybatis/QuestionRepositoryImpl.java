@@ -2,8 +2,10 @@ package com.zhang.ddd.infrastructure.persistence.mybatis;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
+import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
+import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.infrastructure.persistence.assembler.QuestionAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionMapper;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionTagMapper;
@@ -11,6 +13,7 @@ import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionPO;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionTag;
 import com.zhang.ddd.infrastructure.persistence.po.TagPO;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -65,6 +68,25 @@ public class QuestionRepositoryImpl implements QuestionRepository {
                 .stream().forEach(e -> questionPO.getTags().add(e));
 
         return QuestionAssembler.toDO(questionPO);
+    }
+
+    @Override
+    public List<Question> findQuestions(PostPaging postPaging) {
+
+        String sortKey = "id";
+        Long cursor = null;
+        if (postPaging.getCursor() != null) {
+            QuestionPO cursorQuestion = questionMapper.findById(postPaging.getCursor());
+            if (cursorQuestion == null) {
+                throw new ResourceNotFoundException("Question not found");
+            }
+            cursor = cursorQuestion.getId();
+        }
+
+        List<QuestionPO> questionPOs =
+                questionMapper.findQuestions(cursor, postPaging.getSize(), sortKey);
+
+        return QuestionAssembler.toDOs(questionPOs);
     }
 
 }

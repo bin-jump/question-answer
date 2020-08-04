@@ -49,4 +49,16 @@
         where question_id = #{questionId}
     </select>
 
+    <select id="findQuestions" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
+        select id, question_id, version, title, body, author_id, created,
+               answer_count, comment_count, follow_count, upvote_count, downvote_count
+        from question
+        <if test="cursor != null">
+            where id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+
+    </select>
+
 </mapper>

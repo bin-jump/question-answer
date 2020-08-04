@@ -15,6 +15,6 @@ public interface QuestionMapper {
 
     QuestionPO findById(String questionId);
 
-
+    List<QuestionPO> findQuestions(Long cursor, int size, String sortKey);
 
 }

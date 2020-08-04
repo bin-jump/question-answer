@@ -13,6 +13,8 @@ public interface AnswerRepository {
 
     Answer findById(String id);
 
-    List<Answer> findByQuestionId(String questionId);
+    List<Answer> findByQuestionId(String questionId, PostPaging postPaging);
+
+    List<Answer> findQuestionLatestAnswers(List<String> questionIds);
 
 }
