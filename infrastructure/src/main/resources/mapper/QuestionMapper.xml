@@ -27,6 +27,20 @@
                )
     </insert>
 
+    <update id="update" parameterType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
+        update question
+        set version = version + 1,
+            title = #{title},
+            body = #{body},
+
+            answer_count = #{answerCount},
+            comment_count = #{commentCount},
+            follow_count = #{followCount},
+            upvote_count = #{upvoteCount},
+            downvote_count = #{downvoteCount}
+
+        where question_id = #{questionId} and version = #{version}
+    </update>
 
     <select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
         select id, question_id, version, title, body, author_id, created,

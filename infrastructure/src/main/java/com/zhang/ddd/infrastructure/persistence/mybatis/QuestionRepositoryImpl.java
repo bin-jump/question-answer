@@ -3,6 +3,7 @@ package com.zhang.ddd.infrastructure.persistence.mybatis;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
+import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
 import com.zhang.ddd.infrastructure.persistence.assembler.QuestionAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionMapper;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionTagMapper;
@@ -45,6 +46,15 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         for (TagPO t : questionPO.getTags()) {
             QuestionTag questionTag = new QuestionTag(questionPO.getQuestionId(), t.getTagId());
             questionTagMapper.insert(questionTag);
+        }
+    }
+
+    @Override
+    public void update(Question question) {
+        QuestionPO questionPO = QuestionAssembler.toPO(question);
+        int num = questionMapper.update(questionPO);
+        if (num == 0) {
+            throw new ConcurrentUpdateException("Question concurrent update.");
         }
     }
 

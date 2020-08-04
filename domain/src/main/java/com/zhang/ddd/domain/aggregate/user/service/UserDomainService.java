@@ -38,7 +38,15 @@ public class UserDomainService {
             throw new ResourceNotFoundException("User not found");
         }
         user.setQuestionCount(user.getQuestionCount() + 1);
+        userRepository.update(user);
+    }
 
+    public void userCreateAnswer(String id) {
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        user.setAnswerCount(user.getAnswerCount() + 1);
         userRepository.update(user);
     }
 

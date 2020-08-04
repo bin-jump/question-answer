@@ -49,7 +49,7 @@
     </select>
 
     <select id="findByQuestionIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
-        select tag.id as id, question_id, tag_id, tag.label as label, version
+        select tag.id as id, question_id, tag.tag_id as tag_id, tag.label as label, version
         from question_tag
         left join tag
         on question_tag.tag_id = tag.tag_id

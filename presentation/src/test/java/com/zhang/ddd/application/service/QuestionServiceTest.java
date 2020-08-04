@@ -1,5 +1,6 @@
 package com.zhang.ddd.application.service;
 
+import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
@@ -36,5 +37,16 @@ public class QuestionServiceTest {
                 "body", user.getId(), Arrays.asList("tag a", "tag c"));
 
         Assert.assertNotNull(question);
+    }
+
+    @Test
+    public void testCreateAnswer() {
+
+        User user = userRepository.findByName("zhang");
+
+        Answer answer = questionApplicationService.createAnswer("8f7e6ae5a6614af095763d7f17c12715"
+        ,"answer body", user.getId());
+
+        Assert.assertNotNull(answer);
     }
 }

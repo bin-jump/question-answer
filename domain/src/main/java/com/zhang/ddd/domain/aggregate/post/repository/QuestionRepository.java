@@ -10,6 +10,7 @@ public interface QuestionRepository {
 
     void save(Question question);
 
+    void update(Question question);
 
     Question findById(String id);
 
