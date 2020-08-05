@@ -1,6 +1,7 @@
 package com.zhang.ddd.application.service;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
+import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.service.AnswerDomainService;
 import com.zhang.ddd.domain.aggregate.post.service.QuestionDomainService;
@@ -26,11 +27,14 @@ public class QuestionApplicationService {
     @Autowired
     AnswerDomainService answerDomainService;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Transactional
     public Question create(String title, String body, String authorId, List<String> tagLabels) {
 
+        // do not need to check user existence as user will be update
         Question question = questionDomainService.create(title, body, authorId, tagLabels);
-        // TODO: use event maybe
         userDomainService.userCreateQuestion(authorId);
 
         return question;
@@ -38,9 +42,33 @@ public class QuestionApplicationService {
 
     @Transactional
     public Answer createAnswer(String questionId, String body, String authorId) {
+
+        // do not need to check user existence as user will be update
         Answer answer = answerDomainService.create(questionId, body, authorId);
-        // TODO: use event maybe
         userDomainService.userCreateAnswer(authorId);
+
         return  answer;
+    }
+
+    @Transactional
+    public Comment addQuestionComment(String authorId, String questionId, String body) {
+        User user = userRepository.findById(authorId);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        Comment comment = questionDomainService.createQuestionComment(authorId, questionId, body);
+        return comment;
+    }
+
+    @Transactional
+    public Comment addAnswerComment(String authorId, String answerId, String body) {
+        User user = userRepository.findById(authorId);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        Comment comment = answerDomainService.createAnswerComment(authorId, answerId, body);
+        return comment;
     }
 }

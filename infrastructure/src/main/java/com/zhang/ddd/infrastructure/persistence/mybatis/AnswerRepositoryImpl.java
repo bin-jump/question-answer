@@ -71,7 +71,6 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Override
     public List<Answer> findQuestionLatestAnswers(List<String> questionIds) {
         List<AnswerPO> answerPOs = answerMapper.findQuestionLatestAnswers(questionIds);
-        //List<AnswerPO> answerPOs = answerMapper.findByIds(ids);
 
         return AnswerAssembler.toDOs(answerPOs);
     }

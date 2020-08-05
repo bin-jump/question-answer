@@ -4,7 +4,7 @@ import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
-import com.zhang.ddd.presentation.facade.dto.comment.CommentDto;
+import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteResult;
 import lombok.extern.slf4j.Slf4j;

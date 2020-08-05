@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
+import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceType;
+import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.TagRepository;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.domain.exception.InvalidValueException;
+import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,9 @@ public class QuestionDomainService {
 
     @Autowired
     TagRepository tagRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     public Question create(String title, String body, String authorId, List<String> tagLables) {
         if (tagLables.size() == Question.TAG_NUM_LIMIT) {
@@ -58,5 +65,22 @@ public class QuestionDomainService {
         return question;
     }
 
+
+    public Comment createQuestionComment(String authorId, String questionId, String body) {
+
+        Question question = questionRepository.findById(questionId);
+        if (question == null) {
+            throw new ResourceNotFoundException("Question not found");
+        }
+
+        String id = commentRepository.nextId();
+        Comment comment = new Comment(id, authorId, questionId, body, CommentResourceType.QUESTION);
+        commentRepository.save(comment);
+
+        question.setCommentCount(question.getCommentCount() + 1);
+        questionRepository.update(question);
+
+        return comment;
+    }
 
 }

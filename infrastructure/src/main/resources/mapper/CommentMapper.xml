@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
+        <id column="id" property="id" />
+        <result column="comment_id" property="commentId" />
+        <result column="version" property="version" />
+        <result column="resource_id" property="resourceId" />
+        <result column="author_id" property="authorId" />
+        <result column="body"  property="body" />
+        <result column="resource_type" property="resourceType" />
+        <result column="created"  property="created" />
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
+        insert into comment (comment_id, version, resource_id
+          , author_id, body, resource_type, created
+          )
+        values (#{commentId}, #{version}, #{resourceId}
+          , #{authorId}, #{body}, #{resourceType}, #{created}
+          )
+    </insert>
+
+
+    <select id="findById" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
+        select id, comment_id, version, resource_id
+                , author_id, body, resource_type, created
+        from comment
+        where comment_id = #{commentId}
+    </select>
+
+    <select id="findByResourceId" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
+        select id, comment_id, version, resource_id
+        , author_id, body, resource_type, created
+        from comment
+        where resource_id = #{resourceId}
+          and resource_type = #{resourceType}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by #{sortKey} desc
+        limit #{size}
+    </select>
+
+
+</mapper>

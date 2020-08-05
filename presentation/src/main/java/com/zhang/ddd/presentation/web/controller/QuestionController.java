@@ -5,7 +5,7 @@ import java.util.List;
 import com.zhang.ddd.domain.aggregate.vote.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
-import com.zhang.ddd.presentation.facade.dto.comment.CommentDto;
+import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;

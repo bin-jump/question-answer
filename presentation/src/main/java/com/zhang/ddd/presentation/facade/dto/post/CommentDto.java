@@ -1,4 +1,4 @@
-package com.zhang.ddd.presentation.facade.dto.comment;
+package com.zhang.ddd.presentation.facade.dto.post;
 
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import lombok.AllArgsConstructor;

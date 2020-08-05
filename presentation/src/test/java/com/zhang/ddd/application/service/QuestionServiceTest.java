@@ -2,6 +2,7 @@ package com.zhang.ddd.application.service;
 
 import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
+import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
@@ -54,11 +55,36 @@ public class QuestionServiceTest {
     public void testCreateAnswer() {
 
         User user = userRepository.findByName("zhang");
-
         Answer answer = questionApplicationService.createAnswer("8f7e6ae5a6614af095763d7f17c12715"
         ,"answer body", user.getId());
 
         Assert.assertNotNull(answer);
+    }
+
+    @Test
+    public void testCreateQuestionComment() {
+
+        User user = userRepository.findByName("zhang");
+        List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
+
+        Comment comment = questionApplicationService
+                .addQuestionComment(user.getId(), questions.get(0).getId(), "This is a comment.");
+
+        Assert.assertNotNull(comment);
+    }
+
+    @Test
+    public void testCreateAnswerComment() {
+
+        User user = userRepository.findByName("zhang");
+        List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
+        List<Answer> answers = answerRepository.findQuestionLatestAnswers(questions.stream()
+                .map(Question::getId).collect(Collectors.toList()));
+
+        Comment comment = questionApplicationService
+                .addAnswerComment(user.getId(), answers.get(0).getId(), "This is a answer comment.");
+
+        Assert.assertNotNull(comment);
     }
 
     @Test
