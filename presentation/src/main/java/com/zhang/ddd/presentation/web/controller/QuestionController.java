@@ -36,8 +36,9 @@ public class QuestionController {
                                  @RequestParam(defaultValue = "10") int size)  {
 
         List<QuestionDto> questionDtos = postServiceFacade.getQuestions(after, size);
+        String next = questionDtos.size() > 0 ? questionDtos.get(questionDtos.size() - 1).getId() : null;
 
-        return Response.okPagingAfter(questionDtos, questionDtos.get(questionDtos.size() - 1).getId(), size);
+        return Response.okPagingAfter(questionDtos, next, size);
     }
 
     @PostMapping
@@ -52,100 +53,47 @@ public class QuestionController {
     }
 
     @GetMapping("{id}/comment")
-    public Response questionComments() {
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
-        List<CommentDto> comments = new ArrayList<>();
-        CommentDto comment = CommentDto.builder()
-                .id("ccc111")
-                .resourceId("qqq111")
-                .resourceType("QUESTION")
-                .authorId(user.getId())
-                .author(user)
-                .body("This is a comment. This is a comment. This is a comment. " +
-                        "This is a comment. This is a comment. This is a comment. ")
-                .created(1429070000)
-                .build();
-        comments.add(comment);
-        comments.add(comment);
-        comments.add(comment);
-        return Response.okPagingAfter(comments, comment.getId(), 3);
+    public Response questionComments(@PathVariable String id,
+                                     @RequestParam(required = false) String after,
+                                     @RequestParam(defaultValue = "10") int size) {
+
+        List<CommentDto> comments = postServiceFacade.getQuestionComments(id, after, size);
+        String next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
+        return Response.okPagingAfter(comments, next, size);
     }
 
     @PostMapping("{id}/comment")
     public Response addComment(@PathVariable String id, @RequestBody CommentDto comment) {
 
-        CommentDto res = (CommentDto) ((PagingData)(questionComments().getData())).getChildren().get(0);
-        res.setBody(comment.getBody());
-        res.setResourceId(comment.getResourceType());
-
-        return Response.ok(res);
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        CommentDto commentDto = postServiceFacade.addQuestionComment(currentUser.getId(), id, comment.getBody(), currentUser);
+        return Response.ok(commentDto);
     }
 
     @GetMapping("{id}")
-    public Response question() throws InterruptedException {
-        QuestionDto q = (QuestionDto)((PagingData)(getQuestions(null, 10).getData())).getChildren().get(0);
-        q.setFollowing(true);
-        return Response.ok(q);
+    public Response getQuestion(@PathVariable String id) {
+
+        QuestionDto question = postServiceFacade.getQuestion(id);
+        return Response.ok(question);
     }
 
 
     @GetMapping("/{id}/answer")
-    public Response getAnswer(){
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+    public Response getAnswer(@PathVariable String id,
+                              @RequestParam(required = false) String after,
+                              @RequestParam(defaultValue = "10") int size){
 
-        List<AnswerDto> res = new ArrayList<AnswerDto>();
+        List<AnswerDto> ans = postServiceFacade.getQuestionAnswers(id, after, size);
+        String next = ans.size() > 0 ? ans.get(ans.size() - 1).getId() : null;
 
-        AnswerDto a1 = AnswerDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .commentCount(6)
-                .id("aaa111")
-                .build();
-
-        AnswerDto a2 = AnswerDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .commentCount(9)
-                .id("aaa222")
-                .build();
-
-
-        res.add(a1);
-        res.add(a2);
-
-        return Response.okPagingAfter(res, a1.getId(), 2);
+        return Response.okPagingAfter(ans, next, size);
     }
 
     @PostMapping("/{id}/answer")
     public Response addAnser(@PathVariable String id, @RequestBody AnswerDto answer){
-        AnswerDto ans = (AnswerDto) ((PagingData)(getAnswer().getData())).getChildren().get(0);
-        ans.setBody(answer.getBody());
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        AnswerDto ans = postServiceFacade.createAnswer(id,
+                answer.getBody(), currentUser.getId(), currentUser);
 
         return Response.ok(ans);
     }

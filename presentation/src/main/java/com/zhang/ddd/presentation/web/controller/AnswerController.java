@@ -2,12 +2,15 @@ package com.zhang.ddd.presentation.web.controller;
 
 import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
+import com.zhang.ddd.presentation.facade.PostServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteResult;
+import com.zhang.ddd.presentation.web.security.LoginUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,69 +22,35 @@ import java.util.List;
 @RequestMapping("/api/answer")
 public class AnswerController {
 
+    @Autowired
+    PostServiceFacade postServiceFacade;
+
     String vote = "";
 
     @GetMapping("{id}")
-    public Response getAnswer(@RequestParam(value = "questionId", required = false) String questionId) {
-        UserDto user = UserDto.builder()
-                .id("uuu111")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+    public Response getAnswer(@PathVariable String id) {
 
-        AnswerDto a = AnswerDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Single answer request. " +
-                        "Single answer request. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .id("aaa111")
-                .build();
-
-        return Response.ok(a);
+        AnswerDto answer = postServiceFacade.getAnswer(id);
+        return Response.ok(answer);
     }
 
     @GetMapping("{id}/comment")
-    public Response answerComments(@PathVariable String id) {
-        UserDto user = UserDto.builder()
-                .id(id)
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
-        List<CommentDto> comments = new ArrayList<>()
-                ;
-        CommentDto comment = CommentDto.builder()
-                .id("ccc111")
-                .resourceId("qqq111")
-                .resourceType("ANSWER")
-                .authorId(user.getId())
-                .author(user)
-                .body("This is a comment. This is a comment. This is a comment. " +
-                        "This is a comment. This is a comment. This is a comment. ")
-                .created(1429070000)
-                .build();
+    public Response answerComments(@PathVariable String id,
+                                   @RequestParam(required = false) String after,
+                                   @RequestParam(defaultValue = "10") int size) {
 
-
-        comments.add(comment);
-        comments.add(comment);
-        comments.add(comment);
-        return Response.okPagingAfter(comments, comment.getId(), 10);
+        List<CommentDto> comments = postServiceFacade.getAnswerComments(id, after, size);
+        String next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
+        return Response.okPagingAfter(comments, next, size);
     }
 
     @PostMapping("{id}/comment")
     public Response addComment(@PathVariable String id, @RequestBody CommentDto comment) {
 
-        CommentDto res = (CommentDto) ((PagingData)(answerComments(id).getData())).getChildren().get(0);
-        res.setBody(comment.getBody());
-        res.setResourceId(comment.getResourceType());
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        CommentDto commentDto = postServiceFacade.addAnswerComment(currentUser.getId(), id, comment.getBody(), currentUser);
 
-        return Response.ok(res);
+        return Response.ok(commentDto);
     }
 
     @PostMapping("{id}/vote")

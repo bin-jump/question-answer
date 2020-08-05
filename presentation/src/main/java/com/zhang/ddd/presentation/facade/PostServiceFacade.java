@@ -2,17 +2,22 @@ package com.zhang.ddd.presentation.facade;
 
 import com.zhang.ddd.application.service.QuestionApplicationService;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
+import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
+import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceType;
 import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.presentation.facade.assembler.AnswerAssembler;
+import com.zhang.ddd.presentation.facade.assembler.CommentAssembler;
 import com.zhang.ddd.presentation.facade.assembler.QuestionAssembler;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
+import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +46,9 @@ public class PostServiceFacade {
     CommentRepository commentRepository;
 
     public QuestionDto createQuestion(String title, String body, String authorId, List<String> tagLabels) {
+
         Question question = questionApplicationService.create(title, body, authorId, tagLabels);
-
         return QuestionAssembler.toDTO(question, null);
-
     }
 
     public List<QuestionDto> getQuestions(String cursor, int size) {
@@ -66,7 +70,6 @@ public class PostServiceFacade {
                 .stream()
                 .collect(Collectors.toMap(User::getId, e -> e));
 
-
         List<QuestionDto> questionDtos = questions.stream()
                 .map(e ->{
                     QuestionDto questionDto =
@@ -86,4 +89,89 @@ public class PostServiceFacade {
         return questionDtos;
     }
 
+    // TODO: add vote&follow check
+    public QuestionDto getQuestion(String id) {
+        Question question = questionRepository.findById(id);
+        if (question == null) {
+            throw new ResourceNotFoundException("Question not found");
+        }
+
+        User user = userRepository.findById(question.getAuthorId());
+        return QuestionAssembler.toDTO(question, UserAssembler.toDTO(user));
+    }
+
+    public AnswerDto createAnswer(String questionId, String body, String authorId, UserDto user) {
+
+        Answer answer = questionApplicationService.createAnswer(questionId, body, authorId);
+        return AnswerAssembler.toDTO(answer, user, false, false);
+    }
+
+    // TODO: add vote check
+    public AnswerDto getAnswer(String id) {
+        Answer answer = answerRepository.findById(id);
+        if (answer == null) {
+            throw new ResourceNotFoundException("Answer not found");
+        }
+
+        User user = userRepository.findById(answer.getAuthorId());
+        return AnswerAssembler.toDTO(answer, UserAssembler.toDTO(user), false, false);
+    }
+
+    // TODO: add vote check
+    public List<AnswerDto> getQuestionAnswers(String questionId, String cursor, int size) {
+        List<Answer> answers = answerRepository
+                .findByQuestionId(questionId, new PostPaging(cursor, size));
+        Map<String, User> answerUsers = userRepository.findByIds(answers.stream()
+                .map(Answer::getAuthorId).collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(User::getId, e -> e));
+
+        List<AnswerDto> res = answers.stream()
+                .map(e -> AnswerAssembler.toDTO(e, UserAssembler.toDTO(answerUsers.get(e.getAuthorId())),
+                        false, false))
+                        .collect(Collectors.toList());
+        return res;
+    }
+
+    public CommentDto addQuestionComment(String authorId, String questionId, String body, UserDto user) {
+
+        Comment comment = questionApplicationService.addQuestionComment(authorId, questionId, body);
+        return CommentAssembler.toDTO(comment, user);
+    }
+
+    public CommentDto addAnswerComment(String authorId, String questionId, String body, UserDto user) {
+
+        Comment comment = questionApplicationService.addAnswerComment(authorId, questionId, body);
+        return CommentAssembler.toDTO(comment, user);
+    }
+
+
+    public List<CommentDto> getQuestionComments(String questionId, String cursor, int size) {
+
+        return getComments(CommentResourceType.QUESTION, questionId, cursor, size);
+    }
+
+    public List<CommentDto> getAnswerComments(String answerId, String cursor, int size) {
+
+        return getComments(CommentResourceType.ANSWER, answerId, cursor, size);
+    }
+
+
+    private List<CommentDto> getComments(CommentResourceType resourceType, String resourceId,
+                                         String cursor, int size) {
+
+        List<Comment> comments = commentRepository.findByResourceId(resourceId,
+                resourceType, new PostPaging(cursor, size));
+        Map<String, UserDto> users = userRepository.findByIds(comments.stream()
+                .map(Comment::getAuthorId).collect(Collectors.toList()))
+                .stream()
+                .map(UserAssembler::toDTO)
+                .collect(Collectors.toMap(UserDto::getId, e -> e));
+
+        List<CommentDto> res = comments.stream()
+                .map(e ->  CommentAssembler.toDTO(e, users.get(e.getAuthorId())))
+                .collect(Collectors.toList());
+
+        return res;
+    }
 }
