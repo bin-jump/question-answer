@@ -7,6 +7,7 @@ import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.infrastructure.persistence.assembler.QuestionAssembler;
+import com.zhang.ddd.infrastructure.persistence.assembler.TagAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionMapper;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionTagMapper;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper;
@@ -18,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -85,8 +84,25 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
         List<QuestionPO> questionPOs =
                 questionMapper.findQuestions(cursor, postPaging.getSize(), sortKey);
+        fillQuestionTags(questionPOs);
 
         return QuestionAssembler.toDOs(questionPOs);
+    }
+
+    private void fillQuestionTags(List<QuestionPO> questionPOs) {
+        List<String> ids = questionPOs.stream()
+                .map(QuestionPO::getQuestionId).collect(Collectors.toList());
+        List<QuestionTag> questionTags = questionTagMapper.findByQuestionIds(ids);
+
+        Map<String, QuestionPO> qs = questionPOs.stream()
+                .collect(Collectors.toMap(QuestionPO::getQuestionId, e -> e));
+
+
+        questionTags.stream().forEach(e -> {
+            QuestionPO q = qs.get(e.getQuestionId());
+            q.getTags().add(e.getTagPO());
+        });
+
     }
 
 }

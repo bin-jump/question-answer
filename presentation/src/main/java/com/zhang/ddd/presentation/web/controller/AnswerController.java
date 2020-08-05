@@ -2,7 +2,7 @@ package com.zhang.ddd.presentation.web.controller;
 
 import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
-import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
+import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
@@ -29,7 +29,7 @@ public class AnswerController {
                 .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
                 .build();
 
-        AnswerDTO a = AnswerDTO.builder()
+        AnswerDto a = AnswerDto.builder()
                 .authorId(user.getId())
                 .author(user)
                 .body("Single answer request. " +

@@ -1,5 +1,6 @@
 package com.zhang.ddd.infrastructure.persistence.mybatis.mapper;
 
+import java.util.List;
 import com.zhang.ddd.infrastructure.persistence.po.UserPO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,4 +14,6 @@ public interface UserMapper {
     UserPO findByName(String name);
 
     UserPO findById(String userId);
+
+    List<UserPO> findByIds(List<String> userIds);
 }

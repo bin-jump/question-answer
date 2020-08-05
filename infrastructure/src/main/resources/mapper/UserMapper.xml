@@ -62,4 +62,21 @@
         where user_id = #{userId}
     </select>
 
+    <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
+        select id, user_id, version, name, password, email, avatar_url, age, gender,
+               created, description, question_count, answer_count, follower_count, followee_count
+        from user
+        <choose>
+            <when test="userIds != null and userIds.size() > 0">
+                where user_id in
+                <foreach item="userId" collection="userIds" separator="," open="(" close=")">
+                    #{userId}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
+
 </mapper>

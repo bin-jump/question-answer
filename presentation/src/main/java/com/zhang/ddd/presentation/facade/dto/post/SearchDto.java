@@ -19,7 +19,7 @@ public class SearchDto {
 
     private QuestionDto question;
 
-    private AnswerDTO answer;
+    private AnswerDto answer;
 
     private long created;
 

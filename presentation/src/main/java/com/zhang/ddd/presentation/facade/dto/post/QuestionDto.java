@@ -43,7 +43,7 @@ public class QuestionDto {
 
     private UserDto author;
 
-    private AnswerDTO cover;
+    private AnswerDto cover;
 
 
 }

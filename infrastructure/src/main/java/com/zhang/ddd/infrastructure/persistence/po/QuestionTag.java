@@ -7,10 +7,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class QuestionTag {
+
+    public QuestionTag(String questionId, String tagId) {
+        this.questionId = questionId;
+        this.tagId = tagId;
+    }
 
     private String questionId;
 
     private String tagId;
+
+    // for navigation
+    private TagPO tagPO;
 }

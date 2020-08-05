@@ -6,6 +6,12 @@
         <id column="tag_id" property="tagId" />
     </resultMap>
 
+    <resultMap id="WithTagPOMap" extends="BaseResultMap"
+               type="com.zhang.ddd.infrastructure.persistence.po.QuestionTag">
+        <association property="tagPO" columnPrefix="_tag_"
+                     resultMap="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper.BaseResultMap" />
+    </resultMap>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.QuestionTag">
         insert into question_tag (question_id, tag_id)
@@ -13,10 +19,23 @@
     </insert>
 
 
-    <!--<select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">-->
-        <!--select question_id, tag_id-->
-        <!--from question_tag-->
-        <!--where question_id = #{questionId}-->
-    <!--</select>-->
+    <select id="findByQuestionIds" resultMap="WithTagPOMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionTag">
+        select question_id, tag.tag_id as tag_id,
+               tag.tag_id as _tag_tag_id,id as _tag_id, label as _tag_label, version  as _tag_version
+        from question_tag
+        inner join tag
+        on question_tag.tag_id = tag.tag_id
+        <choose>
+            <when test="questionIds != null and questionIds.size() > 0">
+                where question_id in
+                <foreach item="questionId" collection="questionIds" separator="," open="(" close=")">
+                    #{questionId}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
 
 </mapper>

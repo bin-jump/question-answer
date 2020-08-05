@@ -5,99 +5,50 @@ import java.util.List;
 import com.zhang.ddd.domain.aggregate.vote.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
+import com.zhang.ddd.presentation.facade.PostServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
-import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
+import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteResult;
+import com.zhang.ddd.presentation.web.security.LoginUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
 @RequestMapping("/api/question")
 public class QuestionController {
 
+    @Autowired
+    PostServiceFacade postServiceFacade;
+
     @GetMapping
-    public Response getQuestions()  {
+    public Response getQuestions(@RequestParam(required = false) String after,
+                                 @RequestParam(defaultValue = "10") int size)  {
 
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+        List<QuestionDto> questionDtos = postServiceFacade.getQuestions(after, size);
 
-        List<QuestionDto> res = new ArrayList<QuestionDto>();
-        AnswerDTO a1 = AnswerDTO.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .id("aaa111")
-                .build();
-
-        QuestionDto q1 = QuestionDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("author best way to learn")
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .cover(a1)
-                .commentCount(3)
-                .answerCount(3)
-                .followCount(6)
-                .created(1429070000)
-                .tag(new TagDto("python"))
-                .tag(new TagDto("programming"))
-                .build();
-
-        QuestionDto q2 = QuestionDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("authorbest way to learn")
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .created(1429070000)
-                .followCount(7)
-                .commentCount(20)
-                .tag(new TagDto("python"))
-                .tag(new TagDto("programming"))
-                .build();
-
-        res.add(q1);
-
-        res.add(q2);
-        res.add(q1);
-
-
-        return Response.okPagingAfter(res, q1.getId(), 3);
+        return Response.okPagingAfter(questionDtos, questionDtos.get(questionDtos.size() - 1).getId(), size);
     }
 
     @PostMapping
     public Response addQuestion(@RequestBody QuestionDto questionDto) {
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
-        questionDto.setAuthor(user);
-        questionDto.setId("qqq111");
-        questionDto.setAuthorId(user.getId());
-        questionDto.setCreated(1429070000);
-        return Response.ok(questionDto);
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        QuestionDto res = postServiceFacade.createQuestion(questionDto.getTitle(), questionDto.getBody(),
+                currentUser.getId(),
+                questionDto.getTags().stream().map(TagDto::getLabel).collect(Collectors.toList()));
+        res.setAuthor(currentUser);
+
+        return Response.ok(res);
     }
 
     @GetMapping("{id}/comment")
@@ -136,7 +87,7 @@ public class QuestionController {
 
     @GetMapping("{id}")
     public Response question() throws InterruptedException {
-        QuestionDto q = (QuestionDto)((PagingData)(getQuestions().getData())).getChildren().get(0);
+        QuestionDto q = (QuestionDto)((PagingData)(getQuestions(null, 10).getData())).getChildren().get(0);
         q.setFollowing(true);
         return Response.ok(q);
     }
@@ -150,9 +101,9 @@ public class QuestionController {
                 .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
                 .build();
 
-        List<AnswerDTO> res = new ArrayList<AnswerDTO>();
+        List<AnswerDto> res = new ArrayList<AnswerDto>();
 
-        AnswerDTO a1 = AnswerDTO.builder()
+        AnswerDto a1 = AnswerDto.builder()
                 .authorId(user.getId())
                 .author(user)
                 .body("Get used to how to write simple programs. " +
@@ -168,7 +119,7 @@ public class QuestionController {
                 .id("aaa111")
                 .build();
 
-        AnswerDTO a2 = AnswerDTO.builder()
+        AnswerDto a2 = AnswerDto.builder()
                 .authorId(user.getId())
                 .author(user)
                 .body("Get used to how to write simple programs. " +
@@ -192,8 +143,8 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/answer")
-    public Response addAnser(@PathVariable String id, @RequestBody AnswerDTO answer){
-        AnswerDTO ans = (AnswerDTO) ((PagingData)(getAnswer().getData())).getChildren().get(0);
+    public Response addAnser(@PathVariable String id, @RequestBody AnswerDto answer){
+        AnswerDto ans = (AnswerDto) ((PagingData)(getAnswer().getData())).getChildren().get(0);
         ans.setBody(answer.getBody());
 
         return Response.ok(ans);

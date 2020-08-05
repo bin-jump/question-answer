@@ -9,6 +9,7 @@ import com.zhang.ddd.infrastructure.persistence.po.UserPO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -48,5 +49,11 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(String id) {
         UserPO userPO = userMapper.findById(id);
         return UserAssembler.toDO(userPO);
+    }
+
+    @Override
+    public List<User> findByIds(List<String> ids) {
+        List<UserPO> users = userMapper.findByIds(ids);
+        return UserAssembler.toDOs(users);
     }
 }

@@ -2,7 +2,7 @@ package com.zhang.ddd.presentation.web.controller;
 
 import java.util.List;
 import com.zhang.ddd.infrastructure.common.api.Response;
-import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
+import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.FeedDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
@@ -30,7 +30,7 @@ public class FeedController {
                 .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
                 .build();
 
-        AnswerDTO a = AnswerDTO.builder()
+        AnswerDto a = AnswerDto.builder()
                 .authorId(user.getId())
                 .author(user)
                 .body("Single answer request. " +

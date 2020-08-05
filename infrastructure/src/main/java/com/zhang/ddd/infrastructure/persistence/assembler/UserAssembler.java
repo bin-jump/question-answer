@@ -1,5 +1,8 @@
 package com.zhang.ddd.infrastructure.persistence.assembler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.infrastructure.persistence.po.UserPO;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +19,12 @@ public class UserAssembler {
         userPO.setUserId(user.getId());
 
         return userPO;
+    }
+
+    public static List<User> toDOs(List<UserPO> userPOs) {
+
+        return userPOs.stream()
+                .map(UserAssembler::toDO).collect(Collectors.toList());
     }
 
     public static User toDO(UserPO userPO) {

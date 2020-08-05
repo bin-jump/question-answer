@@ -3,7 +3,7 @@ package com.zhang.ddd.presentation.web.controller;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.UserServiceFacade;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
-import com.zhang.ddd.presentation.facade.dto.post.AnswerDTO;
+import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
@@ -119,7 +119,7 @@ public class UserController {
                 .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
                 .build();
 
-        AnswerDTO a1 = AnswerDTO.builder()
+        AnswerDto a1 = AnswerDto.builder()
                 .authorId(user.getId())
                 .author(user)
                 .body("Get used to how to write simple programs. " +
