@@ -27,8 +27,6 @@ public class AnswerController {
     @Autowired
     VoteServiceFacade voteServiceFacade;
 
-    String vote = "";
-
     @GetMapping("{id}")
     public Response getAnswer(@PathVariable String id) {
 
