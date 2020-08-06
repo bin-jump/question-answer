@@ -5,6 +5,7 @@ import java.util.List;
 import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.PostServiceFacade;
+import com.zhang.ddd.presentation.facade.VoteServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
@@ -12,7 +13,7 @@ import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
-import com.zhang.ddd.presentation.facade.dto.vote.VoteResult;
+import com.zhang.ddd.presentation.facade.dto.vote.VoteResultDto;
 import com.zhang.ddd.presentation.web.security.LoginUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class QuestionController {
 
     @Autowired
     PostServiceFacade postServiceFacade;
+
+    @Autowired
+    VoteServiceFacade voteServiceFacade;
 
     @GetMapping
     public Response getQuestions(@RequestParam(required = false) String after,
@@ -98,14 +102,17 @@ public class QuestionController {
 
     @PostMapping("/{id}/vote")
     public Response addVote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
-        VoteResult res = VoteResult.builder().vote(1).voteupCount(8).voteType(VoteType.UPVOTE.name()).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        VoteResultDto res = voteServiceFacade.voteQuestion(currentUser.getId(), id, request);
         return Response.ok(res);
     }
 
 
     @DeleteMapping("/{id}/vote")
     public Response removeVote(@PathVariable String id) {
-        VoteResult res = VoteResult.builder().vote(-1).voteupCount(7).voteType(VoteType.UPVOTE.name()).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        VoteResultDto res = voteServiceFacade.unvoteQuestion(currentUser.getId(), id);
+
         return Response.ok(res);
     }
 

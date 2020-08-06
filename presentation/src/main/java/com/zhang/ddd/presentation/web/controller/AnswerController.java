@@ -1,20 +1,18 @@
 package com.zhang.ddd.presentation.web.controller;
 
-import com.zhang.ddd.infrastructure.common.api.PagingData;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.PostServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.vote.VoteRequest;
-import com.zhang.ddd.presentation.facade.dto.vote.VoteResult;
+import com.zhang.ddd.presentation.facade.dto.vote.VoteResultDto;
 import com.zhang.ddd.presentation.web.security.LoginUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -56,7 +54,7 @@ public class AnswerController {
     @PostMapping("{id}/vote")
     public Response addVote(@Valid @RequestBody VoteRequest request) {
 
-        VoteResult res = VoteResult.builder().vote(1).voteupCount(16).build();
+        VoteResultDto res = VoteResultDto.builder().vote(1).voteupCount(16).build();
         res.setVoteType(request.getVoteType());
         vote = request.getVoteType();
         return Response.ok(res);
@@ -66,7 +64,7 @@ public class AnswerController {
     @DeleteMapping("{id}/vote")
     public Response removeVote(@PathVariable String id) {
 
-        VoteResult res = VoteResult.builder().vote(-1).voteupCount(16).build();
+        VoteResultDto res = VoteResultDto.builder().vote(-1).voteupCount(16).build();
         res.setVoteType(vote);
         return Response.ok(res);
 

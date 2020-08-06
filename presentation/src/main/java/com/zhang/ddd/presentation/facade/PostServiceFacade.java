@@ -11,6 +11,10 @@ import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.Vote;
+import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteResourceType;
+import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
+import com.zhang.ddd.domain.aggregate.vote.repository.VoteRepository;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.presentation.facade.assembler.AnswerAssembler;
 import com.zhang.ddd.presentation.facade.assembler.CommentAssembler;
@@ -20,6 +24,7 @@ import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
+import com.zhang.ddd.presentation.web.security.LoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +50,13 @@ public class PostServiceFacade {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    VoteRepository voteRepository;
+
     public QuestionDto createQuestion(String title, String body, String authorId, List<String> tagLabels) {
 
         Question question = questionApplicationService.create(title, body, authorId, tagLabels);
-        return QuestionAssembler.toDTO(question, null);
+        return QuestionAssembler.toDTO(question, null, false, false);
     }
 
     public List<QuestionDto> getQuestions(String cursor, int size) {
@@ -73,7 +81,10 @@ public class PostServiceFacade {
         List<QuestionDto> questionDtos = questions.stream()
                 .map(e ->{
                     QuestionDto questionDto =
-                            QuestionAssembler.toDTO(e, UserAssembler.toDTO(questionUsers.get(e.getAuthorId())));
+                            QuestionAssembler.toDTO(e, UserAssembler.toDTO(
+                                    questionUsers.get(e.getAuthorId())),
+                                    false,
+                                    false);
 
                     if (coverAnswers.containsKey(questionDto.getId())) {
                         Answer coverAnswer = coverAnswers.get(questionDto.getId());
@@ -89,15 +100,24 @@ public class PostServiceFacade {
         return questionDtos;
     }
 
-    // TODO: add vote&follow check
+    // TODO: add follow check
     public QuestionDto getQuestion(String id) {
         Question question = questionRepository.findById(id);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
         }
-
         User user = userRepository.findById(question.getAuthorId());
-        return QuestionAssembler.toDTO(question, UserAssembler.toDTO(user));
+
+        boolean upvoted = false;
+        UserDto me = LoginUtil.getCurrentUser();
+        if (me != null) {
+            Vote vote = voteRepository.find(me.getId(), question.getId(), VoteResourceType.QUESTION);
+            if (vote != null) {
+                upvoted = vote.getVoteType() == VoteType.UPVOTE;
+            }
+        }
+
+        return QuestionAssembler.toDTO(question, UserAssembler.toDTO(user), upvoted, false);
     }
 
     public AnswerDto createAnswer(String questionId, String body, String authorId, UserDto user) {

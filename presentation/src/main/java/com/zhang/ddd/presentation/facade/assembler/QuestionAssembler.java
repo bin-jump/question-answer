@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class QuestionAssembler {
 
-    public static QuestionDto toDTO(Question question, UserDto userDto) {
+    public static QuestionDto toDTO(Question question, UserDto userDto, boolean upVoted, boolean followed) {
         if (question == null) {
             return null;
         }
@@ -23,6 +23,8 @@ public class QuestionAssembler {
                 .commentCount(question.getCommentCount())
                 .followCount(question.getFollowCount())
                 .upvoteCount(question.getUpvoteCount())
+
+                .upvoted(upVoted)
                 .build();
 
         questionDto.setTags(question.getTags()

@@ -10,11 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VoteResult {
+public class VoteResultDto {
 
     private String voteType;
 
     private int vote;
+
+    private int upvoteDiff;
+
+    private int downvoteDiff;
 
     private int voteupCount;
 
