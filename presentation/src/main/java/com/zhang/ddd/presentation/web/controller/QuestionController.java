@@ -2,8 +2,7 @@ package com.zhang.ddd.presentation.web.controller;
 
 import java.util.List;
 
-import com.zhang.ddd.domain.aggregate.vote.valueobject.VoteType;
-import com.zhang.ddd.infrastructure.common.api.PagingData;
+import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.PostServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @RestController

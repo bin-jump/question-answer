@@ -7,6 +7,7 @@ import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceTyp
 import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
+import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,19 @@ public class AnswerDomainService {
         answerRepository.update(answer);
 
         return comment;
+    }
+
+    public void answerVoted(String answerId, int upvoteDiff, int downvoteDiff){
+
+
+        Answer answer = answerRepository.findById(answerId);
+        if (answer == null) {
+            throw new ResourceNotFoundException("Answer not found");
+        }
+
+        answer.setUpvoteCount(answer.getUpvoteCount() + upvoteDiff);
+        answer.setDownvoteCount(answer.getDownvoteCount() + downvoteDiff);
+
+        answerRepository.update(answer);
     }
 }

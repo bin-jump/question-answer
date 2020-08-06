@@ -12,6 +12,7 @@ import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.TagRepository;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.InvalidValueException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,17 @@ public class QuestionDomainService {
 
         return comment;
     }
+
+    public void questionVoted(String questionId, int upvoteDiff, int downvoteDiff){
+        Question question = questionRepository.findById(questionId);
+        if (question == null) {
+            throw new ResourceNotFoundException("Question not found");
+        }
+        question.setUpvoteCount(question.getUpvoteCount() + upvoteDiff);
+        question.setDownvoteCount(question.getDownvoteCount() + downvoteDiff);
+
+        questionRepository.update(question);
+    }
+
 
 }

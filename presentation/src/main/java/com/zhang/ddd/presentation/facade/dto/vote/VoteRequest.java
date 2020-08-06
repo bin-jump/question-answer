@@ -1,6 +1,6 @@
 package com.zhang.ddd.presentation.facade.dto.vote;
 
-import com.zhang.ddd.domain.aggregate.vote.valueobject.VoteType;
+import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.validation.EnumValid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

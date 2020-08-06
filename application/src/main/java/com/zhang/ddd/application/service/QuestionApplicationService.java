@@ -33,7 +33,7 @@ public class QuestionApplicationService {
     @Transactional
     public Question create(String title, String body, String authorId, List<String> tagLabels) {
 
-        // do not need to check user existence as user will be update
+        // do not need to check user existence as user will be updated
         Question question = questionDomainService.create(title, body, authorId, tagLabels);
         userDomainService.userCreateQuestion(authorId);
 
@@ -43,7 +43,7 @@ public class QuestionApplicationService {
     @Transactional
     public Answer createAnswer(String questionId, String body, String authorId) {
 
-        // do not need to check user existence as user will be update
+        // do not need to check user existence as user will be updated
         Answer answer = answerDomainService.create(questionId, body, authorId);
         userDomainService.userCreateAnswer(authorId);
 
