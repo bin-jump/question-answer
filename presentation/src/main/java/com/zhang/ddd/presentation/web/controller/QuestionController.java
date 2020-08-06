@@ -102,8 +102,10 @@ public class QuestionController {
 
     @PostMapping("/{id}/vote")
     public Response addVote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
+
         UserDto currentUser = LoginUtil.getCurrentUser();
         VoteResultDto res = voteServiceFacade.voteQuestion(currentUser.getId(), id, request);
+
         return Response.ok(res);
     }
 

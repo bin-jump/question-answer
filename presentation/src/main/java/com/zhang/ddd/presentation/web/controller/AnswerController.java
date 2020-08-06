@@ -2,6 +2,7 @@ package com.zhang.ddd.presentation.web.controller;
 
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.PostServiceFacade;
+import com.zhang.ddd.presentation.facade.VoteServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
@@ -22,6 +23,9 @@ public class AnswerController {
 
     @Autowired
     PostServiceFacade postServiceFacade;
+
+    @Autowired
+    VoteServiceFacade voteServiceFacade;
 
     String vote = "";
 
@@ -52,11 +56,11 @@ public class AnswerController {
     }
 
     @PostMapping("{id}/vote")
-    public Response addVote(@Valid @RequestBody VoteRequest request) {
+    public Response addVote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
 
-        VoteResultDto res = VoteResultDto.builder().vote(1).voteupCount(16).build();
-        res.setVoteType(request.getVoteType());
-        vote = request.getVoteType();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        VoteResultDto res = voteServiceFacade.voteQAnswer(currentUser.getId(), id, request);
+
         return Response.ok(res);
 
     }
@@ -64,8 +68,9 @@ public class AnswerController {
     @DeleteMapping("{id}/vote")
     public Response removeVote(@PathVariable String id) {
 
-        VoteResultDto res = VoteResultDto.builder().vote(-1).voteupCount(16).build();
-        res.setVoteType(vote);
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        VoteResultDto res = voteServiceFacade.unvoteAnswer(currentUser.getId(), id);
+
         return Response.ok(res);
 
     }

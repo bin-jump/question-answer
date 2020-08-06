@@ -28,6 +28,7 @@ import com.zhang.ddd.presentation.web.security.LoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -108,16 +109,12 @@ public class PostServiceFacade {
         }
         User user = userRepository.findById(question.getAuthorId());
 
-        boolean upvoted = false;
-        UserDto me = LoginUtil.getCurrentUser();
-        if (me != null) {
-            Vote vote = voteRepository.find(me.getId(), question.getId(), VoteResourceType.QUESTION);
-            if (vote != null) {
-                upvoted = vote.getVoteType() == VoteType.UPVOTE;
-            }
-        }
+        QuestionDto questionDto =
+                QuestionAssembler.toDTO(question, UserAssembler.toDTO(user), false, false);
 
-        return QuestionAssembler.toDTO(question, UserAssembler.toDTO(user), upvoted, false);
+        fillQuestionVotes(Arrays.asList(questionDto));
+
+        return questionDto;
     }
 
     public AnswerDto createAnswer(String questionId, String body, String authorId, UserDto user) {
@@ -126,7 +123,6 @@ public class PostServiceFacade {
         return AnswerAssembler.toDTO(answer, user, false, false);
     }
 
-    // TODO: add vote check
     public AnswerDto getAnswer(String id) {
         Answer answer = answerRepository.findById(id);
         if (answer == null) {
@@ -134,7 +130,12 @@ public class PostServiceFacade {
         }
 
         User user = userRepository.findById(answer.getAuthorId());
-        return AnswerAssembler.toDTO(answer, UserAssembler.toDTO(user), false, false);
+        AnswerDto answerDto =
+                AnswerAssembler.toDTO(answer, UserAssembler.toDTO(user), false, false);
+
+        fillAnswerVotes(Arrays.asList(answerDto));
+
+        return answerDto;
     }
 
     // TODO: add vote check
@@ -150,6 +151,8 @@ public class PostServiceFacade {
                 .map(e -> AnswerAssembler.toDTO(e, UserAssembler.toDTO(answerUsers.get(e.getAuthorId())),
                         false, false))
                         .collect(Collectors.toList());
+
+        fillAnswerVotes(res);
         return res;
     }
 
@@ -193,5 +196,42 @@ public class PostServiceFacade {
                 .collect(Collectors.toList());
 
         return res;
+    }
+
+    private void fillQuestionVotes(List<QuestionDto> questionDtos) {
+        UserDto me = LoginUtil.getCurrentUser();
+        if (me == null){
+            return;
+        }
+        Map<String, QuestionDto> qm = questionDtos
+                .stream().collect(Collectors.toMap(QuestionDto::getId, e -> e));
+
+        List<Vote> votes = voteRepository.findByResourceIds(me.getId(),
+                questionDtos.stream().map(QuestionDto::getId).collect(Collectors.toList()),
+                VoteResourceType.QUESTION);
+
+        votes.stream().forEach(e -> {
+            QuestionDto questionDto = qm.get(e.getResourceId());
+            questionDto.setUpvoted(e.getVoteType() == VoteType.UPVOTE);
+        });
+    }
+
+    private void fillAnswerVotes(List<AnswerDto> answerDtos) {
+        UserDto me = LoginUtil.getCurrentUser();
+        if (me == null){
+            return;
+        }
+        Map<String, AnswerDto> am = answerDtos
+                .stream().collect(Collectors.toMap(AnswerDto::getId, e -> e));
+
+        List<Vote> votes = voteRepository.findByResourceIds(me.getId(),
+                answerDtos.stream().map(AnswerDto::getId).collect(Collectors.toList()),
+                VoteResourceType.ANSWER);
+
+        votes.stream().forEach(e -> {
+            AnswerDto answerDto = am.get(e.getResourceId());
+            answerDto.setUpvoted(e.getVoteType() == VoteType.UPVOTE);
+            answerDto.setDownvoted(e.getVoteType() == VoteType.DOWNVOTE);
+        });
     }
 }

@@ -38,4 +38,28 @@ public class VoteServiceFacade {
         return res;
     }
 
+    public VoteResultDto voteQAnswer(String voterId, String questionId, VoteRequest request) {
+        boolean upvote = VoteType.UPVOTE.name().equals(request.getVoteType());
+        VoteResult voteResult = voteApplicationService.voteAnswer(voterId, questionId, upvote);
+
+        VoteResultDto res = VoteResultDto.builder()
+                .upvoteDiff(voteResult.getUpvoteDiff())
+                .downvoteDiff(voteResult.getDownvoteDiff())
+                .voteType(request.getVoteType())
+                .build();
+
+        return res;
+    }
+
+    public VoteResultDto unvoteAnswer(String voterId, String questionId) {
+        VoteResult voteResult = voteApplicationService.unvoteAnswer(voterId, questionId);
+
+        VoteResultDto res = VoteResultDto.builder()
+                .upvoteDiff(voteResult.getUpvoteDiff())
+                .downvoteDiff(voteResult.getDownvoteDiff())
+                .build();
+
+        return res;
+    }
+
 }
