@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.FollowMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        <id column="id" property="id" />
+        <result column="follower_id" property="followerId" />
+        <result column="resource_id" property="resourceId" />
+        <result column="resource_type" property="resourceType" />
+        <result column="created"  property="created" />
+
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        insert into follow (follower_id, resource_id, resource_type, created)
+        values (#{followerId}, #{resourceId}, #{resourceType}, #{created})
+    </insert>
+
+    <delete id="delete" parameterType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        delete
+        from follow
+        where follower_id = #{followerId} and resource_id = #{resourceId} and resource_type=#{resourceType}
+    </delete>
+
+    <select id="find" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        select id, follower_id, resource_id, resource_type, created
+        from follow
+        where follower_id = #{followerId} and resource_id = #{resourceId} and resource_type=#{resourceType}
+    </select>
+
+    <select id="findByResourceIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        select id, follower_id, resource_id, resource_type, created
+        from follow
+        where follower_id = #{followerId}
+        and resource_type = #{resourceType}
+        <choose>
+            <when test="resourceIds != null and resourceIds.size() > 0">
+                and resource_id in
+                <foreach item="resourceId" collection="resourceIds" separator="," open="(" close=")">
+                    #{resourceId}
+                </foreach>
+            </when>
+            <otherwise>
+                and 1=2
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findFollowed" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        select id, follower_id, resource_id, resource_type, created
+        from follow
+        where follower_id = #{followerId} and resource_type = #{resourceType}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+
+    </select>
+
+
+    <select id="findResourceFolloweeIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+        select id, follower_id, resource_id, resource_type, created
+        from follow
+        where resource_id = #{resourceId} and resource_type = #{resourceType}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+
+    </select>
+
+</mapper>
