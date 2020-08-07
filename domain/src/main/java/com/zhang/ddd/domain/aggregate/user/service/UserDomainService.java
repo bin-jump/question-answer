@@ -50,4 +50,19 @@ public class UserDomainService {
         userRepository.update(user);
     }
 
+    public void userFollowed(String followerId, String followeeId, boolean follow) {
+        User follower = userRepository.findById(followerId);
+        User followee = userRepository.findById(followeeId);
+
+        if (follower == null || followee == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        int diff = follow ? 1 : -1;
+        follower.setFollowerCount(follower.getFollowerCount() + diff);
+        followee.setFolloweeCount(followee.getFolloweeCount() + diff);
+        userRepository.update(followee);
+        userRepository.update(follower);
+    }
+
 }

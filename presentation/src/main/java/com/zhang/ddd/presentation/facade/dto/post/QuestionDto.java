@@ -15,6 +15,8 @@ public class QuestionDto {
 
     private String id;
 
+    private String cursor;
+
     @NotBlank
     private String title;
 

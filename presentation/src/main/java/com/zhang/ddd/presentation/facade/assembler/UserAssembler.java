@@ -1,5 +1,8 @@
 package com.zhang.ddd.presentation.facade.assembler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.entity.valueobject.UserGender;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
@@ -27,6 +30,10 @@ public class UserAssembler {
                 .build();
 
         return userDto;
+    }
+
+    public static List<UserDto> toDTOs(List<User> users) {
+        return users.stream().map(UserAssembler::toDTO).collect(Collectors.toList());
     }
 
 }

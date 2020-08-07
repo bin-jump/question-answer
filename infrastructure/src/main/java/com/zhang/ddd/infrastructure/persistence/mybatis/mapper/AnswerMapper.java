@@ -19,4 +19,7 @@ public interface AnswerMapper {
 
     List<AnswerPO> findQuestionLatestAnswers(List<String> questionIds);
 
+    List<AnswerPO> findByUserId(String authorId, Long cursor, int size, String sortKey);
+
+
 }

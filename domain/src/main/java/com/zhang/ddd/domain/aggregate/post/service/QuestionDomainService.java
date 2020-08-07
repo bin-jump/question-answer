@@ -95,5 +95,14 @@ public class QuestionDomainService {
         questionRepository.update(question);
     }
 
+    public void questionFollow(String questionId, boolean follow) {
+        Question question = questionRepository.findById(questionId);
+        if (question == null) {
+            throw new ResourceNotFoundException("Question not found");
+        }
+        int diff = follow ? 1 : -1;
+        question.setFollowCount(question.getFollowCount() + diff);
+        questionRepository.update(question);
+    }
 
 }

@@ -95,8 +95,19 @@
             group by parent_id
         ) t
         on answer.id = t.id;
-
-
     </select>
+
+    <select id="findByUserId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
+        select id, answer_id, version, parent_id, body, author_id, created,
+        upvote_count, downvote_count, comment_count
+        from answer
+        where author_id = #{authorId}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+    </select>
+
 
 </mapper>

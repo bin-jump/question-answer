@@ -9,9 +9,9 @@ import lombok.Setter;
 import lombok.Singular;
 
 @Getter
-public class Paging {
+public class Paging<T> {
 
-    public Paging(String cursor, int size) {
+    public Paging(T cursor, int size) {
         this.cursor = cursor;
         setSize(size);
         byCursor = true;
@@ -25,7 +25,7 @@ public class Paging {
 
     private int size;
 
-    private String cursor;
+    private T cursor;
 
     private int offset;
 

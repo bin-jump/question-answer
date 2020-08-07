@@ -17,4 +17,6 @@ public interface AnswerRepository {
 
     List<Answer> findQuestionLatestAnswers(List<String> questionIds);
 
+    List<Answer> findByUserId(String authorId, PostPaging postPaging);
+
 }

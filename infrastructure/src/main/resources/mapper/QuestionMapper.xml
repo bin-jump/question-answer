@@ -49,6 +49,23 @@
         where question_id = #{questionId}
     </select>
 
+    <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
+        select id, question_id, version, title, body, author_id, created,
+        answer_count, comment_count, follow_count, upvote_count, downvote_count
+        from question
+        <choose>
+            <when test="questionIds != null and questionIds.size() > 0">
+                where question_id in
+                <foreach item="questionId" collection="questionIds" separator="," open="(" close=")">
+                    #{questionId}
+                </foreach>
+            </when>
+            <otherwise>
+                where 1=2
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="findQuestions" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
         select id, question_id, version, title, body, author_id, created,
                answer_count, comment_count, follow_count, upvote_count, downvote_count
@@ -60,5 +77,19 @@
         limit #{size}
 
     </select>
+
+    <select id="findByUserId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
+        select id, question_id, version, title, body, author_id, created,
+        answer_count, comment_count, follow_count, upvote_count, downvote_count
+        from question
+        where author_id = #{authorId}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+
+    </select>
+
 
 </mapper>

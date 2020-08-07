@@ -74,4 +74,22 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
         return AnswerAssembler.toDOs(answerPOs);
     }
+
+    @Override
+    public List<Answer> findByUserId(String authorId, PostPaging postPaging) {
+        String sortKey = "id";
+        Long cursor = null;
+        if (postPaging.getCursor() != null) {
+            AnswerPO cursorAnswer = answerMapper.findById(postPaging.getCursor());
+            if (cursorAnswer == null) {
+                throw new ResourceNotFoundException("Answer not found.");
+            }
+            cursor = cursorAnswer.getId();
+        }
+
+        List<AnswerPO> answerPOs =
+                answerMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
+
+        return AnswerAssembler.toDOs(answerPOs);
+    }
 }

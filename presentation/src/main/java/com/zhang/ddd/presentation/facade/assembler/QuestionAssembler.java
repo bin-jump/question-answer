@@ -1,5 +1,6 @@
 package com.zhang.ddd.presentation.facade.assembler;
 
+import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class QuestionAssembler {
 
-    public static QuestionDto toDTO(Question question, UserDto userDto, boolean upVoted, boolean followed) {
+    public static QuestionDto toDTO(Question question) {
         if (question == null) {
             return null;
         }
@@ -24,16 +25,17 @@ public class QuestionAssembler {
                 .followCount(question.getFollowCount())
                 .upvoteCount(question.getUpvoteCount())
 
-                .upvoted(upVoted)
                 .build();
 
         questionDto.setTags(question.getTags()
                 .stream().map(TagAssembler::toDTO).collect(Collectors.toList()));
 
-        if (userDto != null) {
-            questionDto.setAuthor(userDto);
-        }
-
         return questionDto;
+    }
+
+    public static List<QuestionDto> toDTOs(List<Question> questions) {
+
+        return questions.stream().map(QuestionAssembler::toDTO)
+                .collect(Collectors.toList());
     }
 }

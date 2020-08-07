@@ -1,6 +1,9 @@
 package com.zhang.ddd.presentation.facade;
 
 import com.zhang.ddd.application.service.QuestionApplicationService;
+import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.Follow;
+import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.FollowResourceType;
+import com.zhang.ddd.domain.aggregate.favor.repository.FollowRepository;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
@@ -55,19 +58,21 @@ public class PostServiceFacade {
     VoteRepository voteRepository;
 
     @Autowired
+    FollowRepository followRepository;
+
+    @Autowired
     FacadeHelper helper;
 
     public QuestionDto createQuestion(String title, String body, String authorId, List<String> tagLabels) {
 
         Question question = questionApplicationService.create(title, body, authorId, tagLabels);
-        return QuestionAssembler.toDTO(question, null, false, false);
+        return QuestionAssembler.toDTO(question);
     }
 
     public List<QuestionDto> getQuestions(String cursor, int size) {
 
-        List<QuestionDto> questionDtos = questionRepository.findQuestions(new PostPaging(cursor, size))
-                .stream().map(e -> QuestionAssembler.toDTO(e, null, false, false))
-                .collect(Collectors.toList());
+        List<QuestionDto> questionDtos = QuestionAssembler.toDTOs(questionRepository
+                .findQuestions(new PostPaging(cursor, size)));
 
         helper.fillQuestionUsers(questionDtos);
         // get cover answers
@@ -75,7 +80,7 @@ public class PostServiceFacade {
                 .findQuestionLatestAnswers(questionDtos.stream()
                 .map(QuestionDto::getId).collect(Collectors.toList()))
                 .stream()
-                .collect(Collectors.toMap(Answer::getParentId, e -> AnswerAssembler.toDTO(e, null ,false ,false)));
+                .collect(Collectors.toMap(Answer::getParentId, e -> AnswerAssembler.toDTO(e)));
 
         helper.fillAnswerUsers(coverAnswerDtos.values().stream().collect(Collectors.toList()));
 
@@ -89,17 +94,23 @@ public class PostServiceFacade {
         return questionDtos;
     }
 
-    // TODO: add follow check
     public QuestionDto getQuestion(String id) {
         Question question = questionRepository.findById(id);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
         }
-        QuestionDto questionDto =
-                QuestionAssembler.toDTO(question, null, false, false);
+        QuestionDto questionDto = QuestionAssembler.toDTO(question);
 
         helper.fillQuestionUsers(Arrays.asList(questionDto));
         helper.fillQuestionVotes(Arrays.asList(questionDto));
+
+        UserDto user = LoginUtil.getCurrentUser();
+        if (user != null) {
+            Follow follow = followRepository.find(user.getId(), questionDto.getId(),
+                    FollowResourceType.QUESTION);
+            questionDto.setFollowing(follow != null ? true : false);
+
+        }
 
         return questionDto;
     }
@@ -107,7 +118,10 @@ public class PostServiceFacade {
     public AnswerDto createAnswer(String questionId, String body, String authorId, UserDto user) {
 
         Answer answer = questionApplicationService.createAnswer(questionId, body, authorId);
-        return AnswerAssembler.toDTO(answer, user, false, false);
+        AnswerDto answerDto = AnswerAssembler.toDTO(answer);
+
+        helper.fillAnswerUsers(Arrays.asList(answerDto));
+        return answerDto;
     }
 
     public AnswerDto getAnswer(String id) {
@@ -116,8 +130,7 @@ public class PostServiceFacade {
             throw new ResourceNotFoundException("Answer not found");
         }
 
-        AnswerDto answerDto =
-                AnswerAssembler.toDTO(answer, null, false, false);
+        AnswerDto answerDto = AnswerAssembler.toDTO(answer);
 
         helper.fillAnswerUsers(Arrays.asList(answerDto));
         helper.fillAnswerVotes(Arrays.asList(answerDto));
@@ -130,8 +143,7 @@ public class PostServiceFacade {
                 .findByQuestionId(questionId, new PostPaging(cursor, size));
 
         List<AnswerDto> res = answers.stream()
-                .map(e -> AnswerAssembler.toDTO(e, null,
-                        false, false))
+                .map(e -> AnswerAssembler.toDTO(e))
                         .collect(Collectors.toList());
 
         helper.fillAnswerUsers(res);

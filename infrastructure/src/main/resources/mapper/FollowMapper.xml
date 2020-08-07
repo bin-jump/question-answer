@@ -12,8 +12,8 @@
 
     <insert id="insert"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
-        insert into follow (follower_id, resource_id, resource_type, created)
-        values (#{followerId}, #{resourceId}, #{resourceType}, #{created})
+        insert into follow (id, follower_id, resource_id, resource_type, created)
+        values (#{id}, #{followerId}, #{resourceId}, #{resourceType}, #{created})
     </insert>
 
     <delete id="delete" parameterType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">

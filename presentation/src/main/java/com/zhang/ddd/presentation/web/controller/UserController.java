@@ -1,13 +1,15 @@
 package com.zhang.ddd.presentation.web.controller;
 
 import com.zhang.ddd.infrastructure.common.api.Response;
+import com.zhang.ddd.presentation.facade.FavorServiceFacade;
 import com.zhang.ddd.presentation.facade.UserServiceFacade;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
-import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
+import com.zhang.ddd.presentation.facade.dto.follow.FollowResultDto;
+import com.zhang.ddd.presentation.web.security.LoginUtil;
 import com.zhang.ddd.presentation.web.security.WebUserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class UserController {
 
     @Autowired
     UserServiceFacade userServiceFacade;
+
+    @Autowired
+    FavorServiceFacade favorServiceFacade;
 
     @PostMapping
     public Response create(@RequestBody @Valid  UserDto userDto) {
@@ -45,70 +50,29 @@ public class UserController {
         return Response.ok(userDto);
     }
 
-
-    public Response test(){
-        UserDto userDto = UserDto.builder()
-        .id("abc123")
-        .name("zhang")
-                .email("user@example.com")
-                .description("I am a user.")
-                .created(1429070000)
-                .gender("")
-        .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
-        return Response.ok(userDto);
-    }
-
     @GetMapping("{id}")
     public Response getUserInfo(@PathVariable String id){
 
-        return test();
+        UserDto userDto = userServiceFacade.findById(id);
+        return Response.ok(userDto);
     }
 
     @GetMapping
     public Response findByName(@RequestParam @NotBlank String name){
 
-        UserDto userDto = UserDto.builder()
-                .id("abc123"+name)
-                .name(name)
-                .email("user@example.com")
-                .description("I am a user.")
-                .created(1429070000)
-                .gender("")
-                .avatarUrl("https://www.gravatar.com/avatar/47EEE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+        UserDto userDto = userServiceFacade.findByName(name);
         return Response.ok(userDto);
     }
 
     @GetMapping("{id}/questions")
-    public Response getQuestion(@PathVariable String id){
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+    public Response getQuestion(@PathVariable String id,
+                                @RequestParam(required = false) String after,
+                                @RequestParam(defaultValue = "10") int size){
 
-        QuestionDto q1 = QuestionDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("author best way to learn")
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .commentCount(3)
-                .answerCount(3)
-                .followCount(6)
-                .created(1429070000)
+        List<QuestionDto> res = userServiceFacade.findUserQuestions(id, after, size);
+        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
-                .tag(new TagDto("python"))
-                .tag(new TagDto("programming"))
-                .build();
-        List<QuestionDto> res = new ArrayList<QuestionDto>();
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        return Response.okPagingAfter(res, q1.getId(), 5);
+        return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/answers")
@@ -160,19 +124,21 @@ public class UserController {
 
     @PostMapping("{id}/follow")
     public Response followUser(@PathVariable String id) {
-        FollowResult res = FollowResult.builder().follow(1).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        FollowResultDto res = favorServiceFacade.followUser(currentUser.getId(), id);
         return Response.ok(res);
     }
 
     @DeleteMapping("{id}/follow")
     public Response unfollowUser(@PathVariable String id) {
-        FollowResult res = FollowResult.builder().follow(-1).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        FollowResultDto res = favorServiceFacade.unfollowUser(currentUser.getId(), id);
         return Response.ok(res);
     }
 
     @GetMapping("{id}/follow")
     public Response getFollowQuestion(@PathVariable String id) {
-        return getQuestion(id);
+        return getQuestion(id, null, 3);
     }
 
     @GetMapping("{id}/follower")

@@ -14,6 +14,9 @@ public interface QuestionRepository {
 
     Question findById(String id);
 
+    List<Question> findByIds(List<String> ids);
+
     List<Question> findQuestions(PostPaging postPaging);
 
+    List<Question> findByUserId(String authorId, PostPaging postPaging);
 }

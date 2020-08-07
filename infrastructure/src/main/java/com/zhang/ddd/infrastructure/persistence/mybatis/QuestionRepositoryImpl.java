@@ -70,6 +70,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
+    public List<Question> findByIds(List<String> ids) {
+        return null;
+    }
+
+    @Override
     public List<Question> findQuestions(PostPaging postPaging) {
 
         String sortKey = "id";
@@ -84,6 +89,26 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
         List<QuestionPO> questionPOs =
                 questionMapper.findQuestions(cursor, postPaging.getSize(), sortKey);
+        fillQuestionTags(questionPOs);
+
+        return QuestionAssembler.toDOs(questionPOs);
+    }
+
+    @Override
+    public List<Question> findByUserId(String authorId, PostPaging postPaging) {
+
+        String sortKey = "id";
+        Long cursor = null;
+        if (postPaging.getCursor() != null) {
+            QuestionPO cursorQuestion = questionMapper.findById(postPaging.getCursor());
+            if (cursorQuestion == null) {
+                throw new ResourceNotFoundException("Question not found");
+            }
+            cursor = cursorQuestion.getId();
+        }
+
+        List<QuestionPO> questionPOs =
+                questionMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
         fillQuestionTags(questionPOs);
 
         return QuestionAssembler.toDOs(questionPOs);

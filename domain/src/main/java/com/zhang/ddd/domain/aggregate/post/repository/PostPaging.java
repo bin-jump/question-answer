@@ -4,7 +4,7 @@ import com.zhang.ddd.domain.shared.Paging;
 import lombok.Data;
 
 @Data
-public class PostPaging extends Paging {
+public class PostPaging extends Paging<String> {
 
     public static enum OrderBy {
         CREATE

@@ -3,6 +3,8 @@ package com.zhang.ddd.domain.aggregate.favor.service;
 import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.Follow;
 import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.FollowResourceType;
 import com.zhang.ddd.domain.aggregate.favor.repository.FollowRepository;
+import com.zhang.ddd.domain.exception.InvalidOperationException;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,15 +12,23 @@ import org.springframework.stereotype.Service;
 public class FollowDomainService {
 
     @Autowired
+    SequenceRepository sequenceRepository;
+
+    @Autowired
     FollowRepository followRepository;
 
     public Follow follow(String followerId, String resourceId, FollowResourceType resourceType) {
+        if (followerId == resourceId) {
+            throw new InvalidOperationException("Wrong follow operation.");
+        }
 
         Follow follow = followRepository.find(followerId, resourceId, resourceType);
         if (follow != null) {
             return null;
         }
-        follow = new Follow(followerId, resourceId, resourceType);
+
+        long id = sequenceRepository.nextId();
+        follow = new Follow(id, followerId, resourceId, resourceType);
         followRepository.save(follow);
 
         return follow;
@@ -27,7 +37,7 @@ public class FollowDomainService {
     public Follow unfollow(String followerId, String resourceId, FollowResourceType resourceType) {
 
         Follow follow = followRepository.find(followerId, resourceId, resourceType);
-        if (follow != null) {
+        if (follow == null) {
             return null;
         }
 

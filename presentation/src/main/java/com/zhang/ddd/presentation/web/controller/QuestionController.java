@@ -2,12 +2,12 @@ package com.zhang.ddd.presentation.web.controller;
 
 import java.util.List;
 
-import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.infrastructure.common.api.Response;
+import com.zhang.ddd.presentation.facade.FavorServiceFacade;
 import com.zhang.ddd.presentation.facade.PostServiceFacade;
 import com.zhang.ddd.presentation.facade.VoteServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
-import com.zhang.ddd.presentation.facade.dto.follow.FollowResult;
+import com.zhang.ddd.presentation.facade.dto.follow.FollowResultDto;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
@@ -32,6 +32,9 @@ public class QuestionController {
 
     @Autowired
     VoteServiceFacade voteServiceFacade;
+
+    @Autowired
+    FavorServiceFacade favorServiceFacade;
 
     @GetMapping
     public Response getQuestions(@RequestParam(required = false) String after,
@@ -120,14 +123,16 @@ public class QuestionController {
 
     @PostMapping("/{id}/follow")
     public Response addFollow(@PathVariable String id) {
-        FollowResult res = FollowResult.builder().follow(1).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        FollowResultDto res = favorServiceFacade.followQuestion(currentUser.getId(), id);
         return Response.ok(res);
     }
 
 
     @DeleteMapping("/{id}/follow")
     public Response removeFollow(@PathVariable String id) {
-        FollowResult res = FollowResult.builder().follow(-1).build();
+        UserDto currentUser = LoginUtil.getCurrentUser();
+        FollowResultDto res = favorServiceFacade.unfollowQuestion(currentUser.getId(), id);
         return Response.ok(res);
     }
 

@@ -16,6 +16,8 @@ public class UserDto {
 
     private String id;
 
+    private String cursor;
+
     @NotBlank
     private String name;
 
