@@ -11,9 +11,9 @@ public interface CommentMapper {
 
     int insert(CommentPO commentPO);
 
-    CommentPO findById(String id);
+    CommentPO findById(long id);
 
-    List<CommentPO> findByResourceId(String resourceId, CommentResourceType resourceType,
+    List<CommentPO> findByResourceId(long resourceId, CommentResourceType resourceType,
                                      Long cursor, int size, String sortKey);
 
 }

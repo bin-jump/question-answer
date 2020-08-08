@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.infrastructure.persistence.po.TagPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class TagAssembler {
@@ -17,7 +18,7 @@ public class TagAssembler {
         TagPO tagPO = new TagPO();
         tagPO.setLabel(tag.getLabel());
         tagPO.setVersion(tag.getVersion());
-        tagPO.setTagId(tag.getId());
+        tagPO.setId(NumberEncoder.decode(tag.getId()));
 
         return tagPO;
     }
@@ -28,7 +29,7 @@ public class TagAssembler {
         }
         Tag tag = new Tag();
         tag.setLabel(tagPO.getLabel());
-        tag.setId(tagPO.getTagId());
+        tag.setId(NumberEncoder.encode(tagPO.getId()));
         tag.setVersion(tagPO.getVersion());
 
         return tag;

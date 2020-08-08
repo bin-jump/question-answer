@@ -9,14 +9,14 @@ import lombok.Setter;
 @Setter
 public class QuestionTag {
 
-    public QuestionTag(String questionId, String tagId) {
+    public QuestionTag(long questionId, long tagId) {
         this.questionId = questionId;
         this.tagId = tagId;
     }
 
-    private String questionId;
+    private long questionId;
 
-    private String tagId;
+    private long tagId;
 
     // for navigation
     private TagPO tagPO;

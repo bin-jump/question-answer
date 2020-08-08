@@ -3,7 +3,6 @@
 <mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         <id column="id" property="id" />
-        <result column="user_id" property="userId" />
         <result column="version" property="version" />
         <result column="name" property="name" />
         <result column="password"  property="password" />
@@ -21,10 +20,10 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
-        insert into user (user_id, version, name, password, email, avatar_url, age, gender,
+        insert into user (id, version, name, password, email, avatar_url, age, gender,
                           created, description, question_count, answer_count, follower_count, followee_count
         )
-        values (#{userId}, #{version}, #{name}, #{password}, #{email}, #{avatarUrl}, #{age}, #{gender},
+        values (#{id}, #{version}, #{name}, #{password}, #{email}, #{avatarUrl}, #{age}, #{gender},
                 #{created}, #{description}, #{questionCount}, #{answerCount}, #{followerCount}, #{followeeCount}
                )
     </insert>
@@ -45,30 +44,30 @@
             follower_count = #{followerCount},
             followee_count = #{followeeCount}
 
-        where user_id = #{userId} and version = #{version}
+        where id = #{id} and version = #{version}
     </update>
 
     <select id="findByName" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
-        select id, user_id, version, name, password, email, avatar_url, age, gender,
+        select id, version, name, password, email, avatar_url, age, gender,
                created, description, question_count, answer_count, follower_count, followee_count
         from user
         where name = #{name}
     </select>
 
     <select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
-        select id, user_id, version, name, password, email, avatar_url, age, gender,
+        select id, version, name, password, email, avatar_url, age, gender,
                created, description, question_count, answer_count, follower_count, followee_count
         from user
-        where user_id = #{userId}
+        where id = #{id}
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
-        select id, user_id, version, name, password, email, avatar_url, age, gender,
+        select id, version, name, password, email, avatar_url, age, gender,
                created, description, question_count, answer_count, follower_count, followee_count
         from user
         <choose>
             <when test="userIds != null and userIds.size() > 0">
-                where user_id in
+                where id in
                 <foreach item="userId" collection="userIds" separator="," open="(" close=")">
                     #{userId}
                 </foreach>

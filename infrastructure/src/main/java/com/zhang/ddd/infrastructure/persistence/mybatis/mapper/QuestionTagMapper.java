@@ -9,5 +9,5 @@ public interface QuestionTagMapper {
 
     void insert(QuestionTag questionTag);
 
-    List<QuestionTag> findByQuestionIds(List<String> questionIds);
+    List<QuestionTag> findByQuestionIds(List<Long> questionIds);
 }

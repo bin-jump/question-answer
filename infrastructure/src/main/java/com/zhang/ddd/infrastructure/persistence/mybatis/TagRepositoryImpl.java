@@ -3,11 +3,14 @@ package com.zhang.ddd.infrastructure.persistence.mybatis;
 import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.domain.aggregate.post.repository.TagRepository;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import com.zhang.ddd.infrastructure.persistence.assembler.TagAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class TagRepositoryImpl implements TagRepository {
@@ -15,12 +18,15 @@ public class TagRepositoryImpl implements TagRepository {
     @Autowired
     TagMapper tagMapper;
 
+    @Autowired
+    SequenceRepository sequenceRepository;
+
     @Override
     public String nextId() {
-        final String random = UUID.randomUUID().toString()
-                .toLowerCase().replace("-", "");
-        return random;
+        long id = sequenceRepository.nextId();
+        return NumberEncoder.encode(id);
     }
+
 
     @Override
     public void save(Tag tag) {
@@ -32,6 +38,7 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     public List<Tag> findByIds(List<String> ids) {
-        return TagAssembler.toDOs(tagMapper.findByIds(ids));
+        List<Long> tids = ids.stream().map(NumberEncoder::decode).collect(Collectors.toList());
+        return TagAssembler.toDOs(tagMapper.findByIds(tids));
     }
 }

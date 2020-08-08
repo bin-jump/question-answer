@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper
 public interface VoteMapper {
 
-    VotePO find(String voterId, String resourceId, VoteResourceType resourceType);
+    VotePO find(long voterId, long resourceId, VoteResourceType resourceType);
 
-    List<VotePO> findByResourceIds(String voterId, List<String> resourceIds, VoteResourceType resourceType);
+    List<VotePO> findByResourceIds(long voterId, List<Long> resourceIds, VoteResourceType resourceType);
 
     int insert(VotePO votePO);
 

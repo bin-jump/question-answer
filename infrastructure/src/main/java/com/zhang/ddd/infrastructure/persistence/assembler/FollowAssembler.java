@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.Follow;
 import com.zhang.ddd.infrastructure.persistence.po.FollowPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class FollowAssembler {
@@ -15,6 +16,8 @@ public class FollowAssembler {
         }
         FollowPO followPO = new FollowPO();
         BeanUtils.copyProperties(follow, followPO);
+        followPO.setFollowerId(NumberEncoder.decode(follow.getFollowerId()));
+        followPO.setResourceId(NumberEncoder.decode(follow.getResourceId()));
 
         return followPO;
     }
@@ -30,6 +33,8 @@ public class FollowAssembler {
         }
         Follow follow = new Follow();
         BeanUtils.copyProperties(followPO, follow);
+        follow.setFollowerId(NumberEncoder.encode(followPO.getFollowerId()));
+        follow.setResourceId(NumberEncoder.encode(followPO.getResourceId()));
 
         return follow;
     }

@@ -3,7 +3,6 @@
 <mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper">
     <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.TagPO">
         <id column="id" property="id" />
-        <result column="tag_id" property="tagId" />
         <result column="version" property="version" />
         <result column="label" property="label" />
 
@@ -11,13 +10,13 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
-        insert into tag (tag_id, version, label)
-        values (#{tagId}, #{version}, #{label})
+        insert into tag (id, version, label)
+        values (#{id}, #{version}, #{label})
     </insert>
 
 
     <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
-        select id, tag_id, version, label
+        select id, version, label
         from tag
         <choose>
             <when test="tagIds != null and tagIds.size() > 0">
@@ -33,7 +32,7 @@
     </select>
 
     <select id="findByLabels" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
-        select id, tag_id, version, label
+        select id, version, label
         from tag
         <choose>
             <when test="labels != null and labels.size() > 0">
@@ -49,10 +48,10 @@
     </select>
 
     <select id="findByQuestionIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.TagPO">
-        select tag.id as id, question_id, tag.tag_id as tag_id, tag.label as label, version
+        select tag.id as id, question_id, tag.label as label, version
         from question_tag
         left join tag
-        on question_tag.tag_id = tag.tag_id
+        on question_tag.tag_id = tag.id
         <choose>
             <when test="questionIds != null and questionIds.size() > 0">
                 where question_id in

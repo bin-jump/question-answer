@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.infrastructure.persistence.po.CommentPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class CommentAssembler {
@@ -16,7 +17,8 @@ public class CommentAssembler {
         CommentPO commentPO = new CommentPO();
         BeanUtils.copyProperties(comment, commentPO);
         commentPO.setVersion(comment.getVersion());
-        commentPO.setCommentId(comment.getId());
+        commentPO.setId(NumberEncoder.decode(comment.getId()));
+        commentPO.setAuthorId(NumberEncoder.decode(comment.getAuthorId()));
 
         return commentPO;
     }
@@ -34,7 +36,9 @@ public class CommentAssembler {
         }
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentPO, comment);
-        comment.setId(commentPO.getCommentId());
+        comment.setId(NumberEncoder.encode(commentPO.getId()));
+        comment.setAuthorId(NumberEncoder.encode(commentPO.getAuthorId()));
+
         comment.setVersion(commentPO.getVersion());
 
         return comment;

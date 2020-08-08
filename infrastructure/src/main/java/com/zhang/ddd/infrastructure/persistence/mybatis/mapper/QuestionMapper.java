@@ -13,12 +13,12 @@ public interface QuestionMapper {
 
     int update(QuestionPO questionPO);
 
-    QuestionPO findById(String questionId);
+    QuestionPO findById(long questionId);
 
-    List<QuestionPO> findByIds(List<String> questionIds);
+    List<QuestionPO> findByIds(List<Long> questionIds);
 
     List<QuestionPO> findQuestions(Long cursor, int size, String sortKey);
 
-    List<QuestionPO> findByUserId(String authorId, Long cursor, int size, String sortKey);
+    List<QuestionPO> findByUserId(long authorId, Long cursor, int size, String sortKey);
 
 }

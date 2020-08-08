@@ -14,11 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class FollowPO {
 
-    private long id;
+    private long followerId;
 
-    private String followerId;
-
-    private String resourceId;
+    private long resourceId;
 
     private FollowResourceType resourceType;
 

@@ -11,15 +11,15 @@ public interface AnswerMapper {
 
     int update(AnswerPO answerPO);
 
-    AnswerPO findById(String id);
+    AnswerPO findById(long id);
 
-    List<AnswerPO> findByQuestionId(String questionId, Long cursor, int size, String sortKey);
+    List<AnswerPO> findByQuestionId(long questionId, Long cursor, int size, String sortKey);
 
-    List<AnswerPO> findByIds(List<String> answerIds);
+    List<AnswerPO> findByIds(List<Long> answerIds);
 
-    List<AnswerPO> findQuestionLatestAnswers(List<String> questionIds);
+    List<AnswerPO> findQuestionLatestAnswers(List<Long> questionIds);
 
-    List<AnswerPO> findByUserId(String authorId, Long cursor, int size, String sortKey);
+    List<AnswerPO> findByUserId(long authorId, Long cursor, int size, String sortKey);
 
 
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.Vote;
 import com.zhang.ddd.infrastructure.persistence.po.VotePO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class VoteAssembler {
@@ -15,6 +16,8 @@ public class VoteAssembler {
         }
         VotePO votePO = new VotePO();
         BeanUtils.copyProperties(vote, votePO);
+        votePO.setVoterId(NumberEncoder.decode(vote.getVoterId()));
+        votePO.setResourceId(NumberEncoder.decode(vote.getResourceId()));
 
         return votePO;
     }
@@ -30,6 +33,8 @@ public class VoteAssembler {
         }
         Vote vote = new Vote();
         BeanUtils.copyProperties(votePO, vote);
+        vote.setVoterId(NumberEncoder.encode(votePO.getVoterId()));
+        vote.setResourceId(NumberEncoder.encode(votePO.getResourceId()));
 
         return vote;
     }

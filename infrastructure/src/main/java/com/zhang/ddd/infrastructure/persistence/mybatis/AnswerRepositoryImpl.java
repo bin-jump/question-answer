@@ -5,15 +5,18 @@ import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import com.zhang.ddd.infrastructure.persistence.assembler.AnswerAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.AnswerMapper;
 import com.zhang.ddd.infrastructure.persistence.po.AnswerPO;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class AnswerRepositoryImpl implements AnswerRepository {
@@ -21,11 +24,13 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Autowired
     AnswerMapper answerMapper;
 
+    @Autowired
+    SequenceRepository sequenceRepository;
+
     @Override
     public String nextId() {
-        final String random = UUID.randomUUID().toString()
-                .toLowerCase().replace("-", "");
-        return random;
+        long id = sequenceRepository.nextId();
+        return NumberEncoder.encode(id);
     }
 
     @Override
@@ -43,26 +48,20 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public Answer findById(String id) {
-        AnswerPO answerPO = answerMapper.findById(id);
+        long aid = NumberEncoder.decode(id);
+        AnswerPO answerPO = answerMapper.findById(aid);
         return AnswerAssembler.toDO(answerPO);
 
     }
 
     @Override
     public List<Answer> findByQuestionId(String questionId, PostPaging postPaging) {
-
+        long qid = NumberEncoder.decode(questionId);
         String sortKey = "id";
-        Long cursor = null;
-        if (postPaging.getCursor() != null) {
-            AnswerPO cursorAnswer = answerMapper.findById(postPaging.getCursor());
-            if (cursorAnswer == null) {
-                throw new ResourceNotFoundException("Answer not found.");
-            }
-            cursor = cursorAnswer.getId();
-        }
+        Long cursor = NumberEncoder.decode(postPaging.getCursor());
 
         List<AnswerPO> answerPOs =
-                answerMapper.findByQuestionId(questionId, cursor, postPaging.getSize(), sortKey);
+                answerMapper.findByQuestionId(qid, cursor, postPaging.getSize(), sortKey);
 
         return AnswerAssembler.toDOs(answerPOs);
 
@@ -70,7 +69,8 @@ public class AnswerRepositoryImpl implements AnswerRepository {
 
     @Override
     public List<Answer> findQuestionLatestAnswers(List<String> questionIds) {
-        List<AnswerPO> answerPOs = answerMapper.findQuestionLatestAnswers(questionIds);
+        List<Long> qids = questionIds.stream().map(NumberEncoder::decode).collect(Collectors.toList());
+        List<AnswerPO> answerPOs = answerMapper.findQuestionLatestAnswers(qids);
 
         return AnswerAssembler.toDOs(answerPOs);
     }
@@ -78,17 +78,10 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     @Override
     public List<Answer> findByUserId(String authorId, PostPaging postPaging) {
         String sortKey = "id";
-        Long cursor = null;
-        if (postPaging.getCursor() != null) {
-            AnswerPO cursorAnswer = answerMapper.findById(postPaging.getCursor());
-            if (cursorAnswer == null) {
-                throw new ResourceNotFoundException("Answer not found.");
-            }
-            cursor = cursorAnswer.getId();
-        }
-
+        long aid = NumberEncoder.decode(authorId);
+        Long cursor = NumberEncoder.decode(postPaging.getCursor());
         List<AnswerPO> answerPOs =
-                answerMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
+                answerMapper.findByUserId(aid, cursor, postPaging.getSize(), sortKey);
 
         return AnswerAssembler.toDOs(answerPOs);
     }

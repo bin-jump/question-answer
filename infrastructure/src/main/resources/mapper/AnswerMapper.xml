@@ -3,13 +3,11 @@
 <mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.AnswerMapper">
     <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
         <id column="id" property="id" />
-        <result column="answer_id" property="answerId" />
         <result column="version" property="version" />
         <result column="parent_id" property="parentId" />
         <result column="body"  property="body" />
         <result column="author_id" property="authorId" />
         <result column="created"  property="created" />
-
         <result column="upvote_count" property="upvoteCount" />
         <result column="downvote_count" property="downvoteCount" />
         <result column="comment_count" property="commentCount" />
@@ -17,10 +15,10 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        insert into answer (answer_id, version, parent_id, body, author_id, created,
+        insert into answer (id, version, parent_id, body, author_id, created,
                               upvote_count, downvote_count, comment_count
         )
-        values (#{answerId}, #{version}, #{parentId}, #{body}, #{authorId}, #{created},
+        values (#{id}, #{version}, #{parentId}, #{body}, #{authorId}, #{created},
                 #{upvoteCount}, #{downvoteCount}, #{commentCount}
                )
     </insert>
@@ -34,18 +32,18 @@
             downvote_count = #{downvoteCount},
             comment_count = #{commentCount}
 
-        where answer_id = #{answerId} and version = #{version}
+        where id = #{id} and version = #{version}
     </update>
 
     <select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        select id, answer_id, version, parent_id, body, author_id, created,
+        select id, version, parent_id, body, author_id, created,
                upvote_count, downvote_count, comment_count
         from answer
-        where answer_id = #{answerId}
+        where id = #{id}
     </select>
 
     <select id="findByQuestionId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        select id, answer_id, version, parent_id, body, author_id, created,
+        select id, version, parent_id, body, author_id, created,
                upvote_count, downvote_count, comment_count
         from answer
         where parent_id = #{questionId}
@@ -57,12 +55,12 @@
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        select id, answer_id, version, parent_id, body, author_id, created,
+        select id, version, parent_id, body, author_id, created,
         upvote_count, downvote_count, comment_count
         from answer
         <choose>
             <when test="answerIds != null and answerIds.size() > 0">
-                where answer_id in
+                where id in
                 <foreach item="answerId" collection="answerIds" separator="," open="(" close=")">
                     #{answerId}
                 </foreach>
@@ -74,7 +72,7 @@
     </select>
 
     <select id="findQuestionLatestAnswers" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        select answer.id as id, answer_id, version, parent_id, body, author_id, created,
+        select answer.id as id, version, parent_id, body, author_id, created,
         upvote_count, downvote_count, comment_count
         from answer
         inner join
@@ -98,7 +96,7 @@
     </select>
 
     <select id="findByUserId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.AnswerPO">
-        select id, answer_id, version, parent_id, body, author_id, created,
+        select id, version, parent_id, body, author_id, created,
         upvote_count, downvote_count, comment_count
         from answer
         where author_id = #{authorId}

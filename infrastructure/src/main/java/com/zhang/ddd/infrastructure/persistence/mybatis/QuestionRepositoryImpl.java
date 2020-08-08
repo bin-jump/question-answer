@@ -6,6 +6,7 @@ import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import com.zhang.ddd.infrastructure.persistence.assembler.QuestionAssembler;
 import com.zhang.ddd.infrastructure.persistence.assembler.TagAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionMapper;
@@ -14,6 +15,7 @@ import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.TagMapper;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionPO;
 import com.zhang.ddd.infrastructure.persistence.po.QuestionTag;
 import com.zhang.ddd.infrastructure.persistence.po.TagPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -34,11 +36,13 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     @Autowired
     TagMapper tagMapper;
 
+    @Autowired
+    SequenceRepository sequenceRepository;
+
     @Override
     public String nextId() {
-        final String random = UUID.randomUUID().toString()
-                .toLowerCase().replace("-", "");
-        return random;
+        long id = sequenceRepository.nextId();
+        return NumberEncoder.encode(id);
     }
 
     @Override
@@ -46,7 +50,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         QuestionPO questionPO = QuestionAssembler.toPO(question);
         questionMapper.insert(questionPO);
         for (TagPO t : questionPO.getTags()) {
-            QuestionTag questionTag = new QuestionTag(questionPO.getQuestionId(), t.getTagId());
+            QuestionTag questionTag = new QuestionTag(questionPO.getId(), t.getId());
             questionTagMapper.insert(questionTag);
         }
     }
@@ -62,8 +66,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public Question findById(String id) {
-        QuestionPO questionPO = questionMapper.findById(id);
-        tagMapper.findByQuestionIds(Arrays.asList(id))
+        long qid = NumberEncoder.decode(id);
+        QuestionPO questionPO = questionMapper.findById(qid);
+        tagMapper.findByQuestionIds(Arrays.asList(qid))
                 .stream().forEach(e -> questionPO.getTags().add(e));
 
         return QuestionAssembler.toDO(questionPO);
@@ -78,15 +83,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     public List<Question> findQuestions(PostPaging postPaging) {
 
         String sortKey = "id";
-        Long cursor = null;
-        if (postPaging.getCursor() != null) {
-            QuestionPO cursorQuestion = questionMapper.findById(postPaging.getCursor());
-            if (cursorQuestion == null) {
-                throw new ResourceNotFoundException("Question not found");
-            }
-            cursor = cursorQuestion.getId();
-        }
-
+        Long cursor = NumberEncoder.decode(postPaging.getCursor());
         List<QuestionPO> questionPOs =
                 questionMapper.findQuestions(cursor, postPaging.getSize(), sortKey);
         fillQuestionTags(questionPOs);
@@ -96,31 +93,24 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public List<Question> findByUserId(String authorId, PostPaging postPaging) {
-
+        long aid = NumberEncoder.decode(authorId);
         String sortKey = "id";
-        Long cursor = null;
-        if (postPaging.getCursor() != null) {
-            QuestionPO cursorQuestion = questionMapper.findById(postPaging.getCursor());
-            if (cursorQuestion == null) {
-                throw new ResourceNotFoundException("Question not found");
-            }
-            cursor = cursorQuestion.getId();
-        }
+        Long cursor = NumberEncoder.decode(postPaging.getCursor());
 
         List<QuestionPO> questionPOs =
-                questionMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
+                questionMapper.findByUserId(aid, cursor, postPaging.getSize(), sortKey);
         fillQuestionTags(questionPOs);
 
         return QuestionAssembler.toDOs(questionPOs);
     }
 
     private void fillQuestionTags(List<QuestionPO> questionPOs) {
-        List<String> ids = questionPOs.stream()
-                .map(QuestionPO::getQuestionId).collect(Collectors.toList());
+        List<Long> ids = questionPOs.stream()
+                .map(QuestionPO::getId).collect(Collectors.toList());
         List<QuestionTag> questionTags = questionTagMapper.findByQuestionIds(ids);
 
-        Map<String, QuestionPO> qs = questionPOs.stream()
-                .collect(Collectors.toMap(QuestionPO::getQuestionId, e -> e));
+        Map<Long, QuestionPO> qs = questionPOs.stream()
+                .collect(Collectors.toMap(QuestionPO::getId, e -> e));
 
 
         questionTags.stream().forEach(e -> {

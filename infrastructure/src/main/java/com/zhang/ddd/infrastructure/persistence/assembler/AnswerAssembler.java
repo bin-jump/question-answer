@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.infrastructure.persistence.po.AnswerPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class AnswerAssembler {
@@ -16,7 +17,9 @@ public class AnswerAssembler {
         AnswerPO answerPO = new AnswerPO();
         BeanUtils.copyProperties(answer, answerPO);
         answerPO.setVersion(answer.getVersion());
-        answerPO.setAnswerId(answer.getId());
+        answerPO.setId(NumberEncoder.decode(answer.getId()));
+        answerPO.setParentId(NumberEncoder.decode(answer.getParentId()));
+        answerPO.setAuthorId(NumberEncoder.decode(answer.getAuthorId()));
 
         return answerPO;
     }
@@ -33,7 +36,9 @@ public class AnswerAssembler {
         }
         Answer answer = new Answer();
         BeanUtils.copyProperties(answerPO, answer);
-        answer.setId(answerPO.getAnswerId());
+        answer.setId(NumberEncoder.encode(answerPO.getId()));
+        answer.setParentId(NumberEncoder.encode(answerPO.getParentId()));
+        answer.setAuthorId(NumberEncoder.encode(answerPO.getAuthorId()));
         answer.setVersion(answer.getVersion());
 
         return answer;

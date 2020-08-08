@@ -8,10 +8,12 @@ import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.infrastructure.persistence.assembler.FollowAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.FollowMapper;
 import com.zhang.ddd.infrastructure.persistence.po.FollowPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class FollowRepositoryImpl implements FollowRepository {
@@ -27,8 +29,10 @@ public class FollowRepositoryImpl implements FollowRepository {
 
     @Override
     public Follow find(String followerId, String resourceId, FollowResourceType resourceType) {
+        long fid = NumberEncoder.decode(followerId);
+        long rid = NumberEncoder.decode(resourceId);
 
-        FollowPO followPO = followMapper.find(followerId, resourceId, resourceType);
+        FollowPO followPO = followMapper.find(fid, rid, resourceType);
         return FollowAssembler.toDO(followPO);
     }
 
@@ -41,14 +45,18 @@ public class FollowRepositoryImpl implements FollowRepository {
     @Override
     public List<Follow> findByResourceIds(String followerId, List<String> resourceIds,
                                           FollowResourceType resourceType) {
-        List<FollowPO> followPOs = followMapper.findByResourceIds(followerId, resourceIds, resourceType);
+        long fid = NumberEncoder.decode(followerId);
+        List<Long> rids = resourceIds.stream().map(NumberEncoder::decode).collect(Collectors.toList());
+
+        List<FollowPO> followPOs = followMapper.findByResourceIds(fid, rids, resourceType);
         return FollowAssembler.toDOs(followPOs);
     }
 
     @Override
     public List<Follow> findFollowed(String followId, FollowResourceType resourceType, FavorPaging paging) {
+        long fid = NumberEncoder.decode(followId);
 
-        List<FollowPO> followPOs = followMapper.findFollowed(followId, resourceType,
+        List<FollowPO> followPOs = followMapper.findFollowed(fid, resourceType,
                 paging.getCursor(), paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);
@@ -56,8 +64,8 @@ public class FollowRepositoryImpl implements FollowRepository {
 
     @Override
     public List<Follow> findFollowee(String resourceId, FollowResourceType resourceType, FavorPaging paging) {
-
-        List<FollowPO> followPOs = followMapper.findFollowed(resourceId, resourceType,
+        long rid = NumberEncoder.decode(resourceId);
+        List<FollowPO> followPOs = followMapper.findFollowed(rid, resourceType,
                 paging.getCursor(), paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);

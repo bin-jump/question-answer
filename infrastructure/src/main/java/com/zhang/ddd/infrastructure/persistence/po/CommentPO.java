@@ -18,11 +18,9 @@ public class CommentPO {
 
     private long version;
 
-    private String commentId;
+    private long resourceId;
 
-    private String resourceId;
-
-    private String authorId;
+    private long authorId;
 
     private String body;
 

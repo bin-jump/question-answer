@@ -20,11 +20,11 @@
 
 
     <select id="findByQuestionIds" resultMap="WithTagPOMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionTag">
-        select question_id, tag.tag_id as tag_id,
-               tag.tag_id as _tag_tag_id,id as _tag_id, label as _tag_label, version  as _tag_version
+        select question_id, tag_id,
+               id as _tag_id, label as _tag_label, version  as _tag_version
         from question_tag
         inner join tag
-        on question_tag.tag_id = tag.tag_id
+        on question_tag.tag_id = tag.id
         <choose>
             <when test="questionIds != null and questionIds.size() > 0">
                 where question_id in

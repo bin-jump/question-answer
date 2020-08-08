@@ -5,9 +5,11 @@ import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceTyp
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import com.zhang.ddd.infrastructure.persistence.assembler.CommentAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.CommentMapper;
 import com.zhang.ddd.infrastructure.persistence.po.CommentPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,11 +22,13 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Autowired
     CommentMapper commentMapper;
 
+    @Autowired
+    SequenceRepository sequenceRepository;
+
     @Override
     public String nextId() {
-        final String random = UUID.randomUUID().toString()
-                .toLowerCase().replace("-", "");
-        return random;
+        long id = sequenceRepository.nextId();
+        return NumberEncoder.encode(id);
     }
 
     @Override
@@ -37,18 +41,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     public List<Comment> findByResourceId(String resourceId, CommentResourceType resourceType,
                                           PostPaging postPaging) {
         String sortKey = "id";
-        Long cursor = null;
-        if (postPaging.getCursor() != null) {
-            CommentPO cursorComment =
-                    commentMapper.findById(postPaging.getCursor());
-            if (cursorComment == null) {
-                throw new ResourceNotFoundException("Comment not found.");
-            }
-            cursor = cursorComment.getId();
-        }
+        long rid = NumberEncoder.decode(resourceId);
+        Long cursor = NumberEncoder.decode(postPaging.getCursor());
 
         List<CommentPO> commentPOs =
-                commentMapper.findByResourceId(resourceId, resourceType,
+                commentMapper.findByResourceId(rid, resourceType,
                         cursor, postPaging.getSize(), sortKey);
 
         return CommentAssembler.toDOs(commentPOs);

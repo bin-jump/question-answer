@@ -13,17 +13,15 @@ import java.util.Date;
 @AllArgsConstructor
 public class AnswerPO {
 
-    private Long id;
-
-    private String answerId;
+    private long id;
 
     private long version;
 
-    private String parentId;
+    private long parentId;
 
     private String body;
 
-    private String authorId;
+    private long authorId;
 
     private Date created;
 

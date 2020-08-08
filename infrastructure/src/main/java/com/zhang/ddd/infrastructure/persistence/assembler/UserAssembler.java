@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.infrastructure.persistence.po.UserPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.BeanUtils;
 
 public class UserAssembler {
@@ -16,7 +17,7 @@ public class UserAssembler {
         UserPO userPO = new UserPO();
         BeanUtils.copyProperties(user, userPO);
         userPO.setVersion(user.getVersion());
-        userPO.setUserId(user.getId());
+        userPO.setId(NumberEncoder.decode(user.getId()));
 
         return userPO;
     }
@@ -33,7 +34,7 @@ public class UserAssembler {
         }
         User user = new User();
         BeanUtils.copyProperties(userPO, user);
-        user.setId(userPO.getUserId());
+        user.setId(NumberEncoder.encode(userPO.getId()));
 
         return user;
     }

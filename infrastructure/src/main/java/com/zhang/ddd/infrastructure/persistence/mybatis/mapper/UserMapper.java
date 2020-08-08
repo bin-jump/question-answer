@@ -13,7 +13,7 @@ public interface UserMapper {
 
     UserPO findByName(String name);
 
-    UserPO findById(String userId);
+    UserPO findById(long userId);
 
-    List<UserPO> findByIds(List<String> userIds);
+    List<UserPO> findByIds(List<Long> userIds);
 }

@@ -3,14 +3,17 @@ package com.zhang.ddd.infrastructure.persistence.mybatis;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.domain.exception.ConcurrentUpdateException;
+import com.zhang.ddd.domain.shared.SequenceRepository;
 import com.zhang.ddd.infrastructure.persistence.assembler.UserAssembler;
 import com.zhang.ddd.infrastructure.persistence.mybatis.mapper.UserMapper;
 import com.zhang.ddd.infrastructure.persistence.po.UserPO;
+import com.zhang.ddd.infrastructure.util.NumberEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -18,13 +21,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     UserMapper userMapper;
 
-    // TODO: use db sequence
+    @Autowired
+    SequenceRepository sequenceRepository;
+
     @Override
     public String nextId() {
-        final String random = UUID.randomUUID().toString()
-                .toLowerCase().replace("-", "");
-        return random;
+        long id = sequenceRepository.nextId();
+        return NumberEncoder.encode(id);
     }
+
 
     @Override
     public void save(User user) {
@@ -47,13 +52,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findById(String id) {
-        UserPO userPO = userMapper.findById(id);
+        long uid = NumberEncoder.decode(id);
+        UserPO userPO = userMapper.findById(uid);
         return UserAssembler.toDO(userPO);
     }
 
     @Override
     public List<User> findByIds(List<String> ids) {
-        List<UserPO> users = userMapper.findByIds(ids);
+        List<Long> uids = ids.stream().map(NumberEncoder::decode).collect(Collectors.toList());
+        List<UserPO> users = userMapper.findByIds(uids);
         return UserAssembler.toDOs(users);
     }
 }

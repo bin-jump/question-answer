@@ -13,16 +13,16 @@ public interface FollowMapper {
 
     void delete(FollowPO followPO);
 
-    FollowPO find(String followerId, String resourceId, FollowResourceType resourceType);
+    FollowPO find(long followerId, long resourceId, FollowResourceType resourceType);
 
-    List<FollowPO> findByResourceIds(String followerId, List<String> resourceIds,
+    List<FollowPO> findByResourceIds(long followerId, List<Long> resourceIds,
                                      FollowResourceType resourceType);
 
 
-    List<FollowPO> findFollowed(String followerId, FollowResourceType resourceType,
+    List<FollowPO> findFollowed(long followerId, FollowResourceType resourceType,
                                          Long cursor, int size);
 
-    List<FollowPO> findResourceFolloweeIds(String resourceId, FollowResourceType resourceType,
+    List<FollowPO> findResourceFolloweeIds(long resourceId, FollowResourceType resourceType,
                                            Long cursor, int size);
 
 }

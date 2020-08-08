@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class VotePO {
 
-    private String voterId;
+    private long voterId;
 
-    private String resourceId;
+    private long resourceId;
 
     private VoteType voteType;
 

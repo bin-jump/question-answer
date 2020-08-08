@@ -29,10 +29,10 @@ public class UserServiceTest {
 
     @Test
     public void testCreate() {
-        String name = "user1";
+        String name = "zhang";
         User user = userRepository.findByName(name);
         if (user == null) {
-            user = userApplicationService.create(name, "123456", "test@example.com");
+            user = userApplicationService.create(name, "123456", "zhang@example.com");
         }
 
         Assert.assertNotNull(user);

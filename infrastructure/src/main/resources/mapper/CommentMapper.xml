@@ -3,7 +3,6 @@
 <mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.CommentMapper">
     <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
         <id column="id" property="id" />
-        <result column="comment_id" property="commentId" />
         <result column="version" property="version" />
         <result column="resource_id" property="resourceId" />
         <result column="author_id" property="authorId" />
@@ -14,10 +13,10 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
-        insert into comment (comment_id, version, resource_id
+        insert into comment (id, version, resource_id
           , author_id, body, resource_type, created
           )
-        values (#{commentId}, #{version}, #{resourceId}
+        values (#{id}, #{version}, #{resourceId}
           , #{authorId}, #{body}, #{resourceType}, #{created}
           )
     </insert>
@@ -25,15 +24,15 @@
 
     <select id="findById" resultMap="BaseResultMap"
             resultType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
-        select id, comment_id, version, resource_id
+        select id, version, resource_id
                 , author_id, body, resource_type, created
         from comment
-        where comment_id = #{commentId}
+        where id = #{id}
     </select>
 
     <select id="findByResourceId" resultMap="BaseResultMap"
             resultType="com.zhang.ddd.infrastructure.persistence.po.CommentPO">
-        select id, comment_id, version, resource_id
+        select id, version, resource_id
         , author_id, body, resource_type, created
         from comment
         where resource_id = #{resourceId}

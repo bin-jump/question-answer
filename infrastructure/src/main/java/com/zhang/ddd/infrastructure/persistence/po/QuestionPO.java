@@ -15,15 +15,13 @@ public class QuestionPO {
 
     private Long id;
 
-    private String questionId;
-
     private long version;
 
     private String title;
 
     private String body;
 
-    private String authorId;
+    private long authorId;
 
     private Date created;
 

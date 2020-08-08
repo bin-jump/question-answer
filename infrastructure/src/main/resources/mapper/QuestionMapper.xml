@@ -3,7 +3,6 @@
 <mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.QuestionMapper">
     <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
         <id column="id" property="id" />
-        <result column="question_id" property="questionId" />
         <result column="version" property="version" />
         <result column="title" property="title" />
         <result column="body"  property="body" />
@@ -19,10 +18,10 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
-        insert into question (question_id, version, title, body, author_id, created,
+        insert into question (id, version, title, body, author_id, created,
                           answer_count, comment_count, follow_count, upvote_count, downvote_count
         )
-        values (#{questionId}, #{version}, #{title}, #{body}, #{authorId}, #{created},
+        values (#{id}, #{version}, #{title}, #{body}, #{authorId}, #{created},
                 #{answerCount}, #{commentCount}, #{followCount}, #{upvoteCount}, #{downvoteCount}
                )
     </insert>
@@ -39,23 +38,23 @@
             upvote_count = #{upvoteCount},
             downvote_count = #{downvoteCount}
 
-        where question_id = #{questionId} and version = #{version}
+        where id = #{id} and version = #{version}
     </update>
 
     <select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
-        select id, question_id, version, title, body, author_id, created,
+        select id, version, title, body, author_id, created,
                answer_count, comment_count, follow_count, upvote_count, downvote_count
         from question
-        where question_id = #{questionId}
+        where id = #{questionId}
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
-        select id, question_id, version, title, body, author_id, created,
+        select id, version, title, body, author_id, created,
         answer_count, comment_count, follow_count, upvote_count, downvote_count
         from question
         <choose>
             <when test="questionIds != null and questionIds.size() > 0">
-                where question_id in
+                where id in
                 <foreach item="questionId" collection="questionIds" separator="," open="(" close=")">
                     #{questionId}
                 </foreach>
@@ -67,7 +66,7 @@
     </select>
 
     <select id="findQuestions" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
-        select id, question_id, version, title, body, author_id, created,
+        select id, version, title, body, author_id, created,
                answer_count, comment_count, follow_count, upvote_count, downvote_count
         from question
         <if test="cursor != null">
@@ -79,7 +78,7 @@
     </select>
 
     <select id="findByUserId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
-        select id, question_id, version, title, body, author_id, created,
+        select id, version, title, body, author_id, created,
         answer_count, comment_count, follow_count, upvote_count, downvote_count
         from question
         where author_id = #{authorId}

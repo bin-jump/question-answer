@@ -9,10 +9,10 @@ public interface TagMapper {
 
     int insert(TagPO tagPO);
 
-    List<TagPO> findByIds(List<String> tagIds);
+    List<TagPO> findByIds(List<Long> tagIds);
 
     List<TagPO> findByLabels(List<String> labels);
 
-    List<TagPO> findByQuestionIds(List<String> questionIds);
+    List<TagPO> findByQuestionIds(List<Long> questionIds);
 
 }

@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TagPO {
 
-    private Long id;
-
-    private String tagId;
+    private long id;
 
     private long version;
 

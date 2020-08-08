@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QuestionServiceTest {
 
+    static String testUserName = "zhang";
+
     @Autowired
     QuestionApplicationService questionApplicationService;
 
@@ -43,7 +45,7 @@ public class QuestionServiceTest {
     @Test
     public void testCreate() {
 
-        User user = userRepository.findByName("zhang");
+        User user = userRepository.findByName(testUserName);
 
         Question question = questionApplicationService.create("this is a question.",
                 "body", user.getId(), Arrays.asList("tag a", "tag c"));
@@ -54,9 +56,10 @@ public class QuestionServiceTest {
     @Test
     public void testCreateAnswer() {
 
-        User user = userRepository.findByName("zhang");
-        Answer answer = questionApplicationService.createAnswer("8f7e6ae5a6614af095763d7f17c12715"
-        ,"answer body", user.getId());
+        User user = userRepository.findByName(testUserName);
+        List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
+        Answer answer = questionApplicationService.createAnswer(questions.get(0).getId(),
+                "answer body", user.getId());
 
         Assert.assertNotNull(answer);
     }
@@ -64,7 +67,7 @@ public class QuestionServiceTest {
     @Test
     public void testCreateQuestionComment() {
 
-        User user = userRepository.findByName("zhang");
+        User user = userRepository.findByName(testUserName);
         List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
 
         Comment comment = questionApplicationService
@@ -76,7 +79,7 @@ public class QuestionServiceTest {
     @Test
     public void testCreateAnswerComment() {
 
-        User user = userRepository.findByName("zhang");
+        User user = userRepository.findByName(testUserName);
         List<Question> questions = questionRepository.findQuestions(new PostPaging(null, 10));
         List<Answer> answers = answerRepository.findQuestionLatestAnswers(questions.stream()
                 .map(Question::getId).collect(Collectors.toList()));
@@ -99,9 +102,9 @@ public class QuestionServiceTest {
 
     @Test
     public void testGetAnswer() {
-        Question question = questionRepository.findById("8f7e6ae5a6614af095763d7f17c12715");
+        Question question = questionRepository.findQuestions(new PostPaging(null, 10)).get(0);
 
-        List<Answer> answers = answerRepository.findByQuestionId("8f7e6ae5a6614af095763d7f17c12715",
+        List<Answer> answers = answerRepository.findByQuestionId(question.getId(),
                 new PostPaging(null, 10));
 
         Assert.assertTrue(answers.size() > 0);
