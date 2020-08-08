@@ -18,6 +18,7 @@ public class CommentAssembler {
         BeanUtils.copyProperties(comment, commentPO);
         commentPO.setVersion(comment.getVersion());
         commentPO.setId(NumberEncoder.decode(comment.getId()));
+        commentPO.setResourceId(NumberEncoder.decode(comment.getResourceId()));
         commentPO.setAuthorId(NumberEncoder.decode(comment.getAuthorId()));
 
         return commentPO;
@@ -37,6 +38,7 @@ public class CommentAssembler {
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentPO, comment);
         comment.setId(NumberEncoder.encode(commentPO.getId()));
+        comment.setResourceId(NumberEncoder.encode(commentPO.getResourceId()));
         comment.setAuthorId(NumberEncoder.encode(commentPO.getAuthorId()));
 
         comment.setVersion(commentPO.getVersion());
