@@ -54,6 +54,8 @@ public class User extends Entity<User> {
 
     private int answerCount;
 
+    private int followCount;
+
     private int followerCount;
 
     private int followeeCount;

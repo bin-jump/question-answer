@@ -46,6 +46,7 @@ public class FavorApplicationService {
         Follow follow = followDomainService.follow(followerId, questionId, FollowResourceType.QUESTION);
         if (follow != null) {
             questionDomainService.questionFollow(questionId, true);
+            userDomainService.questionFollowed(followerId, true);
         }
         return follow;
     }
@@ -55,6 +56,7 @@ public class FavorApplicationService {
         Follow follow = followDomainService.unfollow(followerId, questionId, FollowResourceType.QUESTION);
         if (follow != null) {
             questionDomainService.questionFollow(questionId, false);
+            userDomainService.questionFollowed(followerId, false);
         }
 
         return follow;

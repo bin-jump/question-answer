@@ -38,6 +38,8 @@ public class UserPO {
 
     private int answerCount;
 
+    private int followCount;
+
     private int followerCount;
 
     private int followeeCount;

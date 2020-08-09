@@ -14,6 +14,7 @@
         <result column="description" property="description" />
         <result column="question_count" property="questionCount" />
         <result column="answer_count" property="answerCount" />
+        <result column="follow_count" property="followCount" />
         <result column="follower_count" property="followerCount" />
         <result column="followee_count" property="followeeCount" />
     </resultMap>
@@ -21,10 +22,10 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id"
             parameterType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         insert into user (id, version, name, password, email, avatar_url, age, gender,
-                          created, description, question_count, answer_count, follower_count, followee_count
+                          created, description, question_count, answer_count, follow_count, follower_count, followee_count
         )
         values (#{id}, #{version}, #{name}, #{password}, #{email}, #{avatarUrl}, #{age}, #{gender},
-                #{created}, #{description}, #{questionCount}, #{answerCount}, #{followerCount}, #{followeeCount}
+                #{created}, #{description}, #{questionCount}, #{answerCount}, #{followCount}, #{followerCount}, #{followeeCount}
                )
     </insert>
 
@@ -41,6 +42,7 @@
 
             question_count = #{questionCount},
             answer_count = #{answerCount},
+            follow_count = #{followCount},
             follower_count = #{followerCount},
             followee_count = #{followeeCount}
 
@@ -49,21 +51,21 @@
 
     <select id="findByName" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         select id, version, name, password, email, avatar_url, age, gender,
-               created, description, question_count, answer_count, follower_count, followee_count
+               created, description, question_count, answer_count, follow_count, follower_count, followee_count
         from user
         where name = #{name}
     </select>
 
     <select id="findById" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         select id, version, name, password, email, avatar_url, age, gender,
-               created, description, question_count, answer_count, follower_count, followee_count
+               created, description, question_count, answer_count, follow_count, follower_count, followee_count
         from user
         where id = #{id}
     </select>
 
     <select id="findByIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.UserPO">
         select id, version, name, password, email, avatar_url, age, gender,
-               created, description, question_count, answer_count, follower_count, followee_count
+               created, description, question_count, answer_count, follow_count, follower_count, followee_count
         from user
         <choose>
             <when test="userIds != null and userIds.size() > 0">

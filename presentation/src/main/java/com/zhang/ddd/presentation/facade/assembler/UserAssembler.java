@@ -24,6 +24,7 @@ public class UserAssembler {
                 .gender(user.getGender().toString())
                 .age(user.getAge())
                 .answerCount(user.getAnswerCount())
+                .followCount(user.getFollowCount())
                 .followerCount(user.getFollowerCount())
                 .followeeCount(user.getFolloweeCount())
                 .questionCount(user.getQuestionCount())
