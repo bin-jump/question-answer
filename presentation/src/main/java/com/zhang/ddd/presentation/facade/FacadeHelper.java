@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
+import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.Vote;
 import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteResourceType;
 import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.domain.aggregate.vote.repository.VoteRepository;
+import com.zhang.ddd.presentation.facade.assembler.QuestionAssembler;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
@@ -23,11 +25,29 @@ import org.springframework.stereotype.Service;
 public class FacadeHelper {
 
     @Autowired
+    QuestionRepository questionRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
     VoteRepository voteRepository;
 
+    public List<QuestionDto> wrapAnswerQuestion(List<AnswerDto> answerDtos) {
+        Map<String, QuestionDto> questionDtos = questionRepository
+                .findByIds(answerDtos.stream().map(AnswerDto::getParentId).collect(Collectors.toList()))
+                .stream().map(QuestionAssembler::toDTO).collect(Collectors.toMap(QuestionDto::getId, e -> e));
+
+        fillQuestionUsers(questionDtos.values().stream().collect(Collectors.toList()));
+
+        List<QuestionDto> res = answerDtos.stream().map(e -> {
+            QuestionDto q = questionDtos.get(e.getParentId());
+            q.setCover(e);
+            return q;
+        }).collect(Collectors.toList());
+
+        return res;
+    }
 
     public void fillQuestionUsers(List<QuestionDto> questionDtos) {
 

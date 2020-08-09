@@ -58,14 +58,14 @@
     </select>
 
 
-    <select id="findResourceFolloweeIds" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
+    <select id="findResourceFollower" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.FollowPO">
         select follower_id, resource_id, resource_type, created
         from follow
         where resource_id = #{resourceId} and resource_type = #{resourceType}
         <if test="cursor != null">
-            and resource_id <![CDATA[ < ]]> #{cursor}
+            and follower_id <![CDATA[ < ]]> #{cursor}
         </if>
-        order by resource_id desc
+        order by follower_id desc
         limit #{size}
 
     </select>

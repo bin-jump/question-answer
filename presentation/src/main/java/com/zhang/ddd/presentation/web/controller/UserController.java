@@ -76,50 +76,14 @@ public class UserController {
     }
 
     @GetMapping("{id}/answers")
-    public Response getAnswers(@PathVariable String id){
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+    public Response getAnswers(@PathVariable String id,
+                               @RequestParam(required = false) String after,
+                               @RequestParam(defaultValue = "10") int size){
 
-        AnswerDto a1 = AnswerDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .id("aaa111")
-                .build();
+        List<QuestionDto> res = userServiceFacade.findUserAnswers(id, after, size);
+        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
-        QuestionDto q1 = QuestionDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("author best way to learn")
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .cover(a1)
-                .commentCount(3)
-                .answerCount(3)
-                .followCount(6)
-                .created(1429070000)
-
-                .tag(new TagDto("python"))
-                .tag(new TagDto("programming"))
-                .build();
-        List<QuestionDto> res = new ArrayList<QuestionDto>();
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        res.add(q1);
-        return Response.okPagingAfter(res, q1.getId(), 5);
+        return Response.okPagingAfter(res, next, size);
     }
 
     @PostMapping("{id}/follow")
@@ -137,30 +101,34 @@ public class UserController {
     }
 
     @GetMapping("{id}/follow")
-    public Response getFollowQuestion(@PathVariable String id) {
-        return getQuestion(id, null, 3);
+    public Response getFollowQuestion(@PathVariable String id,
+                                      @RequestParam(required = false) String after,
+                                      @RequestParam(defaultValue = "10") int size) {
+        List<QuestionDto> res = userServiceFacade.findfollowedQuestions(id, after, size);
+        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+
+        return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/follower")
-    public Response getFollower(@PathVariable String id) {
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .description("I am as user.")
-                .build();
-        List<UserDto> res = new ArrayList<>();
-        res.add(user);
-        res.add(user);
-        res.add(user);
-        res.add(user);
-        res.add(user);
-        return Response.okPagingAfter(res, user.getId(), 5);
+    public Response getFollower(@PathVariable String id,
+                                @RequestParam(required = false) String after,
+                                @RequestParam(defaultValue = "10") int size) {
+        List<UserDto> res = userServiceFacade.findfollower(id, after, size);
+        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+
+        return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/followee")
-    public Response getFollowee(@PathVariable String id) {
-        return getFollower(id);
+    public Response getFollowee(@PathVariable String id,
+                                @RequestParam(required = false) String after,
+                                @RequestParam(defaultValue = "10") int size) {
+
+        List<UserDto> res = userServiceFacade.findfollowee(id, after, size);
+        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+
+        return  Response.okPagingAfter(res, next, size);
     }
 
 }

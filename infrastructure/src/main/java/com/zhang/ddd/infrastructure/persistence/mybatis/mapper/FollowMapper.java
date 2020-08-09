@@ -22,7 +22,7 @@ public interface FollowMapper {
     List<FollowPO> findFollowed(long followerId, FollowResourceType resourceType,
                                          Long cursor, int size);
 
-    List<FollowPO> findResourceFolloweeIds(long resourceId, FollowResourceType resourceType,
+    List<FollowPO> findResourceFollower(long resourceId, FollowResourceType resourceType,
                                            Long cursor, int size);
 
 }

@@ -76,7 +76,14 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public List<Question> findByIds(List<String> ids) {
-        return null;
+        List<Long> qids = ids.stream()
+                .map(NumberEncoder::decode).collect(Collectors.toList());
+
+        List<Question> questionPOs = questionMapper.findByIds(qids)
+                .stream().map(QuestionAssembler::toDO)
+                .collect(Collectors.toList());
+
+        return questionPOs;
     }
 
     @Override

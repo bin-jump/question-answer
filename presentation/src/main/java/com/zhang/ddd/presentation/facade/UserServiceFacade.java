@@ -65,7 +65,7 @@ public class UserServiceFacade {
         UserDto me = LoginUtil.getCurrentUser();
         if (user != null && user.getId() != me.getId()) {
             Follow follow = followRepository.find(me.getId(), userDto.getId(),
-                    FollowResourceType.QUESTION);
+                    FollowResourceType.USER);
             userDto.setFollowing(follow != null ? true : false);
         }
         return userDto;
@@ -80,17 +80,18 @@ public class UserServiceFacade {
         return questionDtos;
     }
 
-    public List<AnswerDto> findUserAnswers(String userId, String cursor, int size) {
+    public List<QuestionDto> findUserAnswers(String userId, String cursor, int size) {
 
         List<AnswerDto> answerDtos = answerRepository.findByUserId(userId, new PostPaging(cursor, size))
                 .stream().map(e -> AnswerAssembler.toDTO(e))
                 .collect(Collectors.toList());
 
         helper.fillAnswerUsers(answerDtos);
-        return answerDtos;
+
+        return helper.wrapAnswerQuestion(answerDtos);
     }
 
-    public List<QuestionDto> findfollowedQuestions(String userId, Long cursor, int size) {
+    public List<QuestionDto> findfollowedQuestions(String userId, String cursor, int size) {
 
         List<String> questionIds = followRepository.findFollowed(userId, FollowResourceType.QUESTION,
                 new FavorPaging(cursor, size))
@@ -99,23 +100,22 @@ public class UserServiceFacade {
         List<Question> questions = questionRepository.findByIds(questionIds);
         List<QuestionDto> questionDtos = QuestionAssembler.toDTOs(questions);
 
-
         helper.fillQuestionUsers(questionDtos);
         return questionDtos;
     }
 
-    public List<UserDto> findfollower(String userId, Long cursor, int size) {
+    public List<UserDto> findfollower(String userId, String cursor, int size) {
 
-        List<String> userIds = followRepository.findFollowee(userId, FollowResourceType.USER,
+        List<String> userIds = followRepository.findFollower(userId, FollowResourceType.USER,
                 new FavorPaging(cursor, size))
-                .stream().map(Follow::getResourceId).collect(Collectors.toList());
+                .stream().map(Follow::getFollowerId).collect(Collectors.toList());
 
         List<UserDto> userDtos = userRepository.findByIds(userIds)
                .stream().map(UserAssembler::toDTO).collect(Collectors.toList());
         return userDtos;
     }
 
-    public List<UserDto> findfollowee(String userId, Long cursor, int size) {
+    public List<UserDto> findfollowee(String userId, String cursor, int size) {
 
         List<String> userIds = followRepository.findFollowed(userId, FollowResourceType.USER,
                 new FavorPaging(cursor, size))

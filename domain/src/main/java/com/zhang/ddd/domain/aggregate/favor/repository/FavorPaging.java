@@ -4,13 +4,13 @@ import com.zhang.ddd.domain.shared.Paging;
 import lombok.Data;
 
 @Data
-public class FavorPaging extends Paging<Long> {
+public class FavorPaging extends Paging<String> {
 
     public static enum OrderBy {
         CREATE
     }
 
-    public FavorPaging(Long cursor, int size) {
+    public FavorPaging(String cursor, int size) {
         super(cursor, size);
     }
 

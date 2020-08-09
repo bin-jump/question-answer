@@ -55,18 +55,21 @@ public class FollowRepositoryImpl implements FollowRepository {
     @Override
     public List<Follow> findFollowed(String followId, FollowResourceType resourceType, FavorPaging paging) {
         long fid = NumberEncoder.decode(followId);
+        Long cursor = NumberEncoder.decode(paging.getCursor());
 
         List<FollowPO> followPOs = followMapper.findFollowed(fid, resourceType,
-                paging.getCursor(), paging.getSize());
+                cursor, paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);
     }
 
     @Override
-    public List<Follow> findFollowee(String resourceId, FollowResourceType resourceType, FavorPaging paging) {
+    public List<Follow> findFollower(String resourceId, FollowResourceType resourceType, FavorPaging paging) {
         long rid = NumberEncoder.decode(resourceId);
-        List<FollowPO> followPOs = followMapper.findFollowed(rid, resourceType,
-                paging.getCursor(), paging.getSize());
+        Long cursor = NumberEncoder.decode(paging.getCursor());
+
+        List<FollowPO> followPOs = followMapper.findResourceFollower(rid, resourceType,
+                cursor, paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);
     }

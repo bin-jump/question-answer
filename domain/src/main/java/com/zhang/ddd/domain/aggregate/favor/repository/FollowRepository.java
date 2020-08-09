@@ -18,7 +18,7 @@ public interface FollowRepository {
     List<Follow> findFollowed(String followId,
                                          FollowResourceType resourceType, FavorPaging paging);
 
-    List<Follow> findFollowee(String resourceId,
+    List<Follow> findFollower(String resourceId,
                                          FollowResourceType resourceType, FavorPaging paging);
 
 }

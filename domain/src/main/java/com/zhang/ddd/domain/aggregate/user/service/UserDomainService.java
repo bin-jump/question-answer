@@ -59,8 +59,8 @@ public class UserDomainService {
         }
 
         int diff = follow ? 1 : -1;
-        follower.setFollowerCount(follower.getFollowerCount() + diff);
-        followee.setFolloweeCount(followee.getFolloweeCount() + diff);
+        follower.setFolloweeCount(follower.getFolloweeCount() + diff);
+        followee.setFollowerCount(followee.getFollowerCount() + diff);
         userRepository.update(followee);
         userRepository.update(follower);
     }
