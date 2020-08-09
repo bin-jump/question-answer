@@ -55,6 +55,15 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     }
 
     @Override
+    public List<Answer> findByIds(List<String> ids) {
+        List<Long> aids = ids.stream()
+                .map(NumberEncoder::decode).collect(Collectors.toList());
+        List<AnswerPO> answerPOs = answerMapper.findByIds(aids);
+
+        return AnswerAssembler.toDOs(answerPOs);
+    }
+
+    @Override
     public List<Answer> findByQuestionId(String questionId, PostPaging postPaging) {
         long qid = NumberEncoder.decode(questionId);
         String sortKey = "id";

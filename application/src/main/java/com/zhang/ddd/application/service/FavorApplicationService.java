@@ -2,6 +2,7 @@ package com.zhang.ddd.application.service;
 
 import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.Follow;
 import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.FollowResourceType;
+import com.zhang.ddd.domain.aggregate.favor.service.FeedDomainService;
 import com.zhang.ddd.domain.aggregate.favor.service.FollowDomainService;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.post.service.QuestionDomainService;
@@ -22,11 +23,17 @@ public class FavorApplicationService {
     @Autowired
     UserDomainService userDomainService;
 
+    @Autowired
+    FeedDomainService feedDomainService;
+
+
     public Follow followUser(String followerId, String followeeId) {
 
         Follow follow = followDomainService.follow(followerId, followeeId, FollowResourceType.USER);
         if (follow != null) {
             userDomainService.userFollowed(followerId, followeeId, true);
+
+            feedDomainService.userFollow(followerId, followeeId);
         }
         return follow;
     }
@@ -36,6 +43,8 @@ public class FavorApplicationService {
         Follow follow = followDomainService.unfollow(followerId, followeeId, FollowResourceType.USER);
         if (follow != null) {
             userDomainService.userFollowed(followerId, followeeId, false);
+
+            feedDomainService.userUnfollow(followerId, followeeId);
         }
 
         return follow;
@@ -47,6 +56,8 @@ public class FavorApplicationService {
         if (follow != null) {
             questionDomainService.questionFollow(questionId, true);
             userDomainService.questionFollowed(followerId, true);
+
+            feedDomainService.questionFollow(followerId, questionId);
         }
         return follow;
     }
@@ -57,6 +68,8 @@ public class FavorApplicationService {
         if (follow != null) {
             questionDomainService.questionFollow(questionId, false);
             userDomainService.questionFollowed(followerId, false);
+
+            feedDomainService.questionUnfollow(followerId, questionId);
         }
 
         return follow;

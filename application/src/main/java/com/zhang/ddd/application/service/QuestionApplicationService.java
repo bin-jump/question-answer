@@ -1,5 +1,6 @@
 package com.zhang.ddd.application.service;
 
+import com.zhang.ddd.domain.aggregate.favor.service.FeedDomainService;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
@@ -30,12 +31,17 @@ public class QuestionApplicationService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    FeedDomainService feedDomainService;
+
     @Transactional
     public Question create(String title, String body, String authorId, List<String> tagLabels) {
 
         // do not need to check user existence as user will be updated
         Question question = questionDomainService.create(title, body, authorId, tagLabels);
         userDomainService.userCreateQuestion(authorId);
+
+        feedDomainService.questionCreate(authorId, question.getId());
 
         return question;
     }
@@ -46,6 +52,8 @@ public class QuestionApplicationService {
         // do not need to check user existence as user will be updated
         Answer answer = answerDomainService.create(questionId, body, authorId);
         userDomainService.userCreateAnswer(authorId);
+
+        feedDomainService.questionCreate(authorId, answer.getId());
 
         return  answer;
     }
