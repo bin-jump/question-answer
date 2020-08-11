@@ -17,8 +17,6 @@ public class MessageDto {
 
     private String fromId;
 
-    private String toId;
-
     private boolean fromMe;
 
     private long created;

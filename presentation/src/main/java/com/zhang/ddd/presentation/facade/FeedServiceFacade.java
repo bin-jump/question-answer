@@ -1,4 +1,4 @@
-package com.zhang.ddd.presentation.facade.dto;
+package com.zhang.ddd.presentation.facade;
 
 import java.util.ArrayList;
 import java.util.Collection;

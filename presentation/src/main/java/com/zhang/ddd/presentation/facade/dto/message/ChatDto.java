@@ -20,11 +20,12 @@ public class ChatDto {
 
     private String coverText;
 
+    private String coverId;
+
     private long lastTime;
 
     private int unreadCount;
 
-    @Singular
     private List<MessageDto> messages = new ArrayList<>();
 
 }

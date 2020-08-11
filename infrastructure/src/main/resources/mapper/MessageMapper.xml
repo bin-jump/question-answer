@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.MessageMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.MessagePO">
+        <id column="id" property="id" />
+        <result column="chat_id" property="chatId" />
+        <result column="body" property="body" />
+        <result column="from_id"  property="fromId" />
+        <result column="created" property="created" />
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.zhang.ddd.infrastructure.persistence.po.MessagePO">
+        insert into message (id, chat_id, body, from_id, created)
+        values (#{id}, #{chatId}, #{body}, #{fromId}, #{created})
+    </insert>
+
+    <select id="findByChatId" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.MessagePO">
+        select id, chat_id, body, from_id, created
+        from message
+        where chat_id = #{chatId}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by id desc
+        limit #{size}
+    </select>
+
+    <select id="findNewByChatId" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.MessagePO">
+        select id, chat_id, body, from_id, created
+        from message
+        where chat_id = #{chatId}
+            and id <![CDATA[ > ]]> #{cursor}
+        order by id desc
+        limit #{size}
+    </select>
+
+</mapper>

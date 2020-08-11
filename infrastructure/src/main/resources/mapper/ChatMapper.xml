@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhang.ddd.infrastructure.persistence.mybatis.mapper.ChatMapper">
+    <resultMap id="BaseResultMap" type="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        <id column="id" property="id" />
+        <result column="version" property="version" />
+        <result column="chatter_you_id" property="chatterYouId" />
+        <result column="chatter_me_id" property="chatterMeId" />
+        <result column="top_message_id"  property="topMessageId" />
+        <result column="top_body" property="topBody" />
+        <result column="top_message_created"  property="topMessageCreated" />
+        <result column="you_unread_count" property="youUnreadCount" />
+        <result column="me_unread_count" property="meUnreadCount" />
+        <result column="created" property="created" />
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        insert into chat (id, version, chatter_you_id, chatter_me_id, top_message_id,
+                    top_body, top_message_created, you_unread_count, me_unread_count, created
+        )
+        values (#{id}, #{version}, #{chatterYouId}, #{chatterMeId}, #{topMessageId}, #{topBody},
+                #{topMessageCreated}, #{youUnreadCount}, #{meUnreadCount}, #{created}
+               )
+    </insert>
+
+    <update id="update" parameterType="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        update chat
+        set version = version + 1,
+            top_message_id = #{topMessageId},
+            top_body = #{topBody},
+            top_message_created = #{topMessageCreated},
+            you_unread_count = #{youUnreadCount},
+            me_unread_count = #{meUnreadCount}
+
+        where id = #{id} and version = #{version}
+    </update>
+
+    <select id="findById" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        select id, version, chatter_you_id, chatter_me_id, top_message_id,
+               top_body, top_message_created, you_unread_count, me_unread_count, created
+        from chat
+        where id = #{id}
+    </select>
+
+    <select id="findChat" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        select id, version, chatter_you_id, chatter_me_id, top_message_id,
+        top_body, top_message_created, you_unread_count, me_unread_count, created
+        from chat
+        where chatter_me_id = #{meId} and chatter_you_id = #{youId}
+
+    </select>
+
+    <select id="findChats" resultMap="BaseResultMap"
+            resultType="com.zhang.ddd.infrastructure.persistence.po.ChatPO">
+        select id, version, chatter_you_id, chatter_me_id, top_message_id,
+        top_body, top_message_created, you_unread_count, me_unread_count, created
+        from chat
+        where chatter_me_id = #{userId} or chatter_you_id = #{userId}
+        <if test="cursor != null">
+            and id <![CDATA[ < ]]> #{cursor}
+        </if>
+        order by top_message_id desc
+        limit #{size}
+    </select>
+
+</mapper>

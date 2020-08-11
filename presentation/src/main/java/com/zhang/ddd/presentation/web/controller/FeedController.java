@@ -2,11 +2,8 @@ package com.zhang.ddd.presentation.web.controller;
 
 import java.util.List;
 import com.zhang.ddd.infrastructure.common.api.Response;
-import com.zhang.ddd.presentation.facade.dto.FeedServiceFacade;
-import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
+import com.zhang.ddd.presentation.facade.FeedServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.FeedDto;
-import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
-import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.web.security.LoginUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 @RestController
 @Slf4j
