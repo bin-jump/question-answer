@@ -23,6 +23,9 @@ public class Response {
     public static Response ok(Object data){
         return Response.builder().status(Status.SUCCESS).data(data).build();
     }
+    public static Response ok(Object data, String message){
+        return Response.builder().status(Status.SUCCESS).data(data).msg(message).build();
+    }
 
     public static Response okPagingAfter(List data, String after, int pageSize){
         after = data.size() >= pageSize ? after : null;

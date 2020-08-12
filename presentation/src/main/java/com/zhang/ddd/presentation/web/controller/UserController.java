@@ -43,6 +43,9 @@ public class UserController {
     public Response me() {
 
         UserDto userDto = LoginUtil.getCurrentUser();
+        if (userDto == null) {
+            return Response.ok(null);
+        }
         userDto = userServiceFacade.findById(userDto.getId());
         return Response.ok(userDto);
     }
@@ -52,15 +55,15 @@ public class UserController {
                          @RequestBody @Valid UserDto userDto) {
         userDto.setId(id);
         userDto = userServiceFacade.edit(userDto);
-        return Response.ok(userDto);
+        return Response.ok(userDto, "User updated.");
     }
 
     @PutMapping("{id}/password")
-    public Response edit(@PathVariable String id,
+    public Response changePassword(@PathVariable String id,
                          @RequestBody @Valid ChangePasswordRequest request) {
         userServiceFacade
                 .changePassword(id, request.getOldPassword(), request.getNewPassword());
-        return Response.ok();
+        return Response.ok("Password changed.");
     }
 
     @GetMapping("{id}")

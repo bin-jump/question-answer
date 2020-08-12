@@ -54,7 +54,7 @@ public class QuestionController {
                 questionDto.getTags().stream().map(TagDto::getLabel).collect(Collectors.toList()));
         res.setAuthor(currentUser);
 
-        return Response.ok(res);
+        return Response.ok(res, "New question added.");
     }
 
     @GetMapping("{id}/comment")
@@ -100,7 +100,7 @@ public class QuestionController {
         AnswerDto ans = postServiceFacade.createAnswer(id,
                 answer.getBody(), currentUser.getId(), currentUser);
 
-        return Response.ok(ans);
+        return Response.ok(ans, "New answer added.");
     }
 
     @PostMapping("/{id}/vote")
