@@ -11,8 +11,11 @@ public class UserPasswordEncoder {
         return passwordEncoder;
     }
 
-
     public static String encode(String password) {
         return passwordEncoder.encode(password);
     }
+
+    public static boolean check(String encoded, String target)
+    {return passwordEncoder.matches(target, encoded);}
+
 }

@@ -3,8 +3,11 @@ package com.zhang.ddd.domain.aggregate.user.service;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.AvatarImageRepository;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.aggregate.user.service.command.EditUserCommand;
+import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.InvalidValueException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
+import com.zhang.ddd.domain.util.UserPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,36 @@ public class UserDomainService {
         user.setEmail(email);
         userRepository.save(user);
         return user;
+    }
+
+    public User editUser(EditUserCommand editUserCommand) {
+        User user = userRepository.findById(editUserCommand.getId());
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        user.setEmail(editUserCommand.getEmail());
+        user.setAge(editUserCommand.getAge());
+        user.setDescription(editUserCommand.getDescription());
+        user.setGender(editUserCommand.getGender());
+
+        userRepository.update(user);
+        return user;
+    }
+
+    public void changePassword(String id, String oldPassword, String newPassword) {
+        User user = userRepository.findById(id);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        if (!UserPasswordEncoder
+                .check(user.getPassword(), oldPassword))
+        {
+            throw new InvalidOperationException("Wrong password.");
+        }
+
+        user.updatePassword(newPassword);
+        userRepository.update(user);
     }
 
     public void userCreateQuestion(String id) {

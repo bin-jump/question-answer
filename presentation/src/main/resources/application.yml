@@ -8,6 +8,19 @@ spring:
   application:
     name: smartpost
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/smartpost?serverTimezone=Asia/Tokyo&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
+    hikari:
+      auto-commit: true
+      minimum-idle: 2
+      idle-timeout: 60000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: DatebookHikariCP
+      maximum-pool-size: 5
+
     session:
       store-type: redis
 

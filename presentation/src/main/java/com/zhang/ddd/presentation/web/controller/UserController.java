@@ -7,6 +7,7 @@ import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
+import com.zhang.ddd.presentation.facade.dto.user.ChangePasswordRequest;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.facade.dto.follow.FollowResultDto;
 import com.zhang.ddd.presentation.web.security.LoginUtil;
@@ -41,13 +42,25 @@ public class UserController {
     @GetMapping("me")
     public Response me() {
 
-        UserDto userDto = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof WebUserPrincipal) {
-            userDto = UserAssembler.toDTO(((WebUserPrincipal)principal).getUser());
-        }
+        UserDto userDto = LoginUtil.getCurrentUser();
+        userDto = userServiceFacade.findById(userDto.getId());
         return Response.ok(userDto);
+    }
+
+    @PutMapping("{id}")
+    public Response edit(@PathVariable String id,
+                         @RequestBody @Valid UserDto userDto) {
+        userDto.setId(id);
+        userDto = userServiceFacade.edit(userDto);
+        return Response.ok(userDto);
+    }
+
+    @PutMapping("{id}/password")
+    public Response edit(@PathVariable String id,
+                         @RequestBody @Valid ChangePasswordRequest request) {
+        userServiceFacade
+                .changePassword(id, request.getOldPassword(), request.getNewPassword());
+        return Response.ok();
     }
 
     @GetMapping("{id}")

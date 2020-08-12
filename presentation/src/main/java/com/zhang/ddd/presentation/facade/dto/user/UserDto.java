@@ -21,7 +21,6 @@ public class UserDto {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String password;
 
     private int age;
@@ -48,6 +47,5 @@ public class UserDto {
     private int followerCount;
 
     private int followeeCount;
-
 
 }

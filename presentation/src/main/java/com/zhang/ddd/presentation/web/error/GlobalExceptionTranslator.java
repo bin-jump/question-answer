@@ -1,5 +1,6 @@
 package com.zhang.ddd.presentation.web.error;
 
+import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.InvalidValueException;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,12 @@ public class GlobalExceptionTranslator {
 
     @ExceptionHandler(InvalidValueException.class)
     public Response handleDomainValueError(InvalidValueException e) {
+
+        return Response.failed(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidOperationException.class)
+    public Response handleDomainOperationError(InvalidOperationException e) {
 
         return Response.failed(e.getMessage());
     }

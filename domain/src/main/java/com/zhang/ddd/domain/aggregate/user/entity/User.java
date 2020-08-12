@@ -23,13 +23,10 @@ public class User extends Entity<User> {
         if (!StringUtils.hasText(name)) {
             throw new InvalidValueException("User name can not be empty.");
         }
-        if (!StringUtils.hasText(password) || password.length() < 6) {
-            throw new InvalidValueException("Password must have length longer than 6.");
-        }
 
         this.name = name;
-        this.password = UserPasswordEncoder.encode(password);
         this.id = id;
+        updatePassword(password);
         this.created = new Date();
     }
 
@@ -60,9 +57,30 @@ public class User extends Entity<User> {
 
     private int followeeCount;
 
-    // TODO: add check rule
+    public void updatePassword(String password) {
+        if (!StringUtils.hasText(password) || password.length() < 6) {
+            throw new InvalidValueException("Password must have length longer than 6.");
+        }
+        this.password = UserPasswordEncoder.encode(password);
+    }
+
     public void setEmail(String email) {
+        if (email == null || !email
+                .matches("^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$")) {
+            throw new InvalidValueException("Not a valid email.");
+        }
         this.email = email;
+    }
+
+    public void setAge(int age) {
+        if ( 150 < age) {
+            throw new InvalidValueException("Age is not valid.");
+        }
+        this.age = age;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 

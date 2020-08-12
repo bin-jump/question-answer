@@ -15,7 +15,9 @@ import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
+import com.zhang.ddd.domain.aggregate.user.entity.valueobject.UserGender;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.aggregate.user.service.command.EditUserCommand;
 import com.zhang.ddd.presentation.facade.assembler.AnswerAssembler;
 import com.zhang.ddd.presentation.facade.assembler.QuestionAssembler;
 import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
@@ -51,6 +53,24 @@ public class UserServiceFacade {
 
         User user = userApplicationService.create(userDto.getName(), userDto.getPassword(), userDto.getEmail());
         return UserAssembler.toDTO(user);
+    }
+
+    public UserDto edit(UserDto userDto) {
+
+        EditUserCommand editUserCommand = EditUserCommand.builder()
+                .id(userDto.getId())
+                .age(userDto.getAge())
+                .email(userDto.getEmail())
+                .gender(UserGender.valueOf(userDto.getGender()))
+                .description(userDto.getDescription())
+                .build();
+
+        User user = userApplicationService.edit(editUserCommand);
+        return UserAssembler.toDTO(user);
+    }
+
+    public void changePassword(String id, String oldPassword, String newPassword) {
+        userApplicationService.changePassword(id, oldPassword, newPassword);
     }
 
     public UserDto findByName(String name) {
