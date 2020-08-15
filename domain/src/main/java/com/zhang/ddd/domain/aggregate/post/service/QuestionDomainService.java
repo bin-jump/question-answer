@@ -6,10 +6,12 @@ import java.util.stream.Stream;
 
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
+import com.zhang.ddd.domain.aggregate.post.entity.SearchItem;
 import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceType;
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
+import com.zhang.ddd.domain.aggregate.post.repository.SearchPostRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.TagRepository;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.domain.exception.InvalidOperationException;
@@ -29,6 +31,9 @@ public class QuestionDomainService {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    SearchPostRepository searchPostRepository;
 
     public Question create(String title, String body, String authorId, List<String> tagLables) {
         if (tagLables.size() == Question.TAG_NUM_LIMIT) {
@@ -63,6 +68,10 @@ public class QuestionDomainService {
         });
 
         questionRepository.save(question);
+
+        SearchItem searchItem = SearchItem.fromQuestion(question);
+        searchPostRepository.save(searchItem);
+
         return question;
     }
 

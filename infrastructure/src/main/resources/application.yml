@@ -14,6 +14,12 @@ spring:
       pool-name: DatebookHikariCP
       maximum-pool-size: 5
 
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      host: localhost
+      port: 9300
+
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   configuration:

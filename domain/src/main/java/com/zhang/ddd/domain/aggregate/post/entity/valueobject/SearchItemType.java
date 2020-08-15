@@ -1,5 +1,5 @@
 package com.zhang.ddd.domain.aggregate.post.entity.valueobject;
 
-public enum SearchResultType {
+public enum SearchItemType {
     QUESTION, ANSWER
 }

@@ -4,11 +4,15 @@ import java.util.List;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
+import com.zhang.ddd.domain.aggregate.post.entity.SearchItem;
 import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
+import com.zhang.ddd.domain.aggregate.post.repository.SearchPostRepository;
+import com.zhang.ddd.domain.aggregate.post.service.PostSearchDomainService;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.infrastructure.search.post.SearchPostRepositoryImpl;
 import com.zhang.ddd.presentation.SmartpostApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -42,12 +46,26 @@ public class QuestionServiceTest {
     @Autowired
     AnswerRepository answerRepository;
 
+    @Autowired
+    PostSearchDomainService searchDomainService;
+
+    @Autowired
+    SearchPostRepository searchPostRepository;
+
     @Test
-    public void testCreate() {
+    public void searchTest() {
+        List<SearchItem> items = searchDomainService.search("question", null, 10);
+
+        //Assert.assertTrue(items.size() > 0);
+        //((SearchPostRepositoryImpl)searchPostRepository).createIndex();
+
+    }
+
+    @Test
+    public void createQuestionTest() {
 
         User user = userRepository.findByName(testUserName);
-
-        Question question = questionApplicationService.create("this is a question.",
+        Question question = questionApplicationService.create("This is a new question.",
                 "body", user.getId(), Arrays.asList("tag a", "tag c"));
 
         Assert.assertNotNull(question);

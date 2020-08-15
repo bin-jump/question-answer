@@ -3,10 +3,12 @@ package com.zhang.ddd.domain.aggregate.post.service;
 import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 import com.zhang.ddd.domain.aggregate.post.entity.Comment;
 import com.zhang.ddd.domain.aggregate.post.entity.Question;
+import com.zhang.ddd.domain.aggregate.post.entity.SearchItem;
 import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceType;
 import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
+import com.zhang.ddd.domain.aggregate.post.repository.SearchPostRepository;
 import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class AnswerDomainService {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    SearchPostRepository searchPostRepository;
+
     public Answer create(String questionId, String body, String authorId) {
         Question question = questionRepository.findById(questionId);
         if (question == null) {
@@ -36,6 +41,9 @@ public class AnswerDomainService {
 
         question.setAnswerCount(question.getAnswerCount() + 1);
         questionRepository.update(question);
+
+        SearchItem searchItem = SearchItem.fromAnswer(answer);
+        searchPostRepository.save(searchItem);
 
         return answer;
     }
