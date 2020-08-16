@@ -1,16 +1,18 @@
 package com.zhang.ddd.infrastructure.search.post;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhang.ddd.domain.aggregate.post.entity.SearchItem;
 import com.zhang.ddd.domain.aggregate.post.entity.valueobject.SearchItemType;
 import com.zhang.ddd.domain.aggregate.post.repository.SearchPostRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostSearchQuery;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Repository;
@@ -26,6 +28,12 @@ public class SearchPostRepositoryImpl implements SearchPostRepository {
 
     @Autowired
     ElasticsearchRestTemplate searchTemplate;
+
+    @Autowired
+    private RestHighLevelClient esClient;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @Override
@@ -46,10 +54,23 @@ public class SearchPostRepositoryImpl implements SearchPostRepository {
 
         QueryBuilder basicQuery = this.makeBasicQuery(searchQuery);
         queryBuilder.withQuery(basicQuery);
+        //SearchHits<Post> postHits = searchTemplate.search(queryBuilder.build(), Post.class);
 
-        SearchHits<Post> postHits = searchTemplate.search(queryBuilder.build(), Post.class);
-        List<Post> posts = postHits.getSearchHits().stream()
-                .map(SearchHit::getContent).collect(Collectors.toList());
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(basicQuery)
+                .size(searchQuery.getSize())
+                .sort("_score", SortOrder.DESC)
+                .sort("_id", SortOrder.ASC);
+        if (searchQuery.hasCursor()) {
+            sourceBuilder.searchAfter(new Object[]{searchQuery.getCursorScore(),
+                    searchQuery.getCursorId()});
+        }
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("post");
+        searchRequest.source(sourceBuilder);
+
+        PostSearchTemplate template = new PostSearchTemplate(esClient);
+        List<Post> posts = template.doSearch(searchRequest);
 
         List<SearchItem> res = PostAssembler.toDOs(posts);
         return res;

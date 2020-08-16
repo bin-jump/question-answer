@@ -10,8 +10,14 @@ public class PostSearchQuery {
 
     private String keyWord;
 
-    private String cursor;
+    private String cursorId;
+
+    private Float cursorScore;
 
     private int size;
+
+    public boolean hasCursor() {
+        return cursorId != null && cursorScore != null;
+    }
 
 }

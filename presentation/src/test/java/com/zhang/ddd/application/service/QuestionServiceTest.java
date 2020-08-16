@@ -54,18 +54,17 @@ public class QuestionServiceTest {
 
     @Test
     public void searchTest() {
-        List<SearchItem> items = searchDomainService.search("question", null, 10);
+        List<SearchItem> items = searchDomainService
+                .search("another question", null, null, 10);
 
-        //Assert.assertTrue(items.size() > 0);
-        //((SearchPostRepositoryImpl)searchPostRepository).createIndex();
-
+        Assert.assertTrue(items.size() > 0);
     }
 
     @Test
     public void createQuestionTest() {
 
         User user = userRepository.findByName(testUserName);
-        Question question = questionApplicationService.create("This is a new question.",
+        Question question = questionApplicationService.create("This is another new question.",
                 "body", user.getId(), Arrays.asList("tag a", "tag c"));
 
         Assert.assertNotNull(question);

@@ -52,4 +52,6 @@ public class SearchItem {
 
     private Date created;
 
+    private Float score;
+
 }

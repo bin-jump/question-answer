@@ -41,6 +41,8 @@ public class Post {
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     private Instant created;
 
+    private Float score;
+
 //    @Field(type = FieldType.Date, store = true, format = DateFormat.custom, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", timezone = "GMT+09:00")
 //    private Date created;

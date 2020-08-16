@@ -13,10 +13,11 @@ public class PostSearchDomainService {
     @Autowired
     SearchPostRepository searchPostRepository;
 
-    public List<SearchItem> search(String keyWord, String cursor, int size) {
+    public List<SearchItem> search(String keyWord, Float cursorScore, String cursorId, int size) {
         PostSearchQuery searchQuery = PostSearchQuery.builder()
                 .keyWord(keyWord)
-                .cursor(cursor)
+                .cursorScore(cursorScore)
+                .cursorId(cursorId)
                 .size(size)
                 .build();
 
