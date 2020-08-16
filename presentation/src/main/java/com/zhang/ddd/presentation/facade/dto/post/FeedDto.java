@@ -17,6 +17,8 @@ public class FeedDto {
 
     private String feedType;
 
+    private String creatorId;
+
     private Object target;
 
     private long created;

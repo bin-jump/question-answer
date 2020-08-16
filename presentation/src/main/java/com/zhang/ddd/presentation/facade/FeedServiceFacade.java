@@ -49,14 +49,12 @@ public class FeedServiceFacade {
 
 
     public List<FeedDto> findFeed(String userId, String cursor, int size) {
+
         List<Feed> feeds = feedRepository.getUserFeed(userId, new FavorPaging(cursor, size));
 
-        Map<String, Feed> feedResourceMap = feeds.stream()
-                .collect(Collectors.toMap(Feed::getResourceId, e -> e));
-
-        List<FeedDto> qfeeds = fillFeedQuestions(feedResourceMap, feeds);
-        List<FeedDto> afeeds = fillFeedAnswers(feedResourceMap);
-        List<FeedDto> ufeeds = fillFeedUsers(feedResourceMap);
+        List<FeedDto> qfeeds = fillFeedQuestions(feeds);
+        List<FeedDto> afeeds = fillFeedAnswers(feeds);
+        List<FeedDto> ufeeds = fillFeedUsers(feeds);
 
         Map<String, FeedDto> feedDtos = Stream.of(qfeeds, afeeds, ufeeds)
                 .flatMap(Collection::stream)
@@ -70,8 +68,8 @@ public class FeedServiceFacade {
         return res;
     }
 
-    private List<FeedDto> fillFeedQuestions(Map<String, Feed> feedMapping, List<Feed> feeds) {
-        List<String> qids = feedMapping.values()
+    private List<FeedDto> fillFeedQuestions(List<Feed> feeds) {
+        List<String> qids = feeds
                 .stream().filter(e -> e.getFeedType() == FeedType.QUESTION)
                 .map(Feed::getResourceId)
                 .collect(Collectors.toList());
@@ -83,7 +81,7 @@ public class FeedServiceFacade {
                 .collect(Collectors.toList());
         facadeHelper.fillQuestionUsers(questionDtos);
 
-        Map<String, UserDto> creators = userRepository.findByIds(feedMapping.values().stream()
+        Map<String, UserDto> creators = userRepository.findByIds(feeds.stream()
         .map(Feed::getCreatorId).collect(Collectors.toList()))
                 .stream().map(UserAssembler::toDTO).collect(Collectors.toMap(UserDto::getId, e -> e));
 
@@ -95,15 +93,14 @@ public class FeedServiceFacade {
                 .map(e -> {
                     FeedDto feedDto = FeedAssembler.toDTO(e, creators.get(e.getCreatorId()));
                     feedDto.setTarget(questionDtoMap.get(e.getResourceId()));
-
                     return feedDto;
                 }).collect(Collectors.toList());
 
         return res;
     }
 
-    private List<FeedDto> fillFeedAnswers(Map<String, Feed> feeds) {
-        List<String> aids = feeds.values()
+    private List<FeedDto> fillFeedAnswers(List<Feed> feeds) {
+        List<String> aids = feeds
                 .stream().filter(e -> e.getFeedType() == FeedType.ANSWER)
                 .map(Feed::getResourceId)
                 .collect(Collectors.toList());
@@ -116,21 +113,23 @@ public class FeedServiceFacade {
 
         facadeHelper.fillAnswerUsers(answerDtos);
         List<QuestionDto> questionDtos = facadeHelper.wrapAnswerQuestion(answerDtos);
+        Map<String, QuestionDto> questionDtoMap = questionDtos.stream()
+                .collect(Collectors.toMap(e -> e.getCover().getId(), e -> e));
 
-        List<FeedDto> res = questionDtos.stream()
+        List<FeedDto> res = feeds.stream()
+                .filter(e -> e.getFeedType() == FeedType.ANSWER)
                 .map(e -> {
-                    AnswerDto ans = e.getCover();
-                    Feed feed = feeds.get(ans.getId());
-                    FeedDto feedDto = FeedAssembler.toDTO(feed, ans.getAuthor());
-                    feedDto.setTarget(e);
+                    QuestionDto questionDto = questionDtoMap.get(e.getResourceId());
+                    FeedDto feedDto = FeedAssembler.toDTO(e, questionDto.getCover().getAuthor());
+                    feedDto.setTarget(questionDto);
                     return feedDto;
                 }).collect(Collectors.toList());
 
         return res;
     }
 
-    private List<FeedDto> fillFeedUsers(Map<String, Feed> feeds) {
-        List<String> uids = feeds.values()
+    private List<FeedDto> fillFeedUsers(List<Feed> feeds) {
+        List<String> uids = feeds
                 .stream().filter(e -> e.getFeedType() == FeedType.USER)
                 .map(Feed::getResourceId)
                 .collect(Collectors.toList());
@@ -141,16 +140,19 @@ public class FeedServiceFacade {
                 .stream().map(UserAssembler::toDTO)
                 .collect(Collectors.toList());
 
-        Map<String, UserDto> creators = userRepository.findByIds(feeds.values().stream()
+        Map<String, UserDto> userDtoMap = userDtos.stream()
+                .collect(Collectors.toMap(UserDto::getId, e -> e));
+
+        Map<String, UserDto> creators = userRepository.findByIds(feeds.stream()
             .map(Feed::getCreatorId).collect(Collectors.toList()))
                 .stream().map(UserAssembler::toDTO)
                 .collect(Collectors.toMap(UserDto::getId, e -> e));
 
-        List<FeedDto> res = userDtos.stream()
+        List<FeedDto> res = feeds.stream()
+                .filter(e -> e.getFeedType() == FeedType.USER)
                 .map(e -> {
-                    Feed feed = feeds.get(e.getId());
-                    FeedDto feedDto = FeedAssembler.toDTO(feed, creators.get(feed.getCreatorId()));
-                    feedDto.setTarget(e);
+                    FeedDto feedDto = FeedAssembler.toDTO(e, creators.get(e.getCreatorId()));
+                    feedDto.setTarget(userDtoMap.get(e.getResourceId()));
                     return feedDto;
                 }).collect(Collectors.toList());
 
