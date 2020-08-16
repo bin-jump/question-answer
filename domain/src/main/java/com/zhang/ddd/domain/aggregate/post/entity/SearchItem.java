@@ -25,13 +25,14 @@ public class SearchItem {
         return item;
     }
 
-    public static SearchItem fromAnswer(Answer answer) {
+    public static SearchItem fromAnswer(Answer answer, String questionTitle) {
 
         SearchItem item = new SearchItem();
         item.id = answer.getId();
         item.itemType = SearchItemType.ANSWER;
         item.authorId = answer.getAuthorId();
         item.parentId = answer.getParentId();
+        item.title = questionTitle;
         item.body = answer.getBody();
         item.created = new Date();
 

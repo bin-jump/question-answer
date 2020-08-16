@@ -11,6 +11,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.*;
@@ -61,6 +62,12 @@ public class SearchPostRepositoryImpl implements SearchPostRepository {
                 .size(searchQuery.getSize())
                 .sort("_score", SortOrder.DESC)
                 .sort("_id", SortOrder.ASC);
+        sourceBuilder.highlighter(new HighlightBuilder()
+                .preTags("<em style='background:yellow'>")
+                .postTags("</em>")
+                .field("title")
+                .field("body"));
+
         if (searchQuery.hasCursor()) {
             sourceBuilder.searchAfter(new Object[]{searchQuery.getCursorScore(),
                     searchQuery.getCursorId()});

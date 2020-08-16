@@ -42,7 +42,7 @@ public class AnswerDomainService {
         question.setAnswerCount(question.getAnswerCount() + 1);
         questionRepository.update(question);
 
-        SearchItem searchItem = SearchItem.fromAnswer(answer);
+        SearchItem searchItem = SearchItem.fromAnswer(answer, question.getTitle());
         searchPostRepository.save(searchItem);
 
         return answer;

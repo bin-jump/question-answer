@@ -1,18 +1,23 @@
 package com.zhang.ddd.presentation.web.controller;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
+import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.infrastructure.common.api.Response;
+import com.zhang.ddd.presentation.facade.SearchServiceFacade;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
 import com.zhang.ddd.presentation.facade.dto.post.SearchDto;
 import com.zhang.ddd.presentation.facade.dto.post.TagDto;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -20,79 +25,49 @@ import java.util.List;
 @RequestMapping("/api/search")
 public class SearchController {
 
+    @Autowired
+    SearchServiceFacade searchServiceFacade;
+
     @GetMapping
-    public Response search(@RequestParam(value="q", required=true) String keyWord)  {
+    public Response searchPost(@RequestParam(value="q") String keyWord,
+                               @RequestParam(value="cusor", required = false) String cusor,
+                               @RequestParam(value="size", defaultValue = "10") int size) {
 
-        UserDto user = UserDto.builder()
-                .id("abc123")
-                .name("zhang")
-                .avatarUrl("https://www.gravatar.com/avatar/47BCE5C74F589F4867DBD57E9CA9F808.jpg?s=400&d=identicon")
-                .build();
+        Float cursorScore = null;
+        String cursorId = null;
+        if (cusor != null) {
+            Object[] cursors = toCursors(cusor);
+            cursorScore = (Float)cursors[0];
+            cursorId = (String)cursors[1];
+        }
 
-        AnswerDto a1 = AnswerDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. " +
-                        "Get used to how to write simple programs. ")
-                .created(1429077131)
-                .id("aaa111")
-                .build();
+        List<SearchDto> res = searchServiceFacade.searchPost(keyWord, cursorScore, cursorId, size);
 
-        QuestionDto q1 = QuestionDto.builder()
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .cover(a1)
-                .build();
+        String next = null;
+        SearchDto last = res.size() > 0 ? res.get(res.size() - 1) : null;
+        if (last != null) {
+            next = toCursor(last.getScore(), last.getId());
+        }
 
-        QuestionDto q2 = QuestionDto.builder()
-                .authorId(user.getId())
-                .author(user)
-                .body("authorbest way to learn")
-                .title("What is the best way to learn python")
-                .id("qqq111")
-                .created(1429070000)
-                .followCount(7)
-                .commentCount(20)
-                .tag(new TagDto("python"))
-                .tag(new TagDto("programming"))
-                .build();
+        return Response.okPagingAfter(res, next, size);
+    }
 
-        SearchDto s1 = SearchDto.builder()
-                .id("search111")
-                .searchType("ANSWER")
-                .question(q2)
-                .answer(a1)
-                .created(1429070000)
-                .build();
+    private String toCursor(Float score, String id) {
 
-        SearchDto s2 = SearchDto.builder()
-                .id("search222")
-                .searchType("QUESTION")
-                .question(q2)
-                .created(1429070000)
-                .build();
+        return score + "_" + id;
+    }
 
-        SearchDto s3 = SearchDto.builder()
-                .id("search333")
-                .searchType("QUESTION")
-                .question(q2)
-                .created(1429070000)
-                .build();
+    private Object[] toCursors(String cursor) {
+        if (cursor == null) {
+            return new Object[]{};
+        }
+        String[] frags = cursor.split("_");
+        if (frags.length != 2) {
+            throw new InvalidOperationException("Wrong cursor.");
+        }
+        Float score = Float.valueOf(frags[0]);
+        String id = frags[1];
 
-        List<SearchDto> res = new ArrayList<>();
-
-        res.add(s1);
-
-        res.add(s2);
-        res.add(s3);
-
-
-        return Response.okPagingAfter(res, s1.getId(), 3);
+        return new Object[]{score, id};
     }
 }
