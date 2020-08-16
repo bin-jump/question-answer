@@ -53,7 +53,7 @@ public class QuestionApplicationService {
         Answer answer = answerDomainService.create(questionId, body, authorId);
         userDomainService.userCreateAnswer(authorId);
 
-        feedDomainService.questionCreate(authorId, answer.getId());
+        feedDomainService.answerCreate(authorId, answer.getId());
 
         return  answer;
     }

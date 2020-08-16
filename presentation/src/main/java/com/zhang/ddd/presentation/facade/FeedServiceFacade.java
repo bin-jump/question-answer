@@ -54,7 +54,7 @@ public class FeedServiceFacade {
         Map<String, Feed> feedResourceMap = feeds.stream()
                 .collect(Collectors.toMap(Feed::getResourceId, e -> e));
 
-        List<FeedDto> qfeeds = fillFeedQuestions(feedResourceMap);
+        List<FeedDto> qfeeds = fillFeedQuestions(feedResourceMap, feeds);
         List<FeedDto> afeeds = fillFeedAnswers(feedResourceMap);
         List<FeedDto> ufeeds = fillFeedUsers(feedResourceMap);
 
@@ -70,8 +70,8 @@ public class FeedServiceFacade {
         return res;
     }
 
-    private List<FeedDto> fillFeedQuestions(Map<String, Feed> feeds) {
-        List<String> qids = feeds.values()
+    private List<FeedDto> fillFeedQuestions(Map<String, Feed> feedMapping, List<Feed> feeds) {
+        List<String> qids = feedMapping.values()
                 .stream().filter(e -> e.getFeedType() == FeedType.QUESTION)
                 .map(Feed::getResourceId)
                 .collect(Collectors.toList());
@@ -83,15 +83,19 @@ public class FeedServiceFacade {
                 .collect(Collectors.toList());
         facadeHelper.fillQuestionUsers(questionDtos);
 
-        Map<String, UserDto> creators = userRepository.findByIds(feeds.values().stream()
+        Map<String, UserDto> creators = userRepository.findByIds(feedMapping.values().stream()
         .map(Feed::getCreatorId).collect(Collectors.toList()))
                 .stream().map(UserAssembler::toDTO).collect(Collectors.toMap(UserDto::getId, e -> e));
 
-        List<FeedDto> res = questionDtos.stream()
+        Map<String, QuestionDto> questionDtoMap = questionDtos
+                .stream().collect(Collectors.toMap(QuestionDto::getId, e -> e));
+
+        List<FeedDto> res = feeds.stream()
+                .filter(e -> e.getFeedType() == FeedType.QUESTION)
                 .map(e -> {
-                    Feed feed = feeds.get(e.getId());
-                    FeedDto feedDto = FeedAssembler.toDTO(feed, creators.get(feed.getCreatorId()));
-                    feedDto.setTarget(e);
+                    FeedDto feedDto = FeedAssembler.toDTO(e, creators.get(e.getCreatorId()));
+                    feedDto.setTarget(questionDtoMap.get(e.getResourceId()));
+
                     return feedDto;
                 }).collect(Collectors.toList());
 
