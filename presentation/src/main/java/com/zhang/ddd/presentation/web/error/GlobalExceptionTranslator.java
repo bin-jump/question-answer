@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class GlobalExceptionTranslator {
         return Response.failed(e.getMessage());
     }
 
+    //@ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidOperationException.class)
     public Response handleDomainOperationError(InvalidOperationException e) {
 

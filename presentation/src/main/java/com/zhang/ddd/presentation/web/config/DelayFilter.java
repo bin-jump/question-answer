@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 // for test loading state
-@Component
+//@Component
 @Slf4j
 public class DelayFilter implements Filter {
     @Override
