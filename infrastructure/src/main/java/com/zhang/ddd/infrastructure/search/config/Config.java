@@ -19,7 +19,7 @@ public class Config {
     @Value("${spring.data.elasticsearch.host}")
     private String hostName;
 
-    @Value("${spring.data.elasticsearch.port}")
+    @Value("${spring.data.elasticsearch.restport}")
     private int portNumber;
 
     @Bean
