@@ -38,3 +38,10 @@ mybatis:
   mapper-locations: classpath*:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+ftp:
+  host: 127.0.0.1
+  port: 21
+  username: ftpuser
+  password: ftpuser
+  filepath: /images

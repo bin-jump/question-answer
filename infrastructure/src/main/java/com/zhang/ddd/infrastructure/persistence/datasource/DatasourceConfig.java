@@ -1,4 +1,4 @@
-package com.zhang.ddd.infrastructure.datasource;
+package com.zhang.ddd.infrastructure.persistence.datasource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

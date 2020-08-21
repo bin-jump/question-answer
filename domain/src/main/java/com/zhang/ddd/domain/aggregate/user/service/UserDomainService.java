@@ -3,6 +3,7 @@ package com.zhang.ddd.domain.aggregate.user.service;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.AvatarImageRepository;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.aggregate.user.service.command.ChangeAvatarCommand;
 import com.zhang.ddd.domain.aggregate.user.service.command.EditUserCommand;
 import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.domain.exception.InvalidValueException;
@@ -10,6 +11,8 @@ import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.domain.util.UserPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
 
 @Service
 public class UserDomainService {
@@ -46,6 +49,21 @@ public class UserDomainService {
         user.setGender(editUserCommand.getGender());
 
         userRepository.update(user);
+        return user;
+    }
+
+    public User changeAvatarImage(ChangeAvatarCommand command) {
+        User user = userRepository.findById(command.getUserId());
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        String currentImage = user.getAvatarUrl();
+        String newImage = avatarImageRepository
+                .saveImage(user.getName(), command.getFileName(), command.getFileSize(), command.getStream());
+        user.setAvatarUrl(newImage);
+
+        userRepository.update(user);
+        avatarImageRepository.removeImage(currentImage);
         return user;
     }
 

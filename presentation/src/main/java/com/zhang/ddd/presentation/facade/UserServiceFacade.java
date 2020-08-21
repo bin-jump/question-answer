@@ -1,5 +1,7 @@
 package com.zhang.ddd.presentation.facade;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collector;
@@ -17,6 +19,7 @@ import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
 import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.entity.valueobject.UserGender;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
+import com.zhang.ddd.domain.aggregate.user.service.command.ChangeAvatarCommand;
 import com.zhang.ddd.domain.aggregate.user.service.command.EditUserCommand;
 import com.zhang.ddd.presentation.facade.assembler.AnswerAssembler;
 import com.zhang.ddd.presentation.facade.assembler.QuestionAssembler;
@@ -27,6 +30,7 @@ import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import com.zhang.ddd.presentation.web.security.LoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserServiceFacade {
@@ -67,6 +71,17 @@ public class UserServiceFacade {
 
         User user = userApplicationService.edit(editUserCommand);
         return UserAssembler.toDTO(user);
+    }
+
+    public UserDto changeAvatarImage(String id, MultipartFile image) throws IOException {
+        ChangeAvatarCommand command = ChangeAvatarCommand.builder()
+                .userId(id)
+                .fileName(image.getOriginalFilename())
+                .fileSize(image.getSize())
+                .stream(image.getInputStream())
+                .build();
+        User user = userApplicationService.changeAvatarImage(command);
+        return  UserAssembler.toDTO(user);
     }
 
     public void changePassword(String id, String oldPassword, String newPassword) {

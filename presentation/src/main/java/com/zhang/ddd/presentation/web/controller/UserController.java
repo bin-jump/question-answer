@@ -16,8 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,19 +54,25 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public Response edit(@PathVariable String id,
-                         @RequestBody @Valid UserDto userDto) {
-        userDto.setId(id);
+    public Response edit(@RequestBody @Valid UserDto userDto) {
+        userDto.setId(LoginUtil.getCurrentUser().getId());
         userDto = userServiceFacade.edit(userDto);
         return Response.ok(userDto, "User updated.");
     }
 
     @PutMapping("{id}/password")
-    public Response changePassword(@PathVariable String id,
-                         @RequestBody @Valid ChangePasswordRequest request) {
+    public Response changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         userServiceFacade
-                .changePassword(id, request.getOldPassword(), request.getNewPassword());
+                .changePassword(LoginUtil.getCurrentUser().getId(),
+                        request.getOldPassword(), request.getNewPassword());
         return Response.ok("Password changed.");
+    }
+
+    @PostMapping("avatar")
+    public Response changeAvatarImage(@RequestParam("image") MultipartFile image) throws IOException {
+        
+        userServiceFacade.changeAvatarImage(LoginUtil.getCurrentUser().getId(), image);
+        return Response.ok("User image changed.");
     }
 
     @GetMapping("{id}")
