@@ -53,26 +53,26 @@ public class UserController {
         return Response.ok(userDto);
     }
 
-    @PutMapping("{id}")
+    @PutMapping
     public Response edit(@RequestBody @Valid UserDto userDto) {
         userDto.setId(LoginUtil.getCurrentUser().getId());
         userDto = userServiceFacade.edit(userDto);
         return Response.ok(userDto, "User updated.");
     }
 
-    @PutMapping("{id}/password")
+    @PutMapping("password")
     public Response changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         userServiceFacade
                 .changePassword(LoginUtil.getCurrentUser().getId(),
                         request.getOldPassword(), request.getNewPassword());
-        return Response.ok("Password changed.");
+        return Response.ok(null, "Password changed.");
     }
 
     @PostMapping("avatar")
     public Response changeAvatarImage(@RequestParam("image") MultipartFile image) throws IOException {
-        
+
         userServiceFacade.changeAvatarImage(LoginUtil.getCurrentUser().getId(), image);
-        return Response.ok("User image changed.");
+        return Response.ok(null, "User image changed.");
     }
 
     @GetMapping("{id}")
