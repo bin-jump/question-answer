@@ -7,17 +7,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
 
 import java.time.Instant;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Document(indexName = "post", type = "docs", shards = 1, replicas = 0)
+@Document(indexName = "post", type = "docs", shards = 1, replicas = 0, createIndex=true)
+@Setting(settingPath = "/settings/settings.json")
 public class Post {
 
     @Id
@@ -32,10 +30,10 @@ public class Post {
     @Field(type = FieldType.Keyword)
     private String parentId;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "post_content_analyzer")
     private String title;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "post_content_analyzer")
     private String body;
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)

@@ -1,0 +1,11 @@
+{
+  "analysis": {
+    "analyzer": {
+      "post_content_analyzer": {
+        "char_filter" : ["html_strip"],
+        "tokenizer" : "standard",
+        "filter" : ["lowercase", "apostrophe", "stop", "stemmer"]
+      }
+    }
+  }
+}

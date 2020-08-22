@@ -5,6 +5,8 @@ import com.zhang.ddd.domain.aggregate.post.entity.SearchItem;
 import com.zhang.ddd.domain.aggregate.post.entity.valueobject.SearchItemType;
 import com.zhang.ddd.domain.aggregate.post.repository.SearchPostRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostSearchQuery;
+import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -14,14 +16,17 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@Slf4j
 public class SearchPostRepositoryImpl implements SearchPostRepository {
 
     @Autowired

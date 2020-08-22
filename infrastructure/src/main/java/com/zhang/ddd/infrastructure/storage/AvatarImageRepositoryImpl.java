@@ -1,5 +1,7 @@
 package com.zhang.ddd.infrastructure.storage;
 
+import java.util.Arrays;
+import java.util.List;
 import com.zhang.ddd.domain.aggregate.user.repository.AvatarImageRepository;
 import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.infrastructure.util.MD5Util;
@@ -20,6 +22,8 @@ import java.util.UUID;
 public class AvatarImageRepositoryImpl implements AvatarImageRepository {
 
     static final long SIZE_LIMIT = 1024 * 500;
+
+    static final List<String> IMAGE_EXT = Arrays.asList("png", "jpg", "jpeg");
 
     @Value("${ftp.host}")
     private String server;
@@ -71,6 +75,9 @@ public class AvatarImageRepositoryImpl implements AvatarImageRepository {
             throw new InvalidOperationException(MessageFormat
                     .format("Image file size cannot exceed {0}.", SIZE_LIMIT));
         }
+        if (!validImage(fileName)) {
+            throw new InvalidOperationException("Not a valid image.");
+        }
 
         final String uuid = UUID.randomUUID().toString().replace("-", "");
         fileName = MD5Util.md5Hex(name) + "-" + uuid + "." + FilenameUtils.getExtension(fileName);
@@ -95,5 +102,15 @@ public class AvatarImageRepositoryImpl implements AvatarImageRepository {
         }
 
         return fileName;
+    }
+
+    private boolean validImage(String fileName) {
+        String ext = FilenameUtils.getExtension(fileName).toLowerCase();
+        for (String s : IMAGE_EXT) {
+            if (ext.equals(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
