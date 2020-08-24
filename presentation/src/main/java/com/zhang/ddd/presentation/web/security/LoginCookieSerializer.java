@@ -14,7 +14,7 @@ public class LoginCookieSerializer extends DefaultCookieSerializer {
 
     @Override
     public void writeCookieValue(CookieValue cookieValue){
-        log.error("writeCookieValue: " + cookieValue.getRequest().getParameter("rememberme"));
+        //log.info("writeCookieValue: " + cookieValue.getRequest().getParameter("rememberme"));
         if (cookieValue.getCookieMaxAge() < 0 &&
                 Boolean.parseBoolean(cookieValue.getRequest().getParameter("rememberme"))) {
             int duration =  60*60*24*7;

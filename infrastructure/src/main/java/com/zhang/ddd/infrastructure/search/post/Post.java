@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@Document(indexName = "post", type = "docs", shards = 1, replicas = 0, createIndex=true)
+@Document(indexName = "post", shards = 1, replicas = 0, createIndex=true)
 @Setting(settingPath = "/settings/settings.json")
 public class Post {
 

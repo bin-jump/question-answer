@@ -66,7 +66,7 @@ public class PostSearchTemplate extends ElasticsearchRestTemplate {
                 curPost.setTitle(String.join("", titleHeights));
             }
             if (bodyHeights.size() > 0) {
-                curPost.setBody(String.join("", bodyHeights));
+                curPost.setBody("..." + String.join("", bodyHeights) + "...");
             }
 
         }

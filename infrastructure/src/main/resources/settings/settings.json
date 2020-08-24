@@ -1,10 +1,14 @@
 {
-  "analysis": {
-    "analyzer": {
-      "post_content_analyzer": {
-        "char_filter" : ["html_strip"],
-        "tokenizer" : "standard",
-        "filter" : ["lowercase", "apostrophe", "stop", "stemmer"]
+  "index": {
+    "number_of_shards": "1",
+    "number_of_replicas": "0",
+    "analysis": {
+      "analyzer": {
+        "post_content_analyzer": {
+          "char_filter" : ["html_strip"],
+          "tokenizer" : "standard",
+          "filter" : ["lowercase", "apostrophe", "stop", "stemmer"]
+        }
       }
     }
   }
