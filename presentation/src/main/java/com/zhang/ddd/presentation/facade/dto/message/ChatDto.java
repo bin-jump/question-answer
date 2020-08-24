@@ -12,15 +12,15 @@ import java.util.ArrayList;
 @Builder
 public class ChatDto {
 
-    private String id;
+    private Long id;
 
-    private String withId;
+    private Long withId;
 
     private UserDto withUser;
 
     private String coverText;
 
-    private String coverId;
+    private Long coverId;
 
     private long lastTime;
 

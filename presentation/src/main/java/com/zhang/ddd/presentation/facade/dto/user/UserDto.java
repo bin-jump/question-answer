@@ -14,9 +14,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UserDto {
 
-    private String id;
-
-    private String cursor;
+    private Long id;
 
     @NotBlank
     private String name;

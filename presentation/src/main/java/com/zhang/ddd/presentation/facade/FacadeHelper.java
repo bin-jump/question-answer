@@ -34,14 +34,18 @@ public class FacadeHelper {
     VoteRepository voteRepository;
 
     public List<QuestionDto> wrapAnswerQuestion(List<AnswerDto> answerDtos) {
-        Map<String, QuestionDto> questionDtos = questionRepository
+        Map<Long, QuestionDto> questionDtos = questionRepository
                 .findByIds(answerDtos.stream().map(AnswerDto::getParentId).collect(Collectors.toList()))
-                .stream().map(QuestionAssembler::toDTO).collect(Collectors.toMap(QuestionDto::getId, e -> e));
+                .stream().map(QuestionAssembler::toDTO).collect(Collectors.toMap(QuestionDto::getId, e -> e,
+                        (e1, e2) -> {
+                    return e1;
+                }));
 
         fillQuestionUsers(questionDtos.values().stream().collect(Collectors.toList()));
 
         List<QuestionDto> res = answerDtos.stream().map(e -> {
             QuestionDto q = questionDtos.get(e.getParentId());
+            q = q.copy();
             q.setCover(e);
             return q;
         }).collect(Collectors.toList());
@@ -51,7 +55,7 @@ public class FacadeHelper {
 
     public void fillQuestionUsers(List<QuestionDto> questionDtos) {
 
-        Map<String, UserDto> users = getUserIdMapping(questionDtos.stream()
+        Map<Long, UserDto> users = getUserIdMapping(questionDtos.stream()
                 .map(QuestionDto::getAuthorId).collect(Collectors.toList()));
 
         questionDtos.stream().forEach(e -> e.setAuthor(users.get(e.getAuthorId())));
@@ -59,7 +63,7 @@ public class FacadeHelper {
 
     public void fillAnswerUsers(List<AnswerDto> answerDtos) {
 
-        Map<String, UserDto> users = getUserIdMapping(answerDtos.stream()
+        Map<Long, UserDto> users = getUserIdMapping(answerDtos.stream()
                 .map(AnswerDto::getAuthorId).collect(Collectors.toList()));
 
         answerDtos.stream().forEach(e -> e.setAuthor(users.get(e.getAuthorId())));
@@ -70,7 +74,7 @@ public class FacadeHelper {
         if (me == null){
             return;
         }
-        Map<String, QuestionDto> qm = questionDtos
+        Map<Long, QuestionDto> qm = questionDtos
                 .stream().collect(Collectors.toMap(QuestionDto::getId, e -> e));
 
         List<Vote> votes = voteRepository.findByResourceIds(me.getId(),
@@ -88,7 +92,7 @@ public class FacadeHelper {
         if (me == null){
             return;
         }
-        Map<String, AnswerDto> am = answerDtos
+        Map<Long, AnswerDto> am = answerDtos
                 .stream().collect(Collectors.toMap(AnswerDto::getId, e -> e));
 
         List<Vote> votes = voteRepository.findByResourceIds(me.getId(),
@@ -102,7 +106,7 @@ public class FacadeHelper {
         });
     }
 
-    public Map<String, UserDto> getUserIdMapping(List<String> ids) {
+    public Map<Long, UserDto> getUserIdMapping(List<Long> ids) {
 
         return userRepository.findByIds(ids)
                 .stream()

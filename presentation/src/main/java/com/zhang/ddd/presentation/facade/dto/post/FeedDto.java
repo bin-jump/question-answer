@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FeedDto {
 
-    private String id;
+    private Long id;
 
     private String feedReason;
 
     private String feedType;
 
-    private String creatorId;
+    private Long creatorId;
 
     private Object target;
 

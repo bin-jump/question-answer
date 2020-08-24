@@ -27,7 +27,7 @@ public class Response {
         return Response.builder().status(Status.SUCCESS).data(data).msg(message).build();
     }
 
-    public static Response okPagingAfter(List data, String after, int pageSize){
+    public static Response okPagingAfter(List data, Object after, int pageSize){
         after = data.size() >= pageSize ? after : null;
         PagingData pageData = PagingData.builder()
                 .children(data)

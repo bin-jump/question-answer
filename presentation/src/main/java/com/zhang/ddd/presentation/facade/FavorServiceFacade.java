@@ -12,7 +12,7 @@ public class FavorServiceFacade {
     @Autowired
     FavorApplicationService favorApplicationService;
 
-    public FollowResultDto followQuestion(String followerId, String questionId) {
+    public FollowResultDto followQuestion(Long followerId, Long questionId) {
 
         Follow follow = favorApplicationService.followQuestion(followerId, questionId);
         FollowResultDto resultDto = FollowResultDto.builder()
@@ -22,7 +22,7 @@ public class FavorServiceFacade {
         return resultDto;
     }
 
-    public FollowResultDto unfollowQuestion(String followerId, String questionId) {
+    public FollowResultDto unfollowQuestion(Long followerId, Long questionId) {
 
         Follow follow = favorApplicationService.unfollowQuestion(followerId, questionId);
         FollowResultDto resultDto = FollowResultDto.builder()
@@ -32,7 +32,7 @@ public class FavorServiceFacade {
         return resultDto;
     }
 
-    public FollowResultDto followUser(String followerId, String followeeId) {
+    public FollowResultDto followUser(Long followerId, Long followeeId) {
 
         Follow follow = favorApplicationService.followUser(followerId, followeeId);
         FollowResultDto resultDto = FollowResultDto.builder()
@@ -42,7 +42,7 @@ public class FavorServiceFacade {
         return resultDto;
     }
 
-    public FollowResultDto unfollowUser(String followerId, String followeeId) {
+    public FollowResultDto unfollowUser(Long followerId, Long followeeId) {
 
         Follow follow = favorApplicationService.unfollowUser(followerId, followeeId);
         FollowResultDto resultDto = FollowResultDto.builder()

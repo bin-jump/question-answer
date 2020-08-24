@@ -68,8 +68,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     public Question findById(Long id) {
 
         QuestionPO questionPO = questionMapper.findById(id);
-        tagMapper.findByQuestionIds(Arrays.asList(id))
-                .stream().forEach(e -> questionPO.getTags().add(e));
+        //tagMapper.findByQuestionIds(Arrays.asList(id))
+        //        .stream().forEach(e -> questionPO.getTags().add(e));
+        fillQuestionTags(Arrays.asList(questionPO));
 
         return QuestionAssembler.toDO(questionPO);
     }

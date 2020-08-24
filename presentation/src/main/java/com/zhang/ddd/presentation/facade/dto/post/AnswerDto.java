@@ -12,10 +12,10 @@ import javax.validation.constraints.NotBlank;
 public class AnswerDto {
 
 
-    private String id;
+    private Long id;
 
     @NotBlank
-    private String parentId;
+    private Long parentId;
 
     private String title;
 
@@ -23,7 +23,7 @@ public class AnswerDto {
     private String body;
 
     @NotBlank
-    private String authorId;
+    private Long authorId;
 
     private long created;
 

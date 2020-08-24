@@ -26,7 +26,7 @@ public class SearchServiceFacade {
     @Autowired
     FacadeHelper helper;
 
-    public List<SearchDto> searchPost(String searchKey, Float cursorScore, String cursorId, int size) {
+    public List<SearchDto> searchPost(String searchKey, Float cursorScore, Long cursorId, int size) {
         List<SearchItem> searchItems = searchDomainService.search(searchKey, cursorScore, cursorId, size);
         List<SearchDto> res = SearchAssembler.toDTOs(searchItems);
         fillUser(res);
@@ -34,7 +34,7 @@ public class SearchServiceFacade {
     }
 
     private void fillUser(List<SearchDto> searchDtos) {
-        Map<String, UserDto> users = userRepository
+        Map<Long, UserDto> users = userRepository
                 .findByIds(searchDtos.stream().map(SearchDto::getAuthorId).collect(Collectors.toList()))
                 .stream().map(UserAssembler::toDTO).collect(Collectors.toMap(UserDto::getId, e -> e));
 

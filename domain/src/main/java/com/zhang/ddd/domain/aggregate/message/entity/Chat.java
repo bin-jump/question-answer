@@ -42,7 +42,7 @@ public class Chat extends Entity<Chat> {
         return this.chatter.getChatterYouId();
     }
 
-    public int getUnreadCount(String userId) {
+    public int getUnreadCount(Long userId) {
         if (!getMeId().equals(userId) && !getYouId().equals(userId)) {
             throw new InvalidOperationException("Wrong userId.");
         }
@@ -52,7 +52,7 @@ public class Chat extends Entity<Chat> {
         return youUnreadCount;
     }
 
-    public Long getChatWithId(String userId) {
+    public Long getChatWithId(Long userId) {
         if (!getMeId().equals(userId) && !getYouId().equals(userId)) {
             throw new InvalidOperationException("Wrong userId.");
         }

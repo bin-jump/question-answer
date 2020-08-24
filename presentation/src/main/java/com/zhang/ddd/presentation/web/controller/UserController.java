@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public Response getUserInfo(@PathVariable String id){
+    public Response getUserInfo(@PathVariable Long id){
 
         UserDto userDto = userServiceFacade.findById(id);
         return Response.ok(userDto);
@@ -90,68 +90,68 @@ public class UserController {
     }
 
     @GetMapping("{id}/questions")
-    public Response getQuestion(@PathVariable String id,
-                                @RequestParam(required = false) String after,
+    public Response getQuestion(@PathVariable Long id,
+                                @RequestParam(required = false) Long after,
                                 @RequestParam(defaultValue = "10") int size){
 
         List<QuestionDto> res = userServiceFacade.findUserQuestions(id, after, size);
-        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+        Long next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
         return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/answers")
-    public Response getAnswers(@PathVariable String id,
-                               @RequestParam(required = false) String after,
+    public Response getAnswers(@PathVariable Long id,
+                               @RequestParam(required = false) Long after,
                                @RequestParam(defaultValue = "10") int size){
 
         List<QuestionDto> res = userServiceFacade.findUserAnswers(id, after, size);
-        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+        Long next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
         return Response.okPagingAfter(res, next, size);
     }
 
     @PostMapping("{id}/follow")
-    public Response followUser(@PathVariable String id) {
+    public Response followUser(@PathVariable Long id) {
         UserDto currentUser = LoginUtil.getCurrentUser();
         FollowResultDto res = favorServiceFacade.followUser(currentUser.getId(), id);
         return Response.ok(res);
     }
 
     @DeleteMapping("{id}/follow")
-    public Response unfollowUser(@PathVariable String id) {
+    public Response unfollowUser(@PathVariable Long id) {
         UserDto currentUser = LoginUtil.getCurrentUser();
         FollowResultDto res = favorServiceFacade.unfollowUser(currentUser.getId(), id);
         return Response.ok(res);
     }
 
     @GetMapping("{id}/follow")
-    public Response getFollowQuestion(@PathVariable String id,
-                                      @RequestParam(required = false) String after,
+    public Response getFollowQuestion(@PathVariable Long id,
+                                      @RequestParam(required = false) Long after,
                                       @RequestParam(defaultValue = "10") int size) {
         List<QuestionDto> res = userServiceFacade.findfollowedQuestions(id, after, size);
-        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+        Long next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
         return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/follower")
-    public Response getFollower(@PathVariable String id,
-                                @RequestParam(required = false) String after,
+    public Response getFollower(@PathVariable Long id,
+                                @RequestParam(required = false) Long after,
                                 @RequestParam(defaultValue = "10") int size) {
         List<UserDto> res = userServiceFacade.findfollower(id, after, size);
-        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+        Long next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
         return  Response.okPagingAfter(res, next, size);
     }
 
     @GetMapping("{id}/followee")
-    public Response getFollowee(@PathVariable String id,
-                                @RequestParam(required = false) String after,
+    public Response getFollowee(@PathVariable Long id,
+                                @RequestParam(required = false) Long after,
                                 @RequestParam(defaultValue = "10") int size) {
 
         List<UserDto> res = userServiceFacade.findfollowee(id, after, size);
-        String next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
+        Long next = res.size() > 0 ? res.get(res.size() - 1).getId() : null;
 
         return  Response.okPagingAfter(res, next, size);
     }

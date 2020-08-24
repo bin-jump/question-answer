@@ -15,10 +15,10 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class CommentDto {
 
-    private String id;
+    private Long id;
 
 
-    private String resourceId;
+    private Long resourceId;
 
 
     private String resourceType;
@@ -28,7 +28,7 @@ public class CommentDto {
 
     private long created;
 
-    private String authorId;
+    private Long authorId;
 
     private UserDto author;
 

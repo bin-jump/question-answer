@@ -73,7 +73,7 @@ public class UserServiceFacade {
         return UserAssembler.toDTO(user);
     }
 
-    public UserDto changeAvatarImage(String id, MultipartFile image) throws IOException {
+    public UserDto changeAvatarImage(Long id, MultipartFile image) throws IOException {
         ChangeAvatarCommand command = ChangeAvatarCommand.builder()
                 .userId(id)
                 .fileName(image.getOriginalFilename())
@@ -84,7 +84,7 @@ public class UserServiceFacade {
         return  UserAssembler.toDTO(user);
     }
 
-    public void changePassword(String id, String oldPassword, String newPassword) {
+    public void changePassword(Long id, String oldPassword, String newPassword) {
         userApplicationService.changePassword(id, oldPassword, newPassword);
     }
 
@@ -93,7 +93,7 @@ public class UserServiceFacade {
         return UserAssembler.toDTO(user);
     }
 
-    public UserDto findById(String id) {
+    public UserDto findById(Long id) {
         User user = userRepository.findById(id);
         UserDto userDto = UserAssembler.toDTO(user);
 
@@ -106,7 +106,7 @@ public class UserServiceFacade {
         return userDto;
     }
 
-    public List<QuestionDto> findUserQuestions(String userId, String cursor, int size) {
+    public List<QuestionDto> findUserQuestions(Long userId, Long cursor, int size) {
 
         List<QuestionDto> questionDtos = QuestionAssembler.toDTOs(questionRepository
                 .findByUserId(userId, new PostPaging(cursor, size)));
@@ -115,7 +115,7 @@ public class UserServiceFacade {
         return questionDtos;
     }
 
-    public List<QuestionDto> findUserAnswers(String userId, String cursor, int size) {
+    public List<QuestionDto> findUserAnswers(Long userId, Long cursor, int size) {
 
         List<AnswerDto> answerDtos = answerRepository.findByUserId(userId, new PostPaging(cursor, size))
                 .stream().map(e -> AnswerAssembler.toDTO(e))
@@ -126,9 +126,9 @@ public class UserServiceFacade {
         return helper.wrapAnswerQuestion(answerDtos);
     }
 
-    public List<QuestionDto> findfollowedQuestions(String userId, String cursor, int size) {
+    public List<QuestionDto> findfollowedQuestions(Long userId, Long cursor, int size) {
 
-        List<String> questionIds = followRepository.findFollowed(userId, FollowResourceType.QUESTION,
+        List<Long> questionIds = followRepository.findFollowed(userId, FollowResourceType.QUESTION,
                 new FavorPaging(cursor, size))
                 .stream().map(Follow::getResourceId).collect(Collectors.toList());
 
@@ -139,9 +139,9 @@ public class UserServiceFacade {
         return questionDtos;
     }
 
-    public List<UserDto> findfollower(String userId, String cursor, int size) {
+    public List<UserDto> findfollower(Long userId, Long cursor, int size) {
 
-        List<String> userIds = followRepository.findFollower(userId, FollowResourceType.USER,
+        List<Long> userIds = followRepository.findFollower(userId, FollowResourceType.USER,
                 new FavorPaging(cursor, size))
                 .stream().map(Follow::getFollowerId).collect(Collectors.toList());
 
@@ -150,9 +150,9 @@ public class UserServiceFacade {
         return userDtos;
     }
 
-    public List<UserDto> findfollowee(String userId, String cursor, int size) {
+    public List<UserDto> findfollowee(Long userId, Long cursor, int size) {
 
-        List<String> userIds = followRepository.findFollowed(userId, FollowResourceType.USER,
+        List<Long> userIds = followRepository.findFollowed(userId, FollowResourceType.USER,
                 new FavorPaging(cursor, size))
                 .stream().map(Follow::getResourceId).collect(Collectors.toList());
 

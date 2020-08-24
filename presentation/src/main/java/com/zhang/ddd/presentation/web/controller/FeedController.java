@@ -23,12 +23,12 @@ public class FeedController {
     FeedServiceFacade feedServiceFacade;
 
     @GetMapping
-    public Response getFeed(@RequestParam(value = "after", required = false) String after,
+    public Response getFeed(@RequestParam(value = "after", required = false) Long after,
                             @RequestParam(defaultValue = "10") int size) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         List<FeedDto> feeds = feedServiceFacade.findFeed(currentUser.getId(), after, size);
-        String next = feeds.size() > 0 ? feeds.get(feeds.size() - 1).getId() : null;
+        Long next = feeds.size() > 0 ? feeds.get(feeds.size() - 1).getId() : null;
 
         return Response.okPagingAfter(feeds, next, size);
 

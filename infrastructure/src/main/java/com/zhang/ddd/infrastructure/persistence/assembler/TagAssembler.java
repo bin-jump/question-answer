@@ -16,6 +16,7 @@ public class TagAssembler {
             return null;
         }
         TagPO tagPO = new TagPO();
+        tagPO.setId(tag.getId());
         tagPO.setLabel(tag.getLabel());
         tagPO.setVersion(tag.getVersion());
 
@@ -27,6 +28,7 @@ public class TagAssembler {
             return null;
         }
         Tag tag = new Tag();
+        tag.setId(tagPO.getId());
         tag.setLabel(tagPO.getLabel());
         tag.setVersion(tagPO.getVersion());
 

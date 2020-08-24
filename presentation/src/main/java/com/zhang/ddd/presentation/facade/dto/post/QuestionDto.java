@@ -1,7 +1,9 @@
 package com.zhang.ddd.presentation.facade.dto.post;
 
+import com.zhang.ddd.domain.aggregate.post.entity.Question;
 import com.zhang.ddd.presentation.facade.dto.user.UserDto;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -13,9 +15,7 @@ import java.util.List;
 @Builder
 public class QuestionDto {
 
-    private String id;
-
-    private String cursor;
+    private Long id;
 
     @NotBlank
     private String title;
@@ -24,7 +24,7 @@ public class QuestionDto {
     private String body;
 
     @NotBlank
-    private String authorId;
+    private Long authorId;
 
     private long created;
 
@@ -46,6 +46,16 @@ public class QuestionDto {
     private UserDto author;
 
     private AnswerDto cover;
+
+    public QuestionDto copy(){
+        QuestionDto questionDto = new QuestionDto();
+        BeanUtils.copyProperties(this, questionDto);
+        questionDto.setTags(this.tags);
+        questionDto.setAuthor(this.author);
+        questionDto.setCover(this.cover);
+
+        return questionDto;
+    }
 
 
 }

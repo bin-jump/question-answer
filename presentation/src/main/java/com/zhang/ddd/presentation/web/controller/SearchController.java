@@ -34,11 +34,11 @@ public class SearchController {
                                @RequestParam(value="size", defaultValue = "10") int size) {
 
         Float cursorScore = null;
-        String cursorId = null;
+        Long cursorId = null;
         if (cursor != null) {
             Object[] cursors = toCursors(cursor);
             cursorScore = (Float)cursors[0];
-            cursorId = (String)cursors[1];
+            cursorId = Long.parseLong((String)cursors[1]);
         }
 
         List<SearchDto> res = searchServiceFacade.searchPost(keyWord, cursorScore, cursorId, size);
@@ -52,7 +52,7 @@ public class SearchController {
         return Response.okPagingAfter(res, next, size);
     }
 
-    private String toCursor(Float score, String id) {
+    private String toCursor(Float score, Long id) {
 
         return score + "_" + id;
     }

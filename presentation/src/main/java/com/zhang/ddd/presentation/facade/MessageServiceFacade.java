@@ -32,7 +32,7 @@ public class MessageServiceFacade {
     @Autowired
     ChatRepository chatRepository;
 
-    public List<ChatDto> getUserChats(UserDto currentUser, String cursor, int size) {
+    public List<ChatDto> getUserChats(UserDto currentUser, Long cursor, int size) {
 
         List<Chat> chats = chatRepository.findChats(currentUser.getId(), new MessagePaging(cursor, size));
         List<ChatDto> chatDtos = ChatAssembler.toDTOs(chats, currentUser.getId());
@@ -40,7 +40,7 @@ public class MessageServiceFacade {
         return chatDtos;
     }
 
-    public ChatDto sendMessage(String fromId, String toId, String body) {
+    public ChatDto sendMessage(Long fromId, Long toId, String body) {
         Chat chat = messageApplicationService.sendMessage(fromId, toId, body);
         ChatDto chatDto = ChatAssembler.toDTO(chat, fromId);
         MessageDto messageDto = MessageDto.builder()
@@ -56,7 +56,7 @@ public class MessageServiceFacade {
         return chatDto;
     }
 
-    public List<MessageDto> getUserMessage(UserDto currentUser, String chatId, String cursor, int size) {
+    public List<MessageDto> getUserMessage(UserDto currentUser, Long chatId, Long cursor, int size) {
         List<Message> messages = messageApplicationService.readMessages(currentUser.getId(), chatId,
                 new MessagePaging(cursor, size));
 
@@ -67,7 +67,7 @@ public class MessageServiceFacade {
         return messageDtos;
     }
 
-    public List<MessageDto> getUserNewMessage(UserDto currentUser, String chatId, String lastMessageId, int size) {
+    public List<MessageDto> getUserNewMessage(UserDto currentUser, Long chatId, Long lastMessageId, int size) {
         List<MessageDto> messages = messageApplicationService
                 .readNewMessage(currentUser.getId(), chatId, lastMessageId, size)
                 .stream().map(e -> MessageAssembler.toDTO(e, currentUser.getId()))
@@ -77,7 +77,7 @@ public class MessageServiceFacade {
     }
 
     private void fillChatUser(List<ChatDto> chatDtos) {
-        Map<String, UserDto> userMapping = userRepository.findByIds(chatDtos.stream()
+        Map<Long, UserDto> userMapping = userRepository.findByIds(chatDtos.stream()
                 .map(ChatDto::getWithId).collect(Collectors.toList()))
                 .stream().map(UserAssembler::toDTO).collect(Collectors.toMap(UserDto::getId, e -> e));
 

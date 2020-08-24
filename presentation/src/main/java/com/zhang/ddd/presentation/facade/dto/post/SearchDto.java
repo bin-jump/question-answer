@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SearchDto {
 
-    private String id;
+    private Long id;
 
-    private String parentId;
+    private Long parentId;
 
     private Float score;
 
@@ -24,7 +24,7 @@ public class SearchDto {
 
     private String searchType;
 
-    private String authorId;
+    private Long authorId;
 
     private long created;
 

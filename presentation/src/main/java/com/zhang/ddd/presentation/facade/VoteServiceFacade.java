@@ -14,7 +14,7 @@ public class VoteServiceFacade {
     @Autowired
     VoteApplicationService voteApplicationService;
 
-    public VoteResultDto voteQuestion(String voterId, String questionId, VoteRequest request) {
+    public VoteResultDto voteQuestion(Long voterId, Long questionId, VoteRequest request) {
         boolean upvote = VoteType.UPVOTE.name().equals(request.getVoteType());
         VoteResult voteResult = voteApplicationService.voteQuestion(voterId, questionId, upvote);
 
@@ -27,7 +27,7 @@ public class VoteServiceFacade {
         return res;
     }
 
-    public VoteResultDto unvoteQuestion(String voterId, String questionId) {
+    public VoteResultDto unvoteQuestion(Long voterId, Long questionId) {
         VoteResult voteResult = voteApplicationService.unvoteQuestion(voterId, questionId);
 
         VoteResultDto res = VoteResultDto.builder()
@@ -38,7 +38,7 @@ public class VoteServiceFacade {
         return res;
     }
 
-    public VoteResultDto voteQAnswer(String voterId, String questionId, VoteRequest request) {
+    public VoteResultDto voteQAnswer(Long voterId, Long questionId, VoteRequest request) {
         boolean upvote = VoteType.UPVOTE.name().equals(request.getVoteType());
         VoteResult voteResult = voteApplicationService.voteAnswer(voterId, questionId, upvote);
 
@@ -51,7 +51,7 @@ public class VoteServiceFacade {
         return res;
     }
 
-    public VoteResultDto unvoteAnswer(String voterId, String questionId) {
+    public VoteResultDto unvoteAnswer(Long voterId, Long questionId) {
         VoteResult voteResult = voteApplicationService.unvoteAnswer(voterId, questionId);
 
         VoteResultDto res = VoteResultDto.builder()

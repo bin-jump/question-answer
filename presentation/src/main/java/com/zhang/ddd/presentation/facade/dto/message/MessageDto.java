@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MessageDto {
 
-    private String id;
+    private Long id;
 
     private String body;
 
-    private String fromId;
+    private Long fromId;
 
     private boolean fromMe;
 

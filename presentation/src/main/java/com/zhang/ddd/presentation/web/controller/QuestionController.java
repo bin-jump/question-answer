@@ -37,11 +37,11 @@ public class QuestionController {
     FavorServiceFacade favorServiceFacade;
 
     @GetMapping
-    public Response getQuestions(@RequestParam(required = false) String after,
+    public Response getQuestions(@RequestParam(required = false) Long after,
                                  @RequestParam(defaultValue = "10") int size)  {
 
         List<QuestionDto> questionDtos = postServiceFacade.getQuestions(after, size);
-        String next = questionDtos.size() > 0 ? questionDtos.get(questionDtos.size() - 1).getId() : null;
+        Long next = questionDtos.size() > 0 ? questionDtos.get(questionDtos.size() - 1).getId() : null;
 
         return Response.okPagingAfter(questionDtos, next, size);
     }
@@ -58,17 +58,17 @@ public class QuestionController {
     }
 
     @GetMapping("{id}/comment")
-    public Response questionComments(@PathVariable String id,
-                                     @RequestParam(required = false) String after,
+    public Response questionComments(@PathVariable Long id,
+                                     @RequestParam(required = false) Long after,
                                      @RequestParam(defaultValue = "10") int size) {
 
         List<CommentDto> comments = postServiceFacade.getQuestionComments(id, after, size);
-        String next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
+        Long next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
         return Response.okPagingAfter(comments, next, size);
     }
 
     @PostMapping("{id}/comment")
-    public Response addComment(@PathVariable String id, @RequestBody CommentDto comment) {
+    public Response addComment(@PathVariable Long id, @RequestBody CommentDto comment) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         CommentDto commentDto = postServiceFacade.addQuestionComment(currentUser.getId(), id, comment.getBody(), currentUser);
@@ -76,7 +76,7 @@ public class QuestionController {
     }
 
     @GetMapping("{id}")
-    public Response getQuestion(@PathVariable String id) {
+    public Response getQuestion(@PathVariable Long id) {
 
         QuestionDto question = postServiceFacade.getQuestion(id);
         return Response.ok(question);
@@ -84,18 +84,18 @@ public class QuestionController {
 
 
     @GetMapping("/{id}/answer")
-    public Response getAnswer(@PathVariable String id,
-                              @RequestParam(required = false) String after,
+    public Response getAnswer(@PathVariable Long id,
+                              @RequestParam(required = false) Long after,
                               @RequestParam(defaultValue = "10") int size){
 
         List<AnswerDto> ans = postServiceFacade.getQuestionAnswers(id, after, size);
-        String next = ans.size() > 0 ? ans.get(ans.size() - 1).getId() : null;
+        Long next = ans.size() > 0 ? ans.get(ans.size() - 1).getId() : null;
 
         return Response.okPagingAfter(ans, next, size);
     }
 
     @PostMapping("/{id}/answer")
-    public Response addAnser(@PathVariable String id, @RequestBody AnswerDto answer){
+    public Response addAnser(@PathVariable Long id, @RequestBody AnswerDto answer){
         UserDto currentUser = LoginUtil.getCurrentUser();
         AnswerDto ans = postServiceFacade.createAnswer(id,
                 answer.getBody(), currentUser.getId(), currentUser);
@@ -104,7 +104,7 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/vote")
-    public Response addVote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
+    public Response addVote(@PathVariable Long id, @Valid @RequestBody VoteRequest request) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         VoteResultDto res = voteServiceFacade.voteQuestion(currentUser.getId(), id, request);
@@ -114,7 +114,7 @@ public class QuestionController {
 
 
     @DeleteMapping("/{id}/vote")
-    public Response removeVote(@PathVariable String id) {
+    public Response removeVote(@PathVariable Long id) {
         UserDto currentUser = LoginUtil.getCurrentUser();
         VoteResultDto res = voteServiceFacade.unvoteQuestion(currentUser.getId(), id);
 
@@ -122,7 +122,7 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/follow")
-    public Response addFollow(@PathVariable String id) {
+    public Response addFollow(@PathVariable Long id) {
         UserDto currentUser = LoginUtil.getCurrentUser();
         FollowResultDto res = favorServiceFacade.followQuestion(currentUser.getId(), id);
         return Response.ok(res);
@@ -130,7 +130,7 @@ public class QuestionController {
 
 
     @DeleteMapping("/{id}/follow")
-    public Response removeFollow(@PathVariable String id) {
+    public Response removeFollow(@PathVariable Long id) {
         UserDto currentUser = LoginUtil.getCurrentUser();
         FollowResultDto res = favorServiceFacade.unfollowQuestion(currentUser.getId(), id);
         return Response.ok(res);

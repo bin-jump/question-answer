@@ -66,7 +66,7 @@ public class VoteServiceTest {
     @Test
     public void voteAnswerTest() {
         User user = userRepository.findByName(testUserName);
-        List<String> questionIds =
+        List<Long> questionIds =
                 questionRepository.findQuestions(new PostPaging(null, 10))
                 .stream().map(Question::getId).collect(Collectors.toList());
         Answer answer = answerRepository.findQuestionLatestAnswers(questionIds).get(0);

@@ -63,20 +63,20 @@ public class PostServiceFacade {
     @Autowired
     FacadeHelper helper;
 
-    public QuestionDto createQuestion(String title, String body, String authorId, List<String> tagLabels) {
+    public QuestionDto createQuestion(String title, String body, Long authorId, List<String> tagLabels) {
 
         Question question = questionApplicationService.create(title, body, authorId, tagLabels);
         return QuestionAssembler.toDTO(question);
     }
 
-    public List<QuestionDto> getQuestions(String cursor, int size) {
+    public List<QuestionDto> getQuestions(Long cursor, int size) {
 
         List<QuestionDto> questionDtos = QuestionAssembler.toDTOs(questionRepository
                 .findQuestions(new PostPaging(cursor, size)));
 
         helper.fillQuestionUsers(questionDtos);
         // get cover answers
-        Map<String, AnswerDto> coverAnswerDtos = answerRepository
+        Map<Long, AnswerDto> coverAnswerDtos = answerRepository
                 .findQuestionLatestAnswers(questionDtos.stream()
                 .map(QuestionDto::getId).collect(Collectors.toList()))
                 .stream()
@@ -94,7 +94,7 @@ public class PostServiceFacade {
         return questionDtos;
     }
 
-    public QuestionDto getQuestion(String id) {
+    public QuestionDto getQuestion(Long id) {
         Question question = questionRepository.findById(id);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
@@ -115,7 +115,7 @@ public class PostServiceFacade {
         return questionDto;
     }
 
-    public AnswerDto createAnswer(String questionId, String body, String authorId, UserDto user) {
+    public AnswerDto createAnswer(Long questionId, String body, Long authorId, UserDto user) {
 
         Answer answer = questionApplicationService.createAnswer(questionId, body, authorId);
         AnswerDto answerDto = AnswerAssembler.toDTO(answer);
@@ -124,7 +124,7 @@ public class PostServiceFacade {
         return answerDto;
     }
 
-    public AnswerDto getAnswer(String id) {
+    public AnswerDto getAnswer(Long id) {
         Answer answer = answerRepository.findById(id);
         if (answer == null) {
             throw new ResourceNotFoundException("Answer not found");
@@ -138,7 +138,7 @@ public class PostServiceFacade {
         return answerDto;
     }
 
-    public List<AnswerDto> getQuestionAnswers(String questionId, String cursor, int size) {
+    public List<AnswerDto> getQuestionAnswers(Long questionId, Long cursor, int size) {
         List<Answer> answers = answerRepository
                 .findByQuestionId(questionId, new PostPaging(cursor, size));
 
@@ -151,37 +151,37 @@ public class PostServiceFacade {
         return res;
     }
 
-    public CommentDto addQuestionComment(String authorId, String questionId, String body, UserDto user) {
+    public CommentDto addQuestionComment(Long authorId, Long questionId, String body, UserDto user) {
 
         Comment comment = questionApplicationService.addQuestionComment(authorId, questionId, body);
         return CommentAssembler.toDTO(comment, user);
     }
 
-    public CommentDto addAnswerComment(String authorId, String questionId, String body, UserDto user) {
+    public CommentDto addAnswerComment(Long authorId, Long questionId, String body, UserDto user) {
 
         Comment comment = questionApplicationService.addAnswerComment(authorId, questionId, body);
         return CommentAssembler.toDTO(comment, user);
     }
 
 
-    public List<CommentDto> getQuestionComments(String questionId, String cursor, int size) {
+    public List<CommentDto> getQuestionComments(Long questionId, Long cursor, int size) {
 
         return getComments(CommentResourceType.QUESTION, questionId, cursor, size);
     }
 
-    public List<CommentDto> getAnswerComments(String answerId, String cursor, int size) {
+    public List<CommentDto> getAnswerComments(Long answerId, Long cursor, int size) {
 
         return getComments(CommentResourceType.ANSWER, answerId, cursor, size);
     }
 
 
-    private List<CommentDto> getComments(CommentResourceType resourceType, String resourceId,
-                                         String cursor, int size) {
+    private List<CommentDto> getComments(CommentResourceType resourceType, Long resourceId,
+                                         Long cursor, int size) {
 
         List<Comment> comments = commentRepository.findByResourceId(resourceId,
                 resourceType, new PostPaging(cursor, size));
 
-        Map<String, UserDto> users = helper.getUserIdMapping(comments.stream()
+        Map<Long, UserDto> users = helper.getUserIdMapping(comments.stream()
                 .map(Comment::getAuthorId).collect(Collectors.toList()));
 
         List<CommentDto> res = comments.stream()

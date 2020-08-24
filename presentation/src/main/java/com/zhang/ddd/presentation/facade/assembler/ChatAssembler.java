@@ -9,7 +9,7 @@ import com.zhang.ddd.presentation.facade.dto.message.ChatDto;
 
 public class ChatAssembler {
 
-    public static ChatDto toDTO(Chat chat, String userId) {
+    public static ChatDto toDTO(Chat chat, Long userId) {
         if (chat == null) {
             return null;
         }
@@ -26,7 +26,7 @@ public class ChatAssembler {
         return chatDto;
     }
 
-    public static List<ChatDto> toDTOs(List<Chat> chats, String userId) {
+    public static List<ChatDto> toDTOs(List<Chat> chats, Long userId) {
 
         return chats.stream().map(e -> ChatAssembler.toDTO(e, userId))
                 .collect(Collectors.toList());

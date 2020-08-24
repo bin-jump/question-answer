@@ -5,7 +5,7 @@ import com.zhang.ddd.presentation.facade.dto.message.MessageDto;
 
 public class MessageAssembler {
 
-    public static MessageDto toDTO(Message message, String userId) {
+    public static MessageDto toDTO(Message message, Long userId) {
         if (message == null) {
             return null;
         }

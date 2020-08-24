@@ -28,24 +28,24 @@ public class AnswerController {
     VoteServiceFacade voteServiceFacade;
 
     @GetMapping("{id}")
-    public Response getAnswer(@PathVariable String id) {
+    public Response getAnswer(@PathVariable Long id) {
 
         AnswerDto answer = postServiceFacade.getAnswer(id);
         return Response.ok(answer);
     }
 
     @GetMapping("{id}/comment")
-    public Response answerComments(@PathVariable String id,
-                                   @RequestParam(required = false) String after,
+    public Response answerComments(@PathVariable Long id,
+                                   @RequestParam(required = false) Long after,
                                    @RequestParam(defaultValue = "10") int size) {
 
         List<CommentDto> comments = postServiceFacade.getAnswerComments(id, after, size);
-        String next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
+        Long next = comments.size() > 0 ? comments.get(comments.size() - 1).getId() : null;
         return Response.okPagingAfter(comments, next, size);
     }
 
     @PostMapping("{id}/comment")
-    public Response addComment(@PathVariable String id, @RequestBody CommentDto comment) {
+    public Response addComment(@PathVariable Long id, @RequestBody CommentDto comment) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         CommentDto commentDto = postServiceFacade.addAnswerComment(currentUser.getId(), id, comment.getBody(), currentUser);
@@ -54,7 +54,7 @@ public class AnswerController {
     }
 
     @PostMapping("{id}/vote")
-    public Response addVote(@PathVariable String id, @Valid @RequestBody VoteRequest request) {
+    public Response addVote(@PathVariable Long id, @Valid @RequestBody VoteRequest request) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         VoteResultDto res = voteServiceFacade.voteQAnswer(currentUser.getId(), id, request);
@@ -64,7 +64,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("{id}/vote")
-    public Response removeVote(@PathVariable String id) {
+    public Response removeVote(@PathVariable Long id) {
 
         UserDto currentUser = LoginUtil.getCurrentUser();
         VoteResultDto res = voteServiceFacade.unvoteAnswer(currentUser.getId(), id);
