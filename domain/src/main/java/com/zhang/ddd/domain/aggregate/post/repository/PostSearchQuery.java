@@ -10,7 +10,7 @@ public class PostSearchQuery {
 
     private String keyWord;
 
-    private String cursorId;
+    private Long cursorId;
 
     private Float cursorScore;
 

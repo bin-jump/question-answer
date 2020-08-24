@@ -19,16 +19,12 @@ public class Question extends Entity<Question> {
 
     public static final int TAG_NUM_LIMIT = 5;
 
-    public Question(String id, String title, String body, String authorId) {
-        if (!StringUtils.hasText(id)) {
-            throw new InvalidValueException("Question id can not be empty.");
-        }
+    public Question(Long id, String title, String body, Long authorId) {
+
         if (!StringUtils.hasText(title)) {
             throw new InvalidValueException("Question title can not be empty.");
         }
-        if (!StringUtils.hasText(authorId)) {
-            throw new InvalidValueException("Question author can not be empty.");
-        }
+
         this.id = id;
         this.title = title;
         this.body = body;
@@ -40,7 +36,7 @@ public class Question extends Entity<Question> {
 
     private String body;
 
-    private String authorId;
+    private Long authorId;
 
     private Date created;
 

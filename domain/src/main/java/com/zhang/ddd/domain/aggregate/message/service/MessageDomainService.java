@@ -20,19 +20,19 @@ public class MessageDomainService {
     @Autowired
     MessageRepository messageRepository;
 
-    public Chat sendMessage(String fromId, String toId, String body) {
+    public Chat sendMessage(Long fromId, Long toId, String body) {
 
         ChatChatter chatChatter = new ChatChatter(fromId, toId);
         Chat chat = chatRepository.findByChatter(chatChatter);
 
         // create new chat
         if (chat == null) {
-            String chatId = chatRepository.nextId();
+            Long chatId = chatRepository.nextId();
             chat = new Chat(fromId, toId, chatId);
             chatRepository.save(chat);
         }
 
-        String mid = messageRepository.nextId();
+        Long mid = messageRepository.nextId();
         Message message = new Message(mid, chat.getId(), fromId, body);
         chat.updateTopMessage(message);
 
@@ -42,7 +42,7 @@ public class MessageDomainService {
         return chat;
     }
 
-    public List<Message> readMessages(String readerId, String chatId, MessagePaging paging) {
+    public List<Message> readMessages(Long readerId, Long chatId, MessagePaging paging) {
 
         Chat chat = chatRepository.findById(chatId);
         if (chat == null) {
@@ -55,7 +55,7 @@ public class MessageDomainService {
         return messages;
     }
 
-    public List<Message> readNewMessage(String readerId, String chatId, String lastMessageId, int size) {
+    public List<Message> readNewMessage(Long readerId, Long chatId, Long lastMessageId, int size) {
         Chat chat = chatRepository.findById(chatId);
         if (chat == null) {
             throw new ResourceNotFoundException("Chat not found.");

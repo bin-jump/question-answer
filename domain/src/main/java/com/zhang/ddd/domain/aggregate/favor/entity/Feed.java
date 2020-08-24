@@ -17,22 +17,15 @@ import java.util.Date;
 @NoArgsConstructor
 public class Feed extends Entity<Feed> {
 
-    public Feed(String id, FeedType feedType, FeedAction feedAction, String resourceId, String creatorId) {
-        if (!StringUtils.hasText(id)) {
-            throw new InvalidValueException("Feed id can not be empty.");
-        }
+    public Feed(Long id, FeedType feedType, FeedAction feedAction, Long resourceId, Long creatorId) {
+
         if (feedAction == null) {
             throw new InvalidValueException("FeedAction can not be empty.");
         }
         if (feedType == null) {
             throw new InvalidValueException("FeedAType can not be empty.");
         }
-        if (!StringUtils.hasText(resourceId)) {
-            throw new InvalidValueException("ResourceId id can not be empty.");
-        }
-        if (!StringUtils.hasText(creatorId)) {
-            throw new InvalidValueException("CreatorId id can not be empty.");
-        }
+
         this.id = id;
         this.feedType = feedType;
         this.feedAction = feedAction;
@@ -46,9 +39,9 @@ public class Feed extends Entity<Feed> {
 
     private FeedAction feedAction;
 
-    private String resourceId;
+    private Long resourceId;
 
-    private String creatorId;
+    private Long creatorId;
 
     private Date created;
 }

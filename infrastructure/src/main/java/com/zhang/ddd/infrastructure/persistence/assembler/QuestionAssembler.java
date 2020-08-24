@@ -21,8 +21,6 @@ public class QuestionAssembler {
         BeanUtils.copyProperties(question, questionPO);
         questionPO.setTags(new ArrayList<>());
         questionPO.setVersion(question.getVersion());
-        questionPO.setId(NumberEncoder.decode(question.getId()));
-        questionPO.setAuthorId(NumberEncoder.decode(question.getAuthorId()));
 
         for (Tag t : question.getTags()) {
             questionPO.getTags().add(TagAssembler.toPO(t));
@@ -44,8 +42,6 @@ public class QuestionAssembler {
         Question question = new Question();
         BeanUtils.copyProperties(questionPO, question);
         question.setTags(new ArrayList<>());
-        question.setId(NumberEncoder.encode(questionPO.getId()));
-        question.setAuthorId(NumberEncoder.encode(questionPO.getAuthorId()));
         question.setVersion(questionPO.getVersion());
 
         for (TagPO t : questionPO.getTags()) {

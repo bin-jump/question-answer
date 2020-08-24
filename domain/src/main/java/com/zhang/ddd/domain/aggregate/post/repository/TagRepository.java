@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface TagRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Tag tag);
 
     List<Tag> findByLabels(List<String> labels);
 
-    List<Tag> findByIds(List<String> ids);
+    List<Tag> findByIds(List<Long> ids);
 }

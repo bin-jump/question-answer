@@ -27,7 +27,7 @@ public class FavorApplicationService {
     FeedDomainService feedDomainService;
 
 
-    public Follow followUser(String followerId, String followeeId) {
+    public Follow followUser(Long followerId, Long followeeId) {
 
         Follow follow = followDomainService.follow(followerId, followeeId, FollowResourceType.USER);
         if (follow != null) {
@@ -38,7 +38,7 @@ public class FavorApplicationService {
         return follow;
     }
 
-    public Follow unfollowUser(String followerId, String followeeId) {
+    public Follow unfollowUser(Long followerId, Long followeeId) {
 
         Follow follow = followDomainService.unfollow(followerId, followeeId, FollowResourceType.USER);
         if (follow != null) {
@@ -50,7 +50,7 @@ public class FavorApplicationService {
         return follow;
     }
 
-    public Follow followQuestion(String followerId, String questionId) {
+    public Follow followQuestion(Long followerId, Long questionId) {
 
         Follow follow = followDomainService.follow(followerId, questionId, FollowResourceType.QUESTION);
         if (follow != null) {
@@ -62,7 +62,7 @@ public class FavorApplicationService {
         return follow;
     }
 
-    public Follow unfollowQuestion(String followerId, String questionId) {
+    public Follow unfollowQuestion(Long followerId, Long questionId) {
 
         Follow follow = followDomainService.unfollow(followerId, questionId, FollowResourceType.QUESTION);
         if (follow != null) {

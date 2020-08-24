@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Follow {
 
-    public Follow(long id, String followerId, String resourceId, FollowResourceType followType) {
+    public Follow(Long id, Long followerId, Long resourceId, FollowResourceType followType) {
         this.id = id;
         this.followerId = followerId;
         this.resourceId = resourceId;
@@ -23,9 +23,9 @@ public class Follow {
 
     private long id;
 
-    private String followerId;
+    private Long followerId;
 
-    private String resourceId;
+    private Long resourceId;
 
     private FollowResourceType resourceType;
 

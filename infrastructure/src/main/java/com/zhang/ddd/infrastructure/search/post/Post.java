@@ -19,16 +19,16 @@ import java.util.Date;
 public class Post {
 
     @Id
-    private String id;
+    private Long id;
 
     @Field(type = FieldType.Keyword)
     private String itemType;
 
-    @Field(type = FieldType.Keyword)
-    private String authorId;
+    @Field(type = FieldType.Long)
+    private Long authorId;
 
-    @Field(type = FieldType.Keyword)
-    private String parentId;
+    @Field(type = FieldType.Long)
+    private Long parentId;
 
     @Field(type = FieldType.Text, analyzer = "post_content_analyzer")
     private String title;

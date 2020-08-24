@@ -13,7 +13,7 @@ public class VoteDomainService {
 
 
     // return current vote
-    public VoteResult vote(String voterId, String resourceId,
+    public VoteResult vote(Long voterId, Long resourceId,
                            VoteResourceType resourceType, VoteType voteType) {
         Vote vote = voteRepository.find(voterId, resourceId, resourceType);
         boolean currentUpvote = false, currentDownvote = false;
@@ -34,7 +34,7 @@ public class VoteDomainService {
     }
 
     // return current vote
-    public VoteResult unvote(String voterId, String resourceId, VoteResourceType resourceType) {
+    public VoteResult unvote(Long voterId, Long resourceId, VoteResourceType resourceType) {
         Vote vote = voteRepository.find(voterId, resourceId, resourceType);
         voteRepository.remove(vote);
 

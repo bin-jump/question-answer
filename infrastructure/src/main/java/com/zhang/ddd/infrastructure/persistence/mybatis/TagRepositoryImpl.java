@@ -22,9 +22,9 @@ public class TagRepositoryImpl implements TagRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
 
@@ -37,8 +37,8 @@ public class TagRepositoryImpl implements TagRepository {
         return TagAssembler.toDOs(tagMapper.findByLabels(labels));
     }
 
-    public List<Tag> findByIds(List<String> ids) {
-        List<Long> tids = ids.stream().map(NumberEncoder::decode).collect(Collectors.toList());
-        return TagAssembler.toDOs(tagMapper.findByIds(tids));
+    public List<Tag> findByIds(List<Long> ids) {
+
+        return TagAssembler.toDOs(tagMapper.findByIds(ids));
     }
 }

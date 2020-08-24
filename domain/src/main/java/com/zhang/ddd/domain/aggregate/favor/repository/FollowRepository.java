@@ -8,17 +8,17 @@ public interface FollowRepository {
 
     void save(Follow follow);
 
-    Follow find(String followerId, String resourceId, FollowResourceType resourceType);
+    Follow find(Long followerId, Long resourceId, FollowResourceType resourceType);
 
-    List<Follow> findByResourceIds(String followerId, List<String> resourceIds,
+    List<Follow> findByResourceIds(Long followerId, List<Long> resourceIds,
                                    FollowResourceType resourceType);
 
     void remove(Follow follow);
 
-    List<Follow> findFollowed(String followId,
+    List<Follow> findFollowed(Long followId,
                                          FollowResourceType resourceType, FavorPaging paging);
 
-    List<Follow> findFollower(String resourceId,
+    List<Follow> findFollower(Long resourceId,
                                          FollowResourceType resourceType, FavorPaging paging);
 
 }

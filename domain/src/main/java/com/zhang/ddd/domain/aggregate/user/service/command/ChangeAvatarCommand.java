@@ -13,7 +13,7 @@ import java.io.InputStream;
 @NoArgsConstructor
 public class ChangeAvatarCommand {
 
-    private String userId;
+    private Long userId;
 
     private String fileName;
 

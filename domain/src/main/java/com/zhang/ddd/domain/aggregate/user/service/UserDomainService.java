@@ -30,7 +30,7 @@ public class UserDomainService {
             throw new InvalidValueException("user name already exist.");
         }
 
-        String id = userRepository.nextId();
+        Long id = userRepository.nextId();
         User user = new User(id, name, password);
         user.setAvatarUrl(avatarImageRepository.nameHashImage(name));
         user.setEmail(email);
@@ -67,7 +67,7 @@ public class UserDomainService {
         return user;
     }
 
-    public void changePassword(String id, String oldPassword, String newPassword) {
+    public void changePassword(Long id, String oldPassword, String newPassword) {
         User user = userRepository.findById(id);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
@@ -83,7 +83,7 @@ public class UserDomainService {
         userRepository.update(user);
     }
 
-    public void userCreateQuestion(String id) {
+    public void userCreateQuestion(Long id) {
         User user = userRepository.findById(id);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
@@ -92,7 +92,7 @@ public class UserDomainService {
         userRepository.update(user);
     }
 
-    public void userCreateAnswer(String id) {
+    public void userCreateAnswer(Long id) {
         User user = userRepository.findById(id);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
@@ -101,7 +101,7 @@ public class UserDomainService {
         userRepository.update(user);
     }
 
-    public void questionFollowed(String followerId, boolean follow) {
+    public void questionFollowed(Long followerId, boolean follow) {
         User follower = userRepository.findById(followerId);
         if (follower == null) {
             throw new ResourceNotFoundException("User not found");
@@ -111,7 +111,7 @@ public class UserDomainService {
         userRepository.update(follower);
     }
 
-    public void userFollowed(String followerId, String followeeId, boolean follow) {
+    public void userFollowed(Long followerId, Long followeeId, boolean follow) {
         User follower = userRepository.findById(followerId);
         User followee = userRepository.findById(followeeId);
 

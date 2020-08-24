@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface MessageRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Message message);
 
-    List<Message> findChatMessages(String chatId, MessagePaging paging);
+    List<Message> findChatMessages(Long chatId, MessagePaging paging);
 
-    List<Message> findChatNewMessages(String chatId, String lastId, int size);
+    List<Message> findChatNewMessages(Long chatId, Long lastId, int size);
 
 
 }

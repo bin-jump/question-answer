@@ -26,9 +26,9 @@ public class FeedRepositoryImpl implements FeedRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
     @Override
@@ -44,18 +44,17 @@ public class FeedRepositoryImpl implements FeedRepository {
     }
 
     @Override
-    public Feed find(String creatorId, String resourceId, FeedType feedType, FeedAction feedAction) {
+    public Feed find(Long creatorId, Long resourceId, FeedType feedType, FeedAction feedAction) {
 
         FeedPO feedPO = feedMapper.find(creatorId, resourceId, feedType, feedAction);
         return FeedAssembler.toDO(feedPO);
     }
 
     @Override
-    public List<Feed> getUserFeed(String userId, FavorPaging paging) {
+    public List<Feed> getUserFeed(Long userId, FavorPaging paging) {
 
-        long aid = NumberEncoder.decode(userId);
-        Long cursor = NumberEncoder.decode(paging.getCursor());
-        List<FeedPO> feedPOs = feedMapper.findUseFeed(aid, cursor, paging.getSize());
+        Long cursor =paging.getCursor();
+        List<FeedPO> feedPOs = feedMapper.findUseFeed(userId, cursor, paging.getSize());
 
         return feedPOs.stream().map(FeedAssembler::toDO).collect(Collectors.toList());
     }

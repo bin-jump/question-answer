@@ -28,11 +28,9 @@ public class FollowRepositoryImpl implements FollowRepository {
     }
 
     @Override
-    public Follow find(String followerId, String resourceId, FollowResourceType resourceType) {
-        long fid = NumberEncoder.decode(followerId);
-        long rid = NumberEncoder.decode(resourceId);
+    public Follow find(Long followerId, Long resourceId, FollowResourceType resourceType) {
 
-        FollowPO followPO = followMapper.find(fid, rid, resourceType);
+        FollowPO followPO = followMapper.find(followerId, resourceId, resourceType);
         return FollowAssembler.toDO(followPO);
     }
 
@@ -43,32 +41,28 @@ public class FollowRepositoryImpl implements FollowRepository {
     }
 
     @Override
-    public List<Follow> findByResourceIds(String followerId, List<String> resourceIds,
+    public List<Follow> findByResourceIds(Long followerId, List<Long> resourceIds,
                                           FollowResourceType resourceType) {
-        long fid = NumberEncoder.decode(followerId);
-        List<Long> rids = resourceIds.stream().map(NumberEncoder::decode).collect(Collectors.toList());
 
-        List<FollowPO> followPOs = followMapper.findByResourceIds(fid, rids, resourceType);
+        List<FollowPO> followPOs = followMapper.findByResourceIds(followerId, resourceIds, resourceType);
         return FollowAssembler.toDOs(followPOs);
     }
 
     @Override
-    public List<Follow> findFollowed(String followId, FollowResourceType resourceType, FavorPaging paging) {
-        long fid = NumberEncoder.decode(followId);
-        Long cursor = NumberEncoder.decode(paging.getCursor());
+    public List<Follow> findFollowed(Long followId, FollowResourceType resourceType, FavorPaging paging) {
 
-        List<FollowPO> followPOs = followMapper.findFollowed(fid, resourceType,
+        Long cursor = paging.getCursor();
+        List<FollowPO> followPOs = followMapper.findFollowed(followId, resourceType,
                 cursor, paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);
     }
 
     @Override
-    public List<Follow> findFollower(String resourceId, FollowResourceType resourceType, FavorPaging paging) {
-        long rid = NumberEncoder.decode(resourceId);
-        Long cursor = NumberEncoder.decode(paging.getCursor());
+    public List<Follow> findFollower(Long resourceId, FollowResourceType resourceType, FavorPaging paging) {
+        Long cursor = paging.getCursor();
 
-        List<FollowPO> followPOs = followMapper.findResourceFollower(rid, resourceType,
+        List<FollowPO> followPOs = followMapper.findResourceFollower(resourceId, resourceType,
                 cursor, paging.getSize());
 
         return FollowAssembler.toDOs(followPOs);

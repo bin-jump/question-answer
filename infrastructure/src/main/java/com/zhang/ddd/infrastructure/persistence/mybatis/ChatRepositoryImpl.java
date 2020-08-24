@@ -24,9 +24,9 @@ public class ChatRepositoryImpl implements ChatRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
     @Override
@@ -43,26 +43,25 @@ public class ChatRepositoryImpl implements ChatRepository {
 
     @Override
     public Chat findByChatter(ChatChatter chatter) {
-        long meId = NumberEncoder.decode(chatter.getChatterMeId());
-        long youId = NumberEncoder.decode(chatter.getChatterYouId());
+        long meId =chatter.getChatterMeId();
+        long youId =chatter.getChatterYouId();
 
         ChatPO chatPO = chatMapper.findChat(meId, youId);
         return ChatAssembler.toDO(chatPO);
     }
 
     @Override
-    public Chat findById(String chatId) {
-        ChatPO chatPO = chatMapper.findById(NumberEncoder.decode(chatId));
+    public Chat findById(Long chatId) {
+
+        ChatPO chatPO = chatMapper.findById(chatId);
         return ChatAssembler.toDO(chatPO);
     }
 
     @Override
-    public List<Chat> findChats(String chatterId, MessagePaging paging) {
+    public List<Chat> findChats(Long chatterId, MessagePaging paging) {
 
-        long uid = NumberEncoder.decode(chatterId);
-        Long cursor = NumberEncoder.decode(paging.getCursor());
-        List<ChatPO> chatPOs = chatMapper.findChats(uid, cursor, paging.getSize());
-
+        Long cursor = paging.getCursor();
+        List<ChatPO> chatPOs = chatMapper.findChats(chatterId, cursor, paging.getSize());
         return ChatAssembler.toDOs(chatPOs);
     }
 }

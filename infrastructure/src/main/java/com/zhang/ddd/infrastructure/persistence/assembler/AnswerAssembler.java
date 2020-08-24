@@ -17,9 +17,6 @@ public class AnswerAssembler {
         AnswerPO answerPO = new AnswerPO();
         BeanUtils.copyProperties(answer, answerPO);
         answerPO.setVersion(answer.getVersion());
-        answerPO.setId(NumberEncoder.decode(answer.getId()));
-        answerPO.setParentId(NumberEncoder.decode(answer.getParentId()));
-        answerPO.setAuthorId(NumberEncoder.decode(answer.getAuthorId()));
 
         return answerPO;
     }
@@ -36,9 +33,6 @@ public class AnswerAssembler {
         }
         Answer answer = new Answer();
         BeanUtils.copyProperties(answerPO, answer);
-        answer.setId(NumberEncoder.encode(answerPO.getId()));
-        answer.setParentId(NumberEncoder.encode(answerPO.getParentId()));
-        answer.setAuthorId(NumberEncoder.encode(answerPO.getAuthorId()));
         answer.setVersion(answer.getVersion());
 
         return answer;

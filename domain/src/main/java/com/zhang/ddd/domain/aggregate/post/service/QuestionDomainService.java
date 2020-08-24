@@ -35,12 +35,12 @@ public class QuestionDomainService {
     @Autowired
     SearchPostRepository searchPostRepository;
 
-    public Question create(String title, String body, String authorId, List<String> tagLables) {
+    public Question create(String title, String body, Long authorId, List<String> tagLables) {
         if (tagLables.size() == Question.TAG_NUM_LIMIT) {
             throw new InvalidValueException("Too many question tag.");
         }
 
-        String id = questionRepository.nextId();
+        Long id = questionRepository.nextId();
         Question question = new Question(id, title, body, authorId);
 
         tagLables = tagLables.stream().map(e -> Tag.formatContent(e)).collect(Collectors.toList());
@@ -76,14 +76,14 @@ public class QuestionDomainService {
     }
 
 
-    public Comment createQuestionComment(String authorId, String questionId, String body) {
+    public Comment createQuestionComment(Long authorId, Long questionId, String body) {
 
         Question question = questionRepository.findById(questionId);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
         }
 
-        String id = commentRepository.nextId();
+        Long id = commentRepository.nextId();
         Comment comment = new Comment(id, authorId, questionId, body, CommentResourceType.QUESTION);
         commentRepository.save(comment);
 
@@ -93,7 +93,7 @@ public class QuestionDomainService {
         return comment;
     }
 
-    public void questionVoted(String questionId, int upvoteDiff, int downvoteDiff){
+    public void questionVoted(Long questionId, int upvoteDiff, int downvoteDiff){
         Question question = questionRepository.findById(questionId);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
@@ -104,7 +104,7 @@ public class QuestionDomainService {
         questionRepository.update(question);
     }
 
-    public void questionFollow(String questionId, boolean follow) {
+    public void questionFollow(Long questionId, boolean follow) {
         Question question = questionRepository.findById(questionId);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");

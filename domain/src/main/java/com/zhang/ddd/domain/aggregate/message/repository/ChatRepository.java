@@ -7,7 +7,7 @@ import com.zhang.ddd.domain.aggregate.message.entity.valueobject.ChatChatter;
 
 public interface ChatRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Chat chat);
 
@@ -15,8 +15,8 @@ public interface ChatRepository {
 
     Chat findByChatter(ChatChatter chatter);
 
-    Chat findById(String chatId);
+    Chat findById(Long chatId);
 
-    List<Chat> findChats(String chatterId, MessagePaging paging);
+    List<Chat> findChats(Long chatterId, MessagePaging paging);
 
 }

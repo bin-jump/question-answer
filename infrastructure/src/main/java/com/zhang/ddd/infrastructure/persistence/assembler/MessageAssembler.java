@@ -16,9 +16,6 @@ public class MessageAssembler {
         }
         MessagePO messagePO = new MessagePO();
         BeanUtils.copyProperties(message, messagePO);
-        messagePO.setId(NumberEncoder.decode(message.getId()));
-        messagePO.setChatId(NumberEncoder.decode(message.getChatId()));
-        messagePO.setFromId(NumberEncoder.decode(message.getFromId()));
 
         return messagePO;
     }
@@ -35,9 +32,6 @@ public class MessageAssembler {
         }
         Message message = new Message();
         BeanUtils.copyProperties(messagePO, message);
-        message.setId(NumberEncoder.encode(messagePO.getId()));
-        message.setChatId(NumberEncoder.encode(messagePO.getChatId()));
-        message.setFromId(NumberEncoder.encode(messagePO.getFromId()));
 
         return message;
     }

@@ -24,19 +24,17 @@ public class VoteRepositoryImpl implements VoteRepository {
     VoteMapper voteMapper;
 
     @Override
-    public Vote find(String voterId, String resourceId, VoteResourceType resourceType) {
-        long vid = NumberEncoder.decode(voterId);
-        long rid = NumberEncoder.decode(resourceId);
-        VotePO votePO = voteMapper.find(vid, rid, resourceType);
+    public Vote find(Long voterId, Long resourceId, VoteResourceType resourceType) {
+
+        VotePO votePO = voteMapper.find(voterId, resourceId, resourceType);
         return VoteAssembler.toDO(votePO);
     }
 
     @Override
-    public List<Vote> findByResourceIds(String voterId, List<String> resourceIds,
+    public List<Vote> findByResourceIds(Long voterId, List<Long> resourceIds,
                                         VoteResourceType resourceType) {
-        long vid = NumberEncoder.decode(voterId);
-        List<Long> rids = resourceIds.stream().map(NumberEncoder::decode).collect(Collectors.toList());
-        List<VotePO> votePOs = voteMapper.findByResourceIds(vid, rids, resourceType);
+
+        List<VotePO> votePOs = voteMapper.findByResourceIds(voterId, resourceIds, resourceType);
         return votePOs.stream().map(VoteAssembler::toDO).collect(Collectors.toList());
     }
 

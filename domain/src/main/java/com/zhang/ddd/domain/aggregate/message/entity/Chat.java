@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Chat extends Entity<Chat> {
 
-    public Chat(String userAId, String userBId, String id) {
+    public Chat(Long userAId, Long userBId, Long id) {
         this.id = id;
         this.chatter = new ChatChatter(userAId, userBId);
         this.created = new Date();
@@ -22,7 +22,7 @@ public class Chat extends Entity<Chat> {
 
     private ChatChatter chatter;
 
-    private String topMessageId;
+    private Long topMessageId;
 
     private String topBody;
 
@@ -34,11 +34,11 @@ public class Chat extends Entity<Chat> {
 
     private Date created;
 
-    public String getMeId() {
+    public Long getMeId() {
         return this.chatter.getChatterMeId();
     }
 
-    public String getYouId() {
+    public Long getYouId() {
         return this.chatter.getChatterYouId();
     }
 
@@ -52,7 +52,7 @@ public class Chat extends Entity<Chat> {
         return youUnreadCount;
     }
 
-    public String getChatWithId(String userId) {
+    public Long getChatWithId(String userId) {
         if (!getMeId().equals(userId) && !getYouId().equals(userId)) {
             throw new InvalidOperationException("Wrong userId.");
         }
@@ -62,7 +62,7 @@ public class Chat extends Entity<Chat> {
         return getMeId();
     }
 
-    public void readMessage(String readerId) {
+    public void readMessage(Long readerId) {
         boolean me = readerId.equals(getMeId());
         if (me) {
             meUnreadCount = 0;

@@ -40,9 +40,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
     @Override
@@ -65,21 +65,19 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Question findById(String id) {
-        long qid = NumberEncoder.decode(id);
-        QuestionPO questionPO = questionMapper.findById(qid);
-        tagMapper.findByQuestionIds(Arrays.asList(qid))
+    public Question findById(Long id) {
+
+        QuestionPO questionPO = questionMapper.findById(id);
+        tagMapper.findByQuestionIds(Arrays.asList(id))
                 .stream().forEach(e -> questionPO.getTags().add(e));
 
         return QuestionAssembler.toDO(questionPO);
     }
 
     @Override
-    public List<Question> findByIds(List<String> ids) {
-        List<Long> qids = ids.stream()
-                .map(NumberEncoder::decode).collect(Collectors.toList());
+    public List<Question> findByIds(List<Long> ids) {
 
-        List<Question> questionPOs = questionMapper.findByIds(qids)
+        List<Question> questionPOs = questionMapper.findByIds(ids)
                 .stream().map(QuestionAssembler::toDO)
                 .collect(Collectors.toList());
 
@@ -90,7 +88,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     public List<Question> findQuestions(PostPaging postPaging) {
 
         String sortKey = "id";
-        Long cursor = NumberEncoder.decode(postPaging.getCursor());
+        Long cursor = postPaging.getCursor();
         List<QuestionPO> questionPOs =
                 questionMapper.findQuestions(cursor, postPaging.getSize(), sortKey);
         fillQuestionTags(questionPOs);
@@ -99,13 +97,12 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public List<Question> findByUserId(String authorId, PostPaging postPaging) {
-        long aid = NumberEncoder.decode(authorId);
-        String sortKey = "id";
-        Long cursor = NumberEncoder.decode(postPaging.getCursor());
+    public List<Question> findByUserId(Long authorId, PostPaging postPaging) {
 
+        String sortKey = "id";
+        Long cursor = postPaging.getCursor();
         List<QuestionPO> questionPOs =
-                questionMapper.findByUserId(aid, cursor, postPaging.getSize(), sortKey);
+                questionMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
         fillQuestionTags(questionPOs);
 
         return QuestionAssembler.toDOs(questionPOs);
@@ -124,7 +121,6 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             QuestionPO q = qs.get(e.getQuestionId());
             q.getTags().add(e.getTagPO());
         });
-
     }
 
 }

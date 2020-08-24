@@ -6,10 +6,10 @@ import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteResourceType;
 
 public interface VoteRepository {
 
-    Vote find(String voterId, String resourceId, VoteResourceType resourceType);
+    Vote find(Long voterId, Long resourceId, VoteResourceType resourceType);
 
-    List<Vote> findByResourceIds(String voterId,
-                                 List<String> resourceIds, VoteResourceType resourceType);
+    List<Vote> findByResourceIds(Long voterId,
+                                 List<Long> resourceIds, VoteResourceType resourceType);
 
     void save(Vote vote);
 

@@ -5,9 +5,9 @@ import com.zhang.ddd.domain.shared.Paging;
 import lombok.Data;
 
 @Data
-public class MessagePaging extends Paging<String> {
+public class MessagePaging extends Paging<Long> {
 
-    public MessagePaging(String cursor, int size) {
+    public MessagePaging(Long cursor, int size) {
         super(cursor, size);
     }
 

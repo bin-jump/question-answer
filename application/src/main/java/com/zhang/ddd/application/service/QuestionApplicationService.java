@@ -35,7 +35,7 @@ public class QuestionApplicationService {
     FeedDomainService feedDomainService;
 
     @Transactional
-    public Question create(String title, String body, String authorId, List<String> tagLabels) {
+    public Question create(String title, String body, Long authorId, List<String> tagLabels) {
 
         // do not need to check user existence as user will be updated
         Question question = questionDomainService.create(title, body, authorId, tagLabels);
@@ -47,7 +47,7 @@ public class QuestionApplicationService {
     }
 
     @Transactional
-    public Answer createAnswer(String questionId, String body, String authorId) {
+    public Answer createAnswer(Long questionId, String body, Long authorId) {
 
         // do not need to check user existence as user will be updated
         Answer answer = answerDomainService.create(questionId, body, authorId);
@@ -59,7 +59,7 @@ public class QuestionApplicationService {
     }
 
     @Transactional
-    public Comment addQuestionComment(String authorId, String questionId, String body) {
+    public Comment addQuestionComment(Long authorId, Long questionId, String body) {
         User user = userRepository.findById(authorId);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
@@ -70,7 +70,7 @@ public class QuestionApplicationService {
     }
 
     @Transactional
-    public Comment addAnswerComment(String authorId, String answerId, String body) {
+    public Comment addAnswerComment(Long authorId, Long answerId, String body) {
         User user = userRepository.findById(authorId);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");

@@ -31,7 +31,7 @@ public class VoteApplicationService {
 
     // skip checking question existence as question will be updated
     @Transactional
-    public VoteResult voteQuestion(String voterId, String resourceId, boolean upVote) {
+    public VoteResult voteQuestion(Long voterId, Long resourceId, boolean upVote) {
 
         VoteType voteType = upVote ? VoteType.UPVOTE : VoteType.DOWNVOTE;
         VoteResult voteResult = voteDomainService.vote(voterId, resourceId, VoteResourceType.QUESTION, voteType);
@@ -44,7 +44,7 @@ public class VoteApplicationService {
 
     // skip checking answer existence as answer will be updated
     @Transactional
-    public VoteResult voteAnswer(String voterId, String resourceId, boolean upVote) {
+    public VoteResult voteAnswer(Long voterId, Long resourceId, boolean upVote) {
 
         VoteType voteType = upVote ? VoteType.UPVOTE : VoteType.DOWNVOTE;
         VoteResult voteResult = voteDomainService.vote(voterId, resourceId, VoteResourceType.ANSWER, voteType);
@@ -57,7 +57,7 @@ public class VoteApplicationService {
 
     // skip checking question existence as question will be updated
     @Transactional
-    public VoteResult unvoteQuestion(String voterId, String resourceId) {
+    public VoteResult unvoteQuestion(Long voterId, Long resourceId) {
 
         VoteResult voteResult = voteDomainService.unvote(voterId, resourceId, VoteResourceType.QUESTION);
 
@@ -69,7 +69,7 @@ public class VoteApplicationService {
 
     // skip checking answer existence as answer will be updated
     @Transactional
-    public VoteResult unvoteAnswer(String voterId, String resourceId) {
+    public VoteResult unvoteAnswer(Long voterId, Long resourceId) {
 
         VoteResult voteResult = voteDomainService.unvote(voterId, resourceId, VoteResourceType.ANSWER);
 

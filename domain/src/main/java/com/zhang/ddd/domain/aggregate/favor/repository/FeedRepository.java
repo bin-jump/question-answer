@@ -7,13 +7,13 @@ import com.zhang.ddd.domain.aggregate.favor.entity.valueobject.FeedType;
 
 public interface FeedRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Feed feed);
 
     void remove(Feed feed);
 
-    Feed find(String creatorId, String resourceId, FeedType feedType, FeedAction feedAction);
+    Feed find(Long creatorId, Long resourceId, FeedType feedType, FeedAction feedAction);
 
-    List<Feed> getUserFeed(String userId, FavorPaging paging);
+    List<Feed> getUserFeed(Long userId, FavorPaging paging);
 }

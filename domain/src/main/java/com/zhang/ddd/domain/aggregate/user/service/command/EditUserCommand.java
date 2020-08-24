@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EditUserCommand {
 
-    private String id;
+    private Long id;
 
     private String email;
 

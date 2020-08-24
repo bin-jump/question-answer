@@ -28,9 +28,9 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
     @Override
@@ -47,50 +47,45 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     }
 
     @Override
-    public Answer findById(String id) {
-        long aid = NumberEncoder.decode(id);
-        AnswerPO answerPO = answerMapper.findById(aid);
+    public Answer findById(Long id) {
+
+        AnswerPO answerPO = answerMapper.findById(id);
         return AnswerAssembler.toDO(answerPO);
 
     }
 
     @Override
-    public List<Answer> findByIds(List<String> ids) {
-        List<Long> aids = ids.stream()
-                .map(NumberEncoder::decode).collect(Collectors.toList());
-        List<AnswerPO> answerPOs = answerMapper.findByIds(aids);
+    public List<Answer> findByIds(List<Long> ids) {
 
+        List<AnswerPO> answerPOs = answerMapper.findByIds(ids);
         return AnswerAssembler.toDOs(answerPOs);
     }
 
     @Override
-    public List<Answer> findByQuestionId(String questionId, PostPaging postPaging) {
-        long qid = NumberEncoder.decode(questionId);
+    public List<Answer> findByQuestionId(Long questionId, PostPaging postPaging) {
         String sortKey = "id";
-        Long cursor = NumberEncoder.decode(postPaging.getCursor());
+        Long cursor =postPaging.getCursor();
 
         List<AnswerPO> answerPOs =
-                answerMapper.findByQuestionId(qid, cursor, postPaging.getSize(), sortKey);
+                answerMapper.findByQuestionId(questionId, cursor, postPaging.getSize(), sortKey);
 
         return AnswerAssembler.toDOs(answerPOs);
 
     }
 
     @Override
-    public List<Answer> findQuestionLatestAnswers(List<String> questionIds) {
-        List<Long> qids = questionIds.stream().map(NumberEncoder::decode).collect(Collectors.toList());
-        List<AnswerPO> answerPOs = answerMapper.findQuestionLatestAnswers(qids);
+    public List<Answer> findQuestionLatestAnswers(List<Long> questionIds) {
 
+        List<AnswerPO> answerPOs = answerMapper.findQuestionLatestAnswers(questionIds);
         return AnswerAssembler.toDOs(answerPOs);
     }
 
     @Override
-    public List<Answer> findByUserId(String authorId, PostPaging postPaging) {
+    public List<Answer> findByUserId(Long authorId, PostPaging postPaging) {
         String sortKey = "id";
-        long aid = NumberEncoder.decode(authorId);
-        Long cursor = NumberEncoder.decode(postPaging.getCursor());
+        Long cursor = postPaging.getCursor();
         List<AnswerPO> answerPOs =
-                answerMapper.findByUserId(aid, cursor, postPaging.getSize(), sortKey);
+                answerMapper.findByUserId(authorId, cursor, postPaging.getSize(), sortKey);
 
         return AnswerAssembler.toDOs(answerPOs);
     }

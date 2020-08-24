@@ -25,9 +25,9 @@ public class UserRepositoryImpl implements UserRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
 
@@ -51,16 +51,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(String id) {
-        long uid = NumberEncoder.decode(id);
-        UserPO userPO = userMapper.findById(uid);
+    public User findById(Long id) {
+
+        UserPO userPO = userMapper.findById(id);
         return UserAssembler.toDO(userPO);
     }
 
     @Override
-    public List<User> findByIds(List<String> ids) {
-        List<Long> uids = ids.stream().map(NumberEncoder::decode).collect(Collectors.toList());
-        List<UserPO> users = userMapper.findByIds(uids);
+    public List<User> findByIds(List<Long> ids) {
+
+        List<UserPO> users = userMapper.findByIds(ids);
         return UserAssembler.toDOs(users);
     }
 }

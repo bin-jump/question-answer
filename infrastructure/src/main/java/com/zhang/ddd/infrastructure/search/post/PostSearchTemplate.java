@@ -55,7 +55,7 @@ public class PostSearchTemplate extends ElasticsearchRestTemplate {
         List<Post> posts = postHits.getSearchHits().stream()
                 .map(SearchHit::getContent).collect(Collectors.toList());
 
-        Map<String, Post> idMapping = posts.stream().collect(Collectors.toMap(Post::getId, e -> e));
+        Map<Long, Post> idMapping = posts.stream().collect(Collectors.toMap(Post::getId, e -> e));
 
         for (org.elasticsearch.search.SearchHit hit : response.getHits()) {
             Post curPost = idMapping.get(hit.getId());

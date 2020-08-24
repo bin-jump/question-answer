@@ -29,13 +29,13 @@ public class AnswerDomainService {
     @Autowired
     SearchPostRepository searchPostRepository;
 
-    public Answer create(String questionId, String body, String authorId) {
+    public Answer create(Long questionId, String body, Long authorId) {
         Question question = questionRepository.findById(questionId);
         if (question == null) {
             throw new ResourceNotFoundException("Question not found");
         }
 
-        String id = answerRepository.nextId();
+        Long id = answerRepository.nextId();
         Answer answer = new Answer(id, questionId, body, authorId);
         answerRepository.save(answer);
 
@@ -48,14 +48,14 @@ public class AnswerDomainService {
         return answer;
     }
 
-    public Comment createAnswerComment(String authorId, String answerId, String body) {
+    public Comment createAnswerComment(Long authorId, Long answerId, String body) {
 
         Answer answer = answerRepository.findById(answerId);
         if (answer == null) {
             throw new ResourceNotFoundException("Answer not found");
         }
 
-        String id = commentRepository.nextId();
+        Long id = commentRepository.nextId();
         Comment comment = new Comment(id, authorId, answerId, body, CommentResourceType.ANSWER);
         commentRepository.save(comment);
 
@@ -65,7 +65,7 @@ public class AnswerDomainService {
         return comment;
     }
 
-    public void answerVoted(String answerId, int upvoteDiff, int downvoteDiff){
+    public void answerVoted(Long answerId, int upvoteDiff, int downvoteDiff){
 
 
         Answer answer = answerRepository.findById(answerId);

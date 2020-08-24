@@ -5,20 +5,20 @@ import com.zhang.ddd.domain.aggregate.post.entity.Answer;
 
 public interface AnswerRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Answer answer);
 
     void update(Answer answer);
 
-    Answer findById(String id);
+    Answer findById(Long id);
 
-    List<Answer> findByIds(List<String> ids);
+    List<Answer> findByIds(List<Long> ids);
 
-    List<Answer> findByQuestionId(String questionId, PostPaging postPaging);
+    List<Answer> findByQuestionId(Long questionId, PostPaging postPaging);
 
-    List<Answer> findQuestionLatestAnswers(List<String> questionIds);
+    List<Answer> findQuestionLatestAnswers(List<Long> questionIds);
 
-    List<Answer> findByUserId(String authorId, PostPaging postPaging);
+    List<Answer> findByUserId(Long authorId, PostPaging postPaging);
 
 }

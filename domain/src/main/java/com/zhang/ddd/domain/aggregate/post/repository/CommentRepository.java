@@ -6,10 +6,10 @@ import com.zhang.ddd.domain.aggregate.post.entity.valueobject.CommentResourceTyp
 
 public interface CommentRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Comment comment);
 
-    List<Comment> findByResourceId(String resourceId, CommentResourceType resourceType,
+    List<Comment> findByResourceId(Long resourceId, CommentResourceType resourceType,
                                    PostPaging postPaging);
 }

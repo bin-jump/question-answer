@@ -13,44 +13,44 @@ public class FeedDomainService {
     @Autowired
     FeedRepository feedRepository;
 
-    public void questionCreate(String creatorId, String questionId) {
+    public void questionCreate(Long creatorId, Long questionId) {
         Feed feed = createFeed(questionId, creatorId, FeedType.QUESTION, FeedAction.CREATE);
     }
 
-    public void answerCreate(String creatorId, String answerId) {
+    public void answerCreate(Long creatorId, Long answerId) {
         Feed feed = createFeed(answerId, creatorId, FeedType.ANSWER, FeedAction.CREATE);
 
     }
 
-    public void questionFollow(String creatorId, String questionId) {
+    public void questionFollow(Long creatorId, Long questionId) {
         Feed feed = createFeed(questionId, creatorId, FeedType.QUESTION, FeedAction.FOLLOW);
 
     }
 
-    public void userFollow(String creatorId, String userId) {
+    public void userFollow(Long creatorId, Long userId) {
         Feed feed = createFeed(userId, creatorId, FeedType.USER, FeedAction.FOLLOW);
 
     }
 
-    public void questionUnfollow(String creatorId, String questionId) {
+    public void questionUnfollow(Long creatorId, Long questionId) {
         removeFeed(questionId, creatorId ,FeedType.QUESTION, FeedAction.FOLLOW);
 
     }
 
-    public void userUnfollow(String creatorId, String userId) {
+    public void userUnfollow(Long creatorId, Long userId) {
         removeFeed(userId, creatorId ,FeedType.USER, FeedAction.FOLLOW);
     }
 
-    private Feed createFeed(String resourceId, String creatorId, FeedType feedType, FeedAction feedAction) {
+    private Feed createFeed(Long resourceId, Long creatorId, FeedType feedType, FeedAction feedAction) {
 
-        String id = feedRepository.nextId();
+        Long id = feedRepository.nextId();
         Feed feed = new Feed(id, feedType, feedAction, resourceId, creatorId);
 
         feedRepository.save(feed);
         return feed;
     }
 
-    private Feed removeFeed(String resourceId, String creatorId, FeedType feedType, FeedAction feedAction) {
+    private Feed removeFeed(Long resourceId, Long creatorId, FeedType feedType, FeedAction feedAction) {
 
         Feed feed = feedRepository.find(creatorId, resourceId, feedType, feedAction);
         if (feed != null) {

@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Message extends Entity<Message> {
 
-    public Message(String id, String chatId, String fromId, String body) {
+    public Message(Long id, Long chatId, Long fromId, String body) {
         this.id = id;
         this.chatId = chatId;
         this.fromId = fromId;
@@ -22,12 +22,12 @@ public class Message extends Entity<Message> {
         this.created = new Date();
     }
 
-    private String chatId;
+    private Long chatId;
 
     private String body;
 
     private Date created;
 
-    private String fromId;
+    private Long fromId;
 
 }

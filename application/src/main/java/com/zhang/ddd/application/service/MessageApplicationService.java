@@ -23,7 +23,7 @@ public class MessageApplicationService {
     UserRepository userRepository;
 
     @Transactional
-    public Chat sendMessage(String fromId, String toId, String body) {
+    public Chat sendMessage(Long fromId, Long toId, String body) {
 
         User from = userRepository.findById(fromId);
         User to = userRepository.findById(toId);
@@ -36,14 +36,14 @@ public class MessageApplicationService {
     }
 
     @Transactional
-    public List<Message> readMessages(String readerId, String chatId, MessagePaging paging) {
+    public List<Message> readMessages(Long readerId, Long chatId, MessagePaging paging) {
 
         List<Message> messages = messageDomainService.readMessages(readerId, chatId, paging);
         return messages;
     }
 
     @Transactional
-    public List<Message> readNewMessage(String readerId, String chatId, String lastMessageId, int size) {
+    public List<Message> readNewMessage(Long readerId, Long chatId, Long lastMessageId, int size) {
 
         List<Message> messages = messageDomainService.readNewMessage(readerId, chatId, lastMessageId, size);
         return messages;

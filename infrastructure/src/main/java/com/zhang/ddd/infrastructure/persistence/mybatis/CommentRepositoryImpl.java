@@ -26,9 +26,9 @@ public class CommentRepositoryImpl implements CommentRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
 
     @Override
@@ -38,14 +38,13 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findByResourceId(String resourceId, CommentResourceType resourceType,
+    public List<Comment> findByResourceId(Long resourceId, CommentResourceType resourceType,
                                           PostPaging postPaging) {
         String sortKey = "id";
-        long rid = NumberEncoder.decode(resourceId);
-        Long cursor = NumberEncoder.decode(postPaging.getCursor());
+        Long cursor = postPaging.getCursor();
 
         List<CommentPO> commentPOs =
-                commentMapper.findByResourceId(rid, resourceType,
+                commentMapper.findByResourceId(resourceId, resourceType,
                         cursor, postPaging.getSize(), sortKey);
 
         return CommentAssembler.toDOs(commentPOs);

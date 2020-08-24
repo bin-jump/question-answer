@@ -15,18 +15,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class Answer extends Entity<Answer> {
 
-    public Answer(String id, String parentId, String body, String authorId) {
-        if (!StringUtils.hasText(id)) {
-            throw new InvalidValueException("Answer id can not be empty.");
-        }
+    public Answer(Long id, Long parentId, String body, Long authorId) {
+
         if (!StringUtils.hasText(body)) {
             throw new InvalidValueException("Answer body can not be empty.");
-        }
-        if (!StringUtils.hasText(parentId)) {
-            throw new InvalidValueException("Answer parentId can not be empty.");
-        }
-        if (!StringUtils.hasText(authorId)) {
-            throw new InvalidValueException("Answer author can not be empty.");
         }
 
         this.id = id;
@@ -36,11 +28,11 @@ public class Answer extends Entity<Answer> {
         this.created = new Date();
     }
 
-    private String parentId;
+    private Long parentId;
 
     private String body;
 
-    private String authorId;
+    private Long authorId;
 
     private Date created;
 

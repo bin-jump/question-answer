@@ -5,7 +5,7 @@ import com.zhang.ddd.domain.aggregate.user.entity.User;
 
 public interface UserRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(User user);
 
@@ -13,7 +13,7 @@ public interface UserRepository {
 
     User findByName(String name);
 
-    User findById(String id);
+    User findById(Long id);
 
-    List<User> findByIds(List<String> ids);
+    List<User> findByIds(List<Long> ids);
 }

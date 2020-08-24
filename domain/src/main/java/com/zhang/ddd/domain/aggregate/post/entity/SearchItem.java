@@ -39,13 +39,13 @@ public class SearchItem {
         return item;
     }
 
-    private String id;
+    private Long id;
 
     private SearchItemType itemType;
 
-    private String authorId;
+    private Long authorId;
 
-    private String parentId;
+    private Long parentId;
 
     private String title;
 

@@ -6,17 +6,17 @@ import com.zhang.ddd.domain.aggregate.post.entity.Tag;
 
 public interface QuestionRepository {
 
-    String nextId();
+    Long nextId();
 
     void save(Question question);
 
     void update(Question question);
 
-    Question findById(String id);
+    Question findById(Long id);
 
-    List<Question> findByIds(List<String> ids);
+    List<Question> findByIds(List<Long> ids);
 
     List<Question> findQuestions(PostPaging postPaging);
 
-    List<Question> findByUserId(String authorId, PostPaging postPaging);
+    List<Question> findByUserId(Long authorId, PostPaging postPaging);
 }

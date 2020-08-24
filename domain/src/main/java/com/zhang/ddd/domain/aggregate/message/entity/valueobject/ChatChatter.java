@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ChatChatter {
 
-    public ChatChatter(String userAId, String userBId) {
+    public ChatChatter(Long userAId, Long userBId) {
         if (userAId.equals(userBId)) {
             throw new InvalidOperationException("Invalid chat id.");
         }
@@ -20,7 +20,7 @@ public class ChatChatter {
         }
     }
 
-    private String chatterYouId;
+    private Long chatterYouId;
 
-    private String chatterMeId;
+    private Long chatterMeId;
 }

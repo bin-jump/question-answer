@@ -12,16 +12,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Vote {
 
-    public Vote(String voterId, String resourceId, VoteType voteType, VoteResourceType resourceType) {
+    public Vote(Long voterId, Long resourceId, VoteType voteType, VoteResourceType resourceType) {
         this.voterId = voterId;
         this.resourceId = resourceId;
         this.voteType = voteType;
         this.resourceType = resourceType;
     }
 
-    private String voterId;
+    private Long voterId;
 
-    private String resourceId;
+    private Long resourceId;
 
     private VoteType voteType;
 

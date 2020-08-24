@@ -16,18 +16,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class Comment extends Entity<Comment> {
 
-    public Comment(String id, String authorId, String resourceId,
+    public Comment(Long id, Long authorId, Long resourceId,
                    String body, CommentResourceType resourceType) {
 
-        if (!StringUtils.hasText(id)) {
-            throw new InvalidValueException("Comment id can not be empty.");
-        }
-        if (!StringUtils.hasText(resourceId)) {
-            throw new InvalidValueException("Comment resourceId can not be empty.");
-        }
-        if (!StringUtils.hasText(authorId)) {
-            throw new InvalidValueException("Comment authorId can not be empty.");
-        }
         if (!StringUtils.hasText(body)) {
             throw new InvalidValueException("Comment body can not be empty.");
         }
@@ -43,11 +34,9 @@ public class Comment extends Entity<Comment> {
         this.created = new Date();
     }
 
-    private String id;
+    private Long resourceId;
 
-    private String resourceId;
-
-    private String authorId;
+    private Long authorId;
 
     private String body;
 

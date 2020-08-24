@@ -18,7 +18,6 @@ public class TagAssembler {
         TagPO tagPO = new TagPO();
         tagPO.setLabel(tag.getLabel());
         tagPO.setVersion(tag.getVersion());
-        tagPO.setId(NumberEncoder.decode(tag.getId()));
 
         return tagPO;
     }
@@ -29,7 +28,6 @@ public class TagAssembler {
         }
         Tag tag = new Tag();
         tag.setLabel(tagPO.getLabel());
-        tag.setId(NumberEncoder.encode(tagPO.getId()));
         tag.setVersion(tagPO.getVersion());
 
         return tag;

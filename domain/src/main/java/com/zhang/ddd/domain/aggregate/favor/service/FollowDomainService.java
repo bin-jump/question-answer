@@ -17,7 +17,7 @@ public class FollowDomainService {
     @Autowired
     FollowRepository followRepository;
 
-    public Follow follow(String followerId, String resourceId, FollowResourceType resourceType) {
+    public Follow follow(Long followerId, Long resourceId, FollowResourceType resourceType) {
         if (followerId == resourceId) {
             throw new InvalidOperationException("Wrong follow operation.");
         }
@@ -34,7 +34,7 @@ public class FollowDomainService {
         return follow;
     }
 
-    public Follow unfollow(String followerId, String resourceId, FollowResourceType resourceType) {
+    public Follow unfollow(Long followerId, Long resourceId, FollowResourceType resourceType) {
 
         Follow follow = followRepository.find(followerId, resourceId, resourceType);
         if (follow == null) {

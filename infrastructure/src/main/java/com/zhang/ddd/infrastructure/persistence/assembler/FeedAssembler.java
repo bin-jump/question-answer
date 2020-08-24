@@ -17,9 +17,6 @@ public class FeedAssembler {
         FeedPO feedPO = new FeedPO();
         BeanUtils.copyProperties(feed, feedPO);
         feedPO.setVersion(feed.getVersion());
-        feedPO.setId(NumberEncoder.decode(feed.getId()));
-        feedPO.setResourceId(NumberEncoder.decode(feed.getResourceId()));
-        feedPO.setCreatorId(NumberEncoder.decode(feed.getCreatorId()));
 
         return feedPO;
     }
@@ -36,9 +33,6 @@ public class FeedAssembler {
         }
         Feed feed = new Feed();
         BeanUtils.copyProperties(feedPO, feed);
-        feed.setId(NumberEncoder.encode(feedPO.getId()));
-        feed.setResourceId(NumberEncoder.encode(feedPO.getResourceId()));
-        feed.setCreatorId(NumberEncoder.encode(feedPO.getCreatorId()));
 
         return feed;
     }

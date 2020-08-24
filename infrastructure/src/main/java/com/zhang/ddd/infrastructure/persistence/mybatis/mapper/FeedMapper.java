@@ -16,5 +16,5 @@ public interface FeedMapper {
 
     List<FeedPO> findUseFeed(long userId, Long cursor, int size);
 
-    FeedPO find(String creatorId, String resourceId, FeedType feedType, FeedAction feedAction);
+    FeedPO find(long creatorId, long resourceId, FeedType feedType, FeedAction feedAction);
 }

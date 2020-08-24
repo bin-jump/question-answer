@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Setter
 public abstract class Entity<T> implements Serializable {
 
-    protected String id;
+    protected Long id;
 
     protected long version = 1;
 }

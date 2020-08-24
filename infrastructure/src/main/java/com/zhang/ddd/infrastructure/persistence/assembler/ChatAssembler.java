@@ -18,12 +18,9 @@ public class ChatAssembler {
         ChatPO chatPO = new ChatPO();
         BeanUtils.copyProperties(chat, chatPO);
         chatPO.setVersion(chat.getVersion());
-        chatPO.setId(NumberEncoder.decode(chat.getId()));
-        chatPO.setChatterMeId(NumberEncoder.decode(chat.getChatter().getChatterMeId()));
-        chatPO.setChatterYouId(NumberEncoder.decode(chat.getChatter().getChatterYouId()));
 
         if (chat.getTopMessageId() != null) {
-            chatPO.setTopMessageId(NumberEncoder.decode(chat.getTopMessageId()));
+            chatPO.setTopMessageId(chat.getTopMessageId());
         }
         return chatPO;
     }
@@ -42,13 +39,12 @@ public class ChatAssembler {
         BeanUtils.copyProperties(chatPO, chat);
         chat.setVersion(chatPO.getVersion());
         ChatChatter chatChatter = new ChatChatter(
-                NumberEncoder.encode(chatPO.getChatterMeId()),
-                NumberEncoder.encode(chatPO.getChatterYouId()));
+                chatPO.getChatterMeId(), chatPO.getChatterYouId());
 
         chat.setChatter(chatChatter);
-        chat.setId(NumberEncoder.encode(chatPO.getId()));
+        chat.setId(chatPO.getId());
         if (chatPO.getTopMessageId() != null) {
-            chat.setTopMessageId(NumberEncoder.encode(chatPO.getTopMessageId()));
+            chat.setTopMessageId(chatPO.getTopMessageId());
         }
 
         return chat;

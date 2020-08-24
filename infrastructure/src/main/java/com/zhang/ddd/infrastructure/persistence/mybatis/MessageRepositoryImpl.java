@@ -23,9 +23,9 @@ public class MessageRepositoryImpl implements MessageRepository {
     SequenceRepository sequenceRepository;
 
     @Override
-    public String nextId() {
+    public Long nextId() {
         long id = sequenceRepository.nextId();
-        return NumberEncoder.encode(id);
+        return id;
     }
     @Override
     public void save(Message message) {
@@ -34,21 +34,18 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public List<Message> findChatMessages(String chatId, MessagePaging paging) {
+    public List<Message> findChatMessages(Long chatId, MessagePaging paging) {
 
-        long cid = NumberEncoder.decode(chatId);
-        Long cursor = NumberEncoder.decode(paging.getCursor());
-        List<MessagePO> messagePOs = messageMapper.findByChatId(cid, cursor, paging.getSize());
+        Long cursor = paging.getCursor();
+        List<MessagePO> messagePOs = messageMapper.findByChatId(chatId, cursor, paging.getSize());
 
         return MessageAssembler.toDOs(messagePOs);
     }
 
     @Override
-    public List<Message> findChatNewMessages(String chatId, String lastId, int size) {
-        long cid = NumberEncoder.decode(chatId);
-        long mid = NumberEncoder.decode(lastId);
+    public List<Message> findChatNewMessages(Long chatId, Long lastId, int size) {
 
-        List<MessagePO> messagePOs = messageMapper.findNewByChatId(cid, mid, size);
+        List<MessagePO> messagePOs = messageMapper.findNewByChatId(chatId, lastId, size);
         return MessageAssembler.toDOs(messagePOs);
     }
 }

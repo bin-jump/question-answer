@@ -19,7 +19,7 @@ import java.util.Date;
 public class User extends Entity<User> {
 
 
-    public User(String id, String name, String password) {
+    public User(Long id, String name, String password) {
         if (!StringUtils.hasText(name)) {
             throw new InvalidValueException("User name can not be empty.");
         }

@@ -19,7 +19,7 @@ public class Tag extends Entity<Tag> {
                 .toLowerCase();
     }
 
-    public Tag(String id, String label) {
+    public Tag(Long id, String label) {
         if (!StringUtils.hasText(label)) {
             throw new InvalidValueException("Tag label can not be empty.");
         }
