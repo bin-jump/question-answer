@@ -19,4 +19,6 @@ public interface QuestionRepository {
     List<Question> findQuestions(PostPaging postPaging);
 
     List<Question> findByUserId(Long authorId, PostPaging postPaging);
+
+    List<Question> findHotQuestions(int limit);
 }

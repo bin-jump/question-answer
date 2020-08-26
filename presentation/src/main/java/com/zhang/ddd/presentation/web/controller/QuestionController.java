@@ -46,6 +46,13 @@ public class QuestionController {
         return Response.okPagingAfter(questionDtos, next, size);
     }
 
+    @GetMapping("hot")
+    public Response getHotQuestions() {
+
+        List<QuestionDto> questionDtos = postServiceFacade.getHotQuestions();
+        return Response.ok(questionDtos);
+    }
+
     @PostMapping
     public Response addQuestion(@RequestBody QuestionDto questionDto) {
         UserDto currentUser = LoginUtil.getCurrentUser();

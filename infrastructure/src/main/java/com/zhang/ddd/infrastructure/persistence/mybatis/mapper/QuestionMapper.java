@@ -21,4 +21,6 @@ public interface QuestionMapper {
 
     List<QuestionPO> findByUserId(long authorId, Long cursor, int size, String sortKey);
 
+    List<QuestionPO> findHotQuestions(int topNum, int size);
+
 }

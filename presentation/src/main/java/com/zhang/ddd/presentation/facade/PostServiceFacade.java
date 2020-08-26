@@ -174,6 +174,12 @@ public class PostServiceFacade {
         return getComments(CommentResourceType.ANSWER, answerId, cursor, size);
     }
 
+    public List<QuestionDto> getHotQuestions() {
+
+        int size = 8;
+        List<Question> questions = questionRepository.findHotQuestions(size);
+        return questions.stream().map(QuestionAssembler::toDTO).collect(Collectors.toList());
+    }
 
     private List<CommentDto> getComments(CommentResourceType resourceType, Long resourceId,
                                          Long cursor, int size) {

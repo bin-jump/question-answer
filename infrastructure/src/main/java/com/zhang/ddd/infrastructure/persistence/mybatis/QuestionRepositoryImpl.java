@@ -109,6 +109,14 @@ public class QuestionRepositoryImpl implements QuestionRepository {
         return QuestionAssembler.toDOs(questionPOs);
     }
 
+    @Override
+    public List<Question> findHotQuestions(int limit) {
+
+        int topNum = 100;
+        List<QuestionPO> questionPOs = questionMapper.findHotQuestions(topNum, limit);
+        return questionPOs.stream().map(QuestionAssembler::toDO).collect(Collectors.toList());
+    }
+
     private void fillQuestionTags(List<QuestionPO> questionPOs) {
         List<Long> ids = questionPOs.stream()
                 .map(QuestionPO::getId).collect(Collectors.toList());

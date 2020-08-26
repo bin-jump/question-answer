@@ -77,6 +77,21 @@
 
     </select>
 
+    <select id="findHotQuestions" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
+        select *
+        from (
+              select id, version, title, body, author_id, created,
+                     answer_count, comment_count, follow_count, upvote_count, downvote_count
+              from
+              question
+              order by answer_count desc
+              limit #{topNum}
+          ) t1
+        order by rand() desc
+        limit #{size}
+
+    </select>
+
     <select id="findByUserId" resultMap="BaseResultMap" resultType="com.zhang.ddd.infrastructure.persistence.po.QuestionPO">
         select id, version, title, body, author_id, created,
         answer_count, comment_count, follow_count, upvote_count, downvote_count
