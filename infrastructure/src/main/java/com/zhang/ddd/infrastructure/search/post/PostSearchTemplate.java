@@ -58,7 +58,7 @@ public class PostSearchTemplate extends ElasticsearchRestTemplate {
         Map<Long, Post> idMapping = posts.stream().collect(Collectors.toMap(Post::getId, e -> e));
 
         for (org.elasticsearch.search.SearchHit hit : response.getHits()) {
-            Post curPost = idMapping.get(hit.getId());
+            Post curPost = idMapping.get(Long.parseLong(hit.getId()));
             curPost.setScore(hit.getScore());
             List<String> titleHeights = getHeight(hit, POST_TITLE);
             List<String> bodyHeights = getHeight(hit, POST_BODY);

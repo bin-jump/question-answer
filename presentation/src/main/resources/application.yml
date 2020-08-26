@@ -9,7 +9,7 @@ spring:
     name: smartpost
 
   datasource:
-    url: jdbc:mysql://localhost:3306/smartpost?serverTimezone=Asia/Tokyo&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/play?serverTimezone=Asia/Tokyo&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password: root
     hikari:

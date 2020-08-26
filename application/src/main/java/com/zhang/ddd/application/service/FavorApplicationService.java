@@ -10,6 +10,7 @@ import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
 import com.zhang.ddd.domain.aggregate.user.service.UserDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FavorApplicationService {
@@ -27,6 +28,7 @@ public class FavorApplicationService {
     FeedDomainService feedDomainService;
 
 
+    @Transactional
     public Follow followUser(Long followerId, Long followeeId) {
 
         Follow follow = followDomainService.follow(followerId, followeeId, FollowResourceType.USER);
@@ -38,6 +40,7 @@ public class FavorApplicationService {
         return follow;
     }
 
+    @Transactional
     public Follow unfollowUser(Long followerId, Long followeeId) {
 
         Follow follow = followDomainService.unfollow(followerId, followeeId, FollowResourceType.USER);
@@ -50,6 +53,7 @@ public class FavorApplicationService {
         return follow;
     }
 
+    @Transactional
     public Follow followQuestion(Long followerId, Long questionId) {
 
         Follow follow = followDomainService.follow(followerId, questionId, FollowResourceType.QUESTION);
@@ -62,6 +66,7 @@ public class FavorApplicationService {
         return follow;
     }
 
+    @Transactional
     public Follow unfollowQuestion(Long followerId, Long questionId) {
 
         Follow follow = followDomainService.unfollow(followerId, questionId, FollowResourceType.QUESTION);

@@ -30,13 +30,13 @@ public class SearchController {
 
     @GetMapping
     public Response searchPost(@RequestParam(value="q") String keyWord,
-                               @RequestParam(value="cursor", required = false) String cursor,
+                               @RequestParam(value="after", required = false) String after,
                                @RequestParam(value="size", defaultValue = "10") int size) {
 
         Float cursorScore = null;
         Long cursorId = null;
-        if (cursor != null) {
-            Object[] cursors = toCursors(cursor);
+        if (after != null) {
+            Object[] cursors = toCursors(after);
             cursorScore = (Float)cursors[0];
             cursorId = Long.parseLong((String)cursors[1]);
         }

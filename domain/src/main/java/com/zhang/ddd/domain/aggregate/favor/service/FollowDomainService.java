@@ -18,7 +18,7 @@ public class FollowDomainService {
     FollowRepository followRepository;
 
     public Follow follow(Long followerId, Long resourceId, FollowResourceType resourceType) {
-        if (followerId == resourceId) {
+        if (followerId.equals(resourceId) && resourceType == FollowResourceType.USER) {
             throw new InvalidOperationException("Wrong follow operation.");
         }
 

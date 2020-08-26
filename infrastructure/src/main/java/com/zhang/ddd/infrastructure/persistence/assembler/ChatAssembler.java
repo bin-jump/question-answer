@@ -18,6 +18,8 @@ public class ChatAssembler {
         ChatPO chatPO = new ChatPO();
         BeanUtils.copyProperties(chat, chatPO);
         chatPO.setVersion(chat.getVersion());
+        chatPO.setChatterYouId(chat.getYouId());
+        chatPO.setChatterMeId(chat.getMeId());
 
         if (chat.getTopMessageId() != null) {
             chatPO.setTopMessageId(chat.getTopMessageId());
