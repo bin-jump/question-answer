@@ -19,13 +19,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
 @RequestMapping("/api/question")
 public class QuestionController {
+
+    static final String RECOMMEND_SEED_KEY = "RECOMMEND_SEED_KEY";
 
     @Autowired
     PostServiceFacade postServiceFacade;
@@ -50,6 +54,21 @@ public class QuestionController {
     public Response getHotQuestions() {
 
         List<QuestionDto> questionDtos = postServiceFacade.getHotQuestions();
+        return Response.ok(questionDtos);
+    }
+
+    @GetMapping("toanswer")
+    public Response getRecommandQuestions(@RequestParam(defaultValue = "0") int offset,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          HttpServletRequest request) {
+
+        Integer seed = (Integer) request.getSession().getAttribute(RECOMMEND_SEED_KEY);
+        if (seed == null || offset == 0) {
+            seed = new Random().nextInt(10000);
+            request.getSession().setAttribute(RECOMMEND_SEED_KEY, seed);
+        }
+
+        List<QuestionDto> questionDtos = postServiceFacade.getLowAnswerQuestions(seed, offset, size);
         return Response.ok(questionDtos);
     }
 

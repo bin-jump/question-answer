@@ -12,17 +12,12 @@ import com.zhang.ddd.domain.aggregate.post.repository.AnswerRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.CommentRepository;
 import com.zhang.ddd.domain.aggregate.post.repository.PostPaging;
 import com.zhang.ddd.domain.aggregate.post.repository.QuestionRepository;
-import com.zhang.ddd.domain.aggregate.user.entity.User;
 import com.zhang.ddd.domain.aggregate.user.repository.UserRepository;
-import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.Vote;
-import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteResourceType;
-import com.zhang.ddd.domain.aggregate.vote.entity.valueobject.VoteType;
 import com.zhang.ddd.domain.aggregate.vote.repository.VoteRepository;
 import com.zhang.ddd.domain.exception.ResourceNotFoundException;
 import com.zhang.ddd.presentation.facade.assembler.AnswerAssembler;
 import com.zhang.ddd.presentation.facade.assembler.CommentAssembler;
 import com.zhang.ddd.presentation.facade.assembler.QuestionAssembler;
-import com.zhang.ddd.presentation.facade.assembler.UserAssembler;
 import com.zhang.ddd.presentation.facade.dto.post.AnswerDto;
 import com.zhang.ddd.presentation.facade.dto.post.CommentDto;
 import com.zhang.ddd.presentation.facade.dto.post.QuestionDto;
@@ -59,6 +54,7 @@ public class PostServiceFacade {
 
     @Autowired
     FollowRepository followRepository;
+
 
     @Autowired
     FacadeHelper helper;
@@ -179,6 +175,17 @@ public class PostServiceFacade {
         int size = 8;
         List<Question> questions = questionRepository.findHotQuestions(size);
         return questions.stream().map(QuestionAssembler::toDTO).collect(Collectors.toList());
+    }
+
+    public List<QuestionDto> getLowAnswerQuestions(int seed, int offset, int size) {
+
+        PostPaging postPaging = new PostPaging(offset, size);
+        List<Question> questions = questionRepository.randomLowAnswerQuestion(seed, postPaging);
+
+        List<QuestionDto> questionDtos = questions
+                .stream().map(QuestionAssembler::toDTO).collect(Collectors.toList());
+        helper.fillQuestionUsers(questionDtos);
+        return questionDtos;
     }
 
     private List<CommentDto> getComments(CommentResourceType resourceType, Long resourceId,

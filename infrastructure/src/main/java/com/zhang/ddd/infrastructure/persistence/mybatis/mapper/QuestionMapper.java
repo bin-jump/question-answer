@@ -23,4 +23,6 @@ public interface QuestionMapper {
 
     List<QuestionPO> findHotQuestions(int topNum, int size);
 
+    List<QuestionPO> randomLowAnswerQuestion(long seed, int topNum, int offset, int size);
+
 }

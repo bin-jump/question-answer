@@ -21,4 +21,7 @@ public interface QuestionRepository {
     List<Question> findByUserId(Long authorId, PostPaging postPaging);
 
     List<Question> findHotQuestions(int limit);
+
+    List<Question> randomLowAnswerQuestion(int seed, PostPaging postPaging);
+
 }

@@ -111,9 +111,23 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
     @Override
     public List<Question> findHotQuestions(int limit) {
-
-        int topNum = 100;
+        // TODO: use both percentage with constant
+        int topNum = 1000;
         List<QuestionPO> questionPOs = questionMapper.findHotQuestions(topNum, limit);
+        return questionPOs.stream().map(QuestionAssembler::toDO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Question> randomLowAnswerQuestion(int seed, PostPaging postPaging) {
+        // could get duplicate question when new question added
+        // TODO: use both percentage with constant
+        int topNum = 1000;
+        if (postPaging.getOffset() > topNum) {
+            return new ArrayList<>();
+        }
+        List<QuestionPO> questionPOs = questionMapper.randomLowAnswerQuestion(seed, topNum,
+                postPaging.getOffset(), postPaging.getSize());
+
         return questionPOs.stream().map(QuestionAssembler::toDO).collect(Collectors.toList());
     }
 
@@ -124,7 +138,6 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
         Map<Long, QuestionPO> qs = questionPOs.stream()
                 .collect(Collectors.toMap(QuestionPO::getId, e -> e));
-
 
         questionTags.stream().forEach(e -> {
             QuestionPO q = qs.get(e.getQuestionId());
