@@ -1,6 +1,5 @@
 package com.zhang.ddd.presentation.web.controller;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import com.zhang.ddd.domain.exception.InvalidOperationException;
 import com.zhang.ddd.infrastructure.common.api.Response;
 import com.zhang.ddd.presentation.facade.SearchServiceFacade;

@@ -40,7 +40,7 @@
         <if test="cursor != null">
             and id <![CDATA[ < ]]> #{cursor}
         </if>
-        order by #{sortKey} desc
+        order by id desc
         limit #{size}
     </select>
 

@@ -40,12 +40,10 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> findByResourceId(Long resourceId, CommentResourceType resourceType,
                                           PostPaging postPaging) {
-        String sortKey = "id";
         Long cursor = postPaging.getCursor();
-
         List<CommentPO> commentPOs =
                 commentMapper.findByResourceId(resourceId, resourceType,
-                        cursor, postPaging.getSize(), sortKey);
+                        cursor, postPaging.getSize());
 
         return CommentAssembler.toDOs(commentPOs);
     }

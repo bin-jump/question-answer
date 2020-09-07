@@ -98,7 +98,7 @@ public class UserServiceFacade {
         UserDto userDto = UserAssembler.toDTO(user);
 
         UserDto me = LoginUtil.getCurrentUser();
-        if (user != null && user.getId() != me.getId()) {
+        if (user != null && me != null && user.getId() != me.getId()) {
             Follow follow = followRepository.find(me.getId(), userDto.getId(),
                     FollowResourceType.USER);
             userDto.setFollowing(follow != null ? true : false);
