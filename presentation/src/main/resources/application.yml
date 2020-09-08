@@ -8,41 +8,11 @@ spring:
   application:
     name: smartpost
 
-  datasource:
-    url: jdbc:mysql://localhost:3306/play?serverTimezone=Asia/Tokyo&useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: root
-    password: root
-    hikari:
-      auto-commit: true
-      minimum-idle: 2
-      idle-timeout: 60000
-      connection-timeout: 30000
-      max-lifetime: 1800000
-      pool-name: DatebookHikariCP
-      maximum-pool-size: 5
-
-    session:
-      store-type: redis
-
-    redis:
-      host: localhost
-      port: 6379
-
-  data:
-    elasticsearch:
-      cluster-name: elasticsearch
-      host: localhost
-      port: 9300
-      restport: 9200
+  profiles:
+    active: dev
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
-ftp:
-  host: 127.0.0.1
-  port: 21
-  username: ftpuser
-  password: ftpuser
-  filepath: /images

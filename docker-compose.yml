@@ -1,0 +1,80 @@
+version: "3.7"
+
+services:
+  sp-nginx:
+    image: nginx
+    volumes:
+       - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    networks:
+      - sp-frontend
+    depends_on:
+      - sp-app
+      - sp-file
+
+  sp-file:
+    image: my/file-server
+    environment:
+      - FTP_USER=ftpuser
+      - FTP_PASS=ftpuser
+      - PASV_MIN_PORT=21100 
+      - PASV_MAX_PORT=21110
+      - LOCAL_UMASK=011
+    volumes:
+       - sp-filedata:/home/vsftpd/ftpuser/images
+    networks:
+       - sp-frontend
+
+  sp-app:
+    image: my/smart-post
+    networks:
+      - sp-frontend
+      - sp-backend
+    depends_on:
+      - sp-elasticsearch
+      - sp-mysql
+      - sp-redis
+    command: ["./wait_for_elasticsearch.sh", "sp-elasticsearch", "--", "java", "-jar", "/app.jar", "--spring.profiles.active=prod"]
+
+  sp-mysql:
+    image: mysql
+    environment:
+      - MYSQL_DATABASE=smart_post
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3308:3306" # for check
+    volumes:
+        - ./docker/db/initdb_withdata:/docker-entrypoint-initdb.d
+        - sp-dbdata:/var/lib/mysql
+    command: --innodb-use-native-aio=0
+    networks:
+       - sp-backend
+
+  sp-redis:
+    image: redis     
+    networks:
+      - sp-backend
+
+  sp-elasticsearch:
+    image: elasticsearch:7.4.0
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    volumes:
+       - sp-searchdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node  
+    networks:
+      - sp-backend
+
+volumes:
+  sp-dbdata:
+  sp-searchdata:
+  sp-filedata:
+
+networks:
+  sp-frontend:
+    driver: bridge
+  sp-backend:
+    driver: bridge

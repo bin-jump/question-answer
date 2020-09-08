@@ -93,11 +93,13 @@ public class AvatarImageRepositoryImpl implements AvatarImageRepository {
             client.getClient().setFileType(FTP.BINARY_FILE_TYPE);
 
             if (!client.getClient().storeFile(fileName, input)) {
-                throw new IllegalStateException("Ftp StoreFile failed:" + client.getClient().getReplyCode());
+                throw new RuntimeException(String.format("Ftp StoreFile failed: %s, %s",
+                        client.getClient().getReplyCode(),
+                        client.getClient().getReplyString()));
             }
             fileName = filePath + "/" + fileName;
         } catch (Exception e) {
-            log.error("Save user image failed.");
+            log.error("Save user image failed. with exception: " + e);
             return null;
         }
 

@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:mysql://sp-mysql:3306/smartpost?serverTimezone=Asia/Tokyo&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    hikari:
+      auto-commit: true
+      minimum-idle: 2
+      idle-timeout: 60000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      pool-name: DatebookHikariCP
+      maximum-pool-size: 5
+
+  session:
+    store-type: redis
+
+  redis:
+    host: sp-redis
+    port: 6379
+
+  data:
+    elasticsearch:
+      cluster-name: es-cluster
+      host: sp-elasticsearch
+      port: 9300
+      restport: 9200
+
+ftp:
+  host: sp-file
+  port: 21
+  username: ftpuser
+  password: ftpuser
+  filepath: /images
