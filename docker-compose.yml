@@ -68,6 +68,17 @@ services:
     networks:
       - sp-backend
 
+  sp-kibana:
+    image: kibana:7.4.0
+    environment:
+      ELASTICSEARCH_HOSTS: http://sp-elasticsearch:9200
+    ports:
+      - "5602:5601"
+    networks:
+      - sp-backend
+    depends_on:
+      - sp-elasticsearch
+
 volumes:
   sp-dbdata:
   sp-searchdata:
